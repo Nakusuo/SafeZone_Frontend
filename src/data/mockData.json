@@ -1,0 +1,78 @@
+{
+  "users": [
+    {
+      "id": "user1",
+      "name": "María García",
+      "email": "maria@example.com",
+      "password": "password123",
+      "role": "VICTIM",
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "user2",
+      "name": "Dra. Patricia Sánchez",
+      "email": "patricia@example.com",
+      "password": "password123",
+      "role": "PSYCHOLOGIST",
+      "createdAt": "2024-01-10T10:00:00Z"
+    },
+    {
+      "id": "user3",
+      "name": "Dr. Carlos López",
+      "email": "carlos@example.com",
+      "password": "password123",
+      "role": "DEFENDER",
+      "createdAt": "2024-01-12T10:00:00Z"
+    }
+  ],
+  "reports": [
+    {
+      "id": "report1",
+      "victimId": "user1",
+      "title": "Violencia física",
+      "description": "Incidente ocurrido el 10 de abril",
+      "type": "PHYSICAL_VIOLENCE",
+      "status": "UNDER_EVALUATION",
+      "priority": "HIGH",
+      "createdAt": "2024-04-06T14:30:00Z",
+      "updatedAt": "2024-04-08T09:15:00Z",
+      "psychologistId": "user2",
+      "defenderId": "user3"
+    },
+    {
+      "id": "report2",
+      "victimId": "user1",
+      "title": "Abuso psicológico",
+      "description": "Amenazas e insultos continuos",
+      "type": "PSYCHOLOGICAL_ABUSE",
+      "status": "IN_FOLLOW_UP",
+      "priority": "MEDIUM",
+      "createdAt": "2024-03-15T11:00:00Z",
+      "updatedAt": "2024-04-07T16:45:00Z",
+      "psychologistId": "user2",
+      "defenderId": "user3"
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "eval1",
+      "reportId": "report1",
+      "psychologistId": "user2",
+      "date": "2024-04-07T10:00:00Z",
+      "diagnosis": "Trastorno adaptativo con ansiedad",
+      "notes": "Paciente muestra síntomas de estrés postraumático",
+      "recommendations": ["Terapia semanal", "Seguimiento médico", "Apoyo familiar"]
+    }
+  ],
+  "legalUpdates": [
+    {
+      "id": "legal1",
+      "reportId": "report1",
+      "defenderId": "user3",
+      "date": "2024-04-08T15:00:00Z",
+      "status": "INVESTIGATION",
+      "nextHearing": "2024-04-15",
+      "notes": "Se ha iniciado investigación fiscal. Próxima audiencia programada."
+    }
+  ]
+}

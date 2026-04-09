@@ -1,0 +1,112 @@
+import { Link, useLocation } from 'react-router-dom'
+import { 
+  LayoutDashboard, 
+  FileText, 
+  Users, 
+  Settings, 
+  HelpCircle,
+  ChevronRight 
+} from 'lucide-react'
+
+interface SidebarProps {
+  isOpen?: boolean
+}
+
+const getNavigationItems = (role?: string) => {
+  const baseItems = [
+    {
+      label: 'Dashboard',
+      path: `/dashboard/${role?.toLowerCase() || 'victim'}`,
+      icon: LayoutDashboard,
+    },
+  ]
+
+  // Items adicionales según el rol (si se agregan páginas en el futuro)
+  const roleSpecificItems: Record<string, any[]> = {
+    VICTIM: [
+      { label: 'Mis Denuncias', path: '/victim/my-reports', icon: FileText },
+      { label: 'Ayuda', path: '#', icon: HelpCircle, disabled: true },
+    ],
+    PSYCHOLOGIST: [
+      { label: 'Casos', path: '#', icon: FileText, disabled: true },
+      { label: 'Reportes', path: '#', icon: Users, disabled: true },
+    ],
+    DEFENDER: [
+      { label: 'Casos', path: '#', icon: FileText, disabled: true },
+      { label: 'Usuarios', path: '#', icon: Users, disabled: true },
+    ],
+  }
+
+  return [...baseItems, ...(roleSpecificItems[role as string] || [])]
+}
+
+export const Sidebar = ({ isOpen = true }: SidebarProps) => {
+  const location = useLocation()
+  
+  // Obtener rol del usuario
+  const userData = localStorage.getItem('user')
+  const user = userData ? JSON.parse(userData) : null
+  const navigationItems = getNavigationItems(user?.role)
+
+  return (
+    <aside className={`${
+      isOpen ? 'w-64' : 'w-20'
+    } bg-gradient-to-b from-primary to-primary/90 text-white min-h-screen transition-all duration-300 flex flex-col shadow-warm`}>
+      <div className="p-6 border-b border-primary/30">
+        <div className={`flex items-center ${isOpen ? 'gap-3' : 'justify-center'}`}>
+          <div className="w-8 h-8 bg-secondary rounded-xl flex items-center justify-center font-bold text-sm">
+            Z
+          </div>
+          {isOpen && <span className="font-bold text-lg tracking-tight">SafeZone</span>}
+        </div>
+      </div>
+
+      <nav className="flex-1 py-6 px-3">
+        <ul className="space-y-1">
+          {navigationItems.map((item: any) => {
+            const Icon = item.icon
+            const isActive = location.pathname.startsWith(item.path)
+            const isDisabled = item.disabled
+
+            return (
+              <li key={item.path}>
+                {isDisabled ? (
+                  <div
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 opacity-50 cursor-not-allowed`}
+                    title={!isOpen ? item.label : ''}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    {isOpen && <span className="text-sm font-medium flex-1">{item.label}</span>}
+                  </div>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                      isActive
+                        ? 'bg-white/20 text-white backdrop-blur-sm'
+                        : 'text-white/70 hover:text-white hover:bg-white/10'
+                    }`}
+                    title={!isOpen ? item.label : ''}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    {isOpen && <span className="text-sm font-medium flex-1">{item.label}</span>}
+                    {isOpen && isActive && <ChevronRight className="w-4 h-4" />}
+                  </Link>
+                )}
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+
+      {isOpen && (
+        <div className="p-4 border-t border-white/10 bg-white/5 backdrop-blur-sm">
+          <div className="text-xs text-white/80 space-y-1">
+            <p className="font-semibold">SafeZone</p>
+            <p className="text-white/60">Protección integral</p>
+          </div>
+        </div>
+      )}
+    </aside>
+  )
+}
