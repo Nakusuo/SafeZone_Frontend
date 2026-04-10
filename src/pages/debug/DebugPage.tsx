@@ -23,7 +23,7 @@ export const DebugPage = () => {
 
   const handleClearLocalStorage = () => {
     if (window.confirm('¿Limpiar localStorage completamente? Se perderán todos los datos.')) {
-      localStorage.removeItem('safezone_appdata')
+      sessionStorage.removeItem('safezone_appdata')
       setData(null)
       setShowData(false)
       console.log('✓ localStorage limpiado')

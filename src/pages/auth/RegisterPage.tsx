@@ -60,8 +60,8 @@ export const RegisterPage = () => {
         role: formData.role as any,
       })
       
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
+      sessionStorage.setItem('token', response.token)
+      sessionStorage.setItem('user', JSON.stringify(response.user))
       
       const dashboardMap: Record<string, string> = {
         VICTIM: '/dashboard/victim',

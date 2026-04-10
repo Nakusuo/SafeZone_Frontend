@@ -25,15 +25,16 @@ const getNavigationItems = (role?: string) => {
   const roleSpecificItems: Record<string, any[]> = {
     VICTIM: [
       { label: 'Mis Denuncias', path: '/victim/my-reports', icon: FileText },
-      { label: 'Ayuda', path: '#', icon: HelpCircle, disabled: true },
+      { label: 'Ayuda', path: '/victim/help', icon: HelpCircle },
+      { label: 'Contraseña', path: '/victim/password', icon: Settings, disabled: true },
     ],
     PSYCHOLOGIST: [
-      { label: 'Casos', path: '#', icon: FileText, disabled: true },
-      { label: 'Reportes', path: '#', icon: Users, disabled: true },
+      { label: 'Mis Casos', path: '/psychologist/cases', icon: FileText },
+      { label: 'Nueva Sesión', path: '/psychologist/session-form', icon: FileText, disabled: true },
     ],
     DEFENDER: [
-      { label: 'Casos', path: '#', icon: FileText, disabled: true },
-      { label: 'Usuarios', path: '#', icon: Users, disabled: true },
+      { label: 'Mis Casos', path: '/defender/cases', icon: FileText },
+      { label: 'Actualizar Legal', path: '/defender/legal-update', icon: FileText, disabled: true },
     ],
   }
 
@@ -44,7 +45,7 @@ export const Sidebar = ({ isOpen = true }: SidebarProps) => {
   const location = useLocation()
   
   // Obtener rol del usuario
-  const userData = localStorage.getItem('user')
+  const userData = sessionStorage.getItem('user')
   const user = userData ? JSON.parse(userData) : null
   const navigationItems = getNavigationItems(user?.role)
 

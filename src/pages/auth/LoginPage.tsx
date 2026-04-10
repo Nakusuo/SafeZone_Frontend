@@ -26,8 +26,8 @@ export const LoginPage = () => {
     setIsLoading(true)
     try {
       const response = await authService.login(formData.email, formData.password)
-      localStorage.setItem('token', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
+      sessionStorage.setItem('token', response.token)
+      sessionStorage.setItem('user', JSON.stringify(response.user))
       
       // Redirigir según rol
       const dashboardMap: Record<string, string> = {
@@ -45,79 +45,87 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-warm mb-4">
-            <Lock className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">SafeZone</h1>
-          <p className="text-gray-600">Plataforma segura de protección integral</p>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-teal h-14 flex items-center px-8">
+        <h1 className="text-white text-xl font-bold">SafeZone</h1>
+      </div>
 
-        {/* Card de login */}
-        <div className="bg-white rounded-2xl shadow-warm p-8 space-y-6">
+      {/* Main */}
+      <div className="flex items-center justify-center min-h-[calc(100vh-56px)] p-4">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8 space-y-6">
+          {/* Title */}
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Bienvenido</h2>
+            <p className="text-sm text-gray-600">Inicie sesión para acceder a su refugio digital y recursos de seguridad.</p>
+          </div>
+
           {error && (
-            <div className="flex items-center gap-3 p-4 bg-accent/10 border border-accent/30 rounded-xl">
+            <div className="flex items-center gap-3 p-3 bg-danger-light border border-accent/30 rounded-lg">
               <AlertCircle className="w-5 h-5 text-accent flex-shrink-0" />
               <p className="text-sm text-accent font-medium">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              label="Correo electrónico"
-              type="email"
-              placeholder="tu@email.com"
-              value={formData.email}
-              onChange={(value) => handleChange('email', value)}
-              required
-            />
+            <div>
+              <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
+              <Input
+                type="email"
+                placeholder="tu@email.com"
+                value={formData.email}
+                onChange={(value) => handleChange('email', value)}
+                required
+                className="w-full"
+              />
+            </div>
 
-            <Input
-              label="Contraseña"
-              type="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={(value) => handleChange('password', value)}
-              required
-            />
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-900">Password</label>
+                <a href="#" className="text-xs text-primary hover:underline">¿Olvidó su contraseña?</a>
+              </div>
+              <Input
+                type="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={(value) => handleChange('password', value)}
+                required
+                className="w-full"
+              />
+            </div>
 
             <Button
               type="submit"
-              variant="primary"
-              size="lg"
+              className="w-full bg-teal hover:bg-teal/90 text-white py-2.5 rounded-lg font-medium mt-6"
               isLoading={isLoading}
-              className="w-full"
             >
-              Iniciar sesión
+              Inicia Sesión →
             </Button>
           </form>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">¿No tienes cuenta?</span>
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              ¿No tiene cuenta? <a href="/register" className="text-teal font-medium hover:underline">Regístrese</a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Safety message */}
+      <div className="fixed bottom-6 right-6 max-w-sm">
+        <div className="bg-teal-light border border-teal/20 rounded-lg p-4 flex gap-3">
+          <div className="flex-shrink-0">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-500">
+              <AlertCircle className="w-5 h-5 text-white" />
             </div>
           </div>
-
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full"
-            onClick={() => navigate('/register')}
-          >
-            Crear cuenta
-          </Button>
+          <div>
+            <p className="text-sm font-medium text-teal">Tu seguridad es nuestra prioridad</p>
+            <p className="text-xs text-teal/70">Utilizamos cifrado de extremo a extremo para proteger</p>
+            <a href="#" className="text-xs text-teal font-medium hover:underline">los datos.</a>
+          </div>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-sm text-gray-600 mt-6">
-          Tu información está protegida bajo estrictas medidas de seguridad
-        </p>
       </div>
     </div>
   )

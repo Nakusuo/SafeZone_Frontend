@@ -11,12 +11,12 @@ export const authService = {
   },
 
   logout: () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
   },
 
   getCurrentUser: async (): Promise<User> => {
-    const user = localStorage.getItem('user')
+    const user = sessionStorage.getItem('user')
     if (!user) throw new Error('No user logged in')
     return JSON.parse(user)
   },

@@ -7,12 +7,12 @@ interface HeaderProps {
 
 export const Header = ({ onToggleSidebar }: HeaderProps) => {
   const navigate = useNavigate()
-  const userData = localStorage.getItem('user')
+  const userData = sessionStorage.getItem('user')
   const user = userData ? JSON.parse(userData) : null
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+    sessionStorage.removeItem('token')
+    sessionStorage.removeItem('user')
     navigate('/login')
   }
 

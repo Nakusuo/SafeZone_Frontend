@@ -13,7 +13,7 @@ export const MyReportsPage = () => {
   const [statusFilter, setStatusFilter] = useState('')
   const [priorityFilter, setPriorityFilter] = useState('')
 
-  const user = localStorage.getItem('user')
+  const user = sessionStorage.getItem('user')
   const userData = user ? JSON.parse(user) : null
 
   useEffect(() => {

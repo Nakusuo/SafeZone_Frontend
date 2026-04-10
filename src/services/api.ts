@@ -13,7 +13,7 @@ const apiClient: AxiosInstance = axios.create({
 // Interceptor para agregar user ID si existe
 apiClient.interceptors.request.use(
   (config) => {
-    const user = localStorage.getItem('user')
+    const user = sessionStorage.getItem('user')
     if (user) {
       try {
         const userData = JSON.parse(user)
@@ -34,7 +34,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
       window.location.href = '/login'
     }
     return Promise.reject(error)

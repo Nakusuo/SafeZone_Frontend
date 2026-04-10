@@ -27,7 +27,7 @@ export const ProfilePage = () => {
     setIsSaving(true)
     try {
       // Actualizar en localStorage
-      localStorage.setItem('user', JSON.stringify(formData))
+      sessionStorage.setItem('user', JSON.stringify(formData))
       setUser(formData)
       setIsEditing(false)
     } catch (error) {

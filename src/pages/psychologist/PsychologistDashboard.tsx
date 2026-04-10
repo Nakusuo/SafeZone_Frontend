@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react'
-import { Card, Button } from '../../components'
-import { FileText, AlertCircle } from 'lucide-react'
+import { FileText, AlertCircle, Clock, CheckCircle } from 'lucide-react'
 import { reportService, Report } from '../../services/reports'
 
 export const PsychologistDashboard = () => {
   const [reports, setReports] = useState<Report[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const user = sessionStorage.getItem('user')
+  const userData = user ? JSON.parse(user) : null
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const allReports = await reportService.getAllReports()
-        // Filtrar solo casos asignados a este psicólogo
-        const user = localStorage.getItem('user')
-        const userData = user ? JSON.parse(user) : null
-        
-        const myReports = allReports.filter(r => r.psychologistId === userData.id)
+        const myReports = allReports.filter(r => r.psychologistId === userData?.id)
         setReports(myReports)
       } catch (error) {
         console.error('Error cargando datos:', error)
@@ -23,144 +21,140 @@ export const PsychologistDashboard = () => {
         setIsLoading(false)
       }
     }
-
     loadData()
-  }, [])
+  }, [userData?.id])
 
   const activeCount = reports.filter(r => r.status !== 'RESOLVED').length
-  const evaluatedCount = reports.filter(r => r.status === 'IN_FOLLOW_UP').length
-  const urgentCount = reports.filter(r => r.priority === 'HIGH' && r.status !== 'RESOLVED').length
-
-  const getStatusBadge = (status: string) => {
-    const colors: Record<string, string> = {
-      PENDING: 'bg-yellow-50 text-yellow-700 border-l-4 border-warning',
-      UNDER_EVALUATION: 'bg-blue-50 text-blue-700 border-l-4 border-primary',
-      IN_FOLLOW_UP: 'bg-green-50 text-green-700 border-l-4 border-success',
-      RESOLVED: 'bg-emerald-50 text-emerald-700 border-l-4 border-secondary',
-    }
-    return colors[status] || 'bg-gray-100 text-gray-800'
-  }
+  const pendingCount = reports.filter(r => r.status === 'PENDING').length
+  const completedCount = reports.filter(r => r.status === 'RESOLVED').length
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Panel del Psicólogo</h1>
-        <p className="text-gray-600">Gestión de casos y seguimiento integral de víctimas</p>
-      </div>
-
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-primary mb-2">{reports.length}</div>
-          <p className="text-sm text-gray-600">Casos asignados</p>
-        </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-green-600 mb-2">{evaluatedCount}</div>
-          <p className="text-sm text-gray-600">En seguimiento</p>
-        </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-yellow-600 mb-2">{activeCount}</div>
-          <p className="text-sm text-gray-600">Activos</p>
-        </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-red-600 mb-2">{urgentCount}</div>
-          <p className="text-sm text-gray-600">Casos urgentes</p>
-        </Card>
-      </div>
-
-      {/* Acciones principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card title="Casos Prioritarios" className="flex flex-col">
-          <div className="space-y-3 flex-1 mb-4">
-            {reports.filter(r => r.priority === 'HIGH').length > 0 ? (
-              reports.filter(r => r.priority === 'HIGH').map(report => (
-                <div key={report.id} className="flex items-start gap-3 p-3 bg-red-50 rounded-lg">
-                  <AlertCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-semibold text-sm text-gray-900">{report.title}</p>
-                    <p className="text-xs text-gray-600">{report.description}</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-gray-600">Sin casos urgentes</p>
-            )}
+    <div className="w-full px-8 py-8 pb-32">
+        {/* Welcome section */}
+        <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
+          <h2 className="text-3xl font-bold mb-2">Bienvenida Dra. {userData?.name || 'Psicólogo'}</h2>
+          <p className="text-teal-light">Su dedicación crea un entorno seguro para quienes más lo necesitan hoy.</p>
+          <div className="flex gap-4 mt-6">
+            <button className="bg-white hover:bg-gray-100 text-teal px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Ver Casos Pendientes
+            </button>
+            <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-white/40">
+              <AlertCircle className="w-4 h-4" />
+              Registrar Evaluación
+            </button>
           </div>
-          <Button variant="primary" className="w-full">Revisar casos</Button>
-        </Card>
+        </div>
 
-        <Card title="Crear Evaluación" className="flex flex-col">
-          <p className="text-sm text-gray-600 mb-4 flex-1">
-            Registra evaluaciones y diagnósticos psicológicos.
-          </p>
-          <Button variant="secondary" className="w-full">
-            <FileText className="w-4 h-4 inline mr-2" />
-            Nueva evaluación
-          </Button>
-        </Card>
-      </div>
+        {/* Stats cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* Active */}
+          <div className="bg-teal-light rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-blue-500 text-white rounded flex items-center justify-center text-sm font-bold">
+                <Clock className="w-4 h-4" />
+              </div>
+              <span className="text-blue-700 font-medium text-xs">EN CURSO</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{activeCount}</div>
+            <p className="text-gray-700 text-sm">Casos Activos</p>
+          </div>
 
-      {/* Mis pacientes */}
-      {isLoading ? (
-        <Card className="text-center py-8">
-          <p className="text-gray-600">Cargando tus casos...</p>
-        </Card>
-      ) : reports.length > 0 ? (
-        <Card title="Pacientes Asignados" className="mb-8">
+          {/* Pending */}
+          <div className="bg-warning-light rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-yellow-500 text-white rounded flex items-center justify-center text-sm font-bold">⏱</div>
+              <span className="text-yellow-700 font-medium text-xs">PRIORIDAD</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{pendingCount}</div>
+            <p className="text-gray-700 text-sm">Pendientes</p>
+          </div>
+
+          {/* Completed */}
+          <div className="bg-success-light rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center text-sm font-bold">
+                ✓
+              </div>
+              <span className="text-green-700 font-medium text-xs">COMPLETADOS</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{completedCount}</div>
+            <p className="text-gray-700 text-sm">Resueltos</p>
+          </div>
+        </div>
+
+        {/* Cases table */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-gray-900">Mis Casos</h3>
+            <button className="text-gray-400 hover:text-gray-600">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 100 2h18V4M3 14a1 1 0 100 2h18v-2M3 8a1 1 0 100 2h18V8z" />
+              </svg>
+            </button>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-3 font-semibold text-gray-700">ID</th>
-                  <th className="text-left py-3 px-3 font-semibold text-gray-700">Tipo</th>
-                  <th className="text-left py-3 px-3 font-semibold text-gray-700">Estado</th>
-                  <th className="text-left py-3 px-3 font-semibold text-gray-700">Prioridad</th>
-                  <th className="text-left py-3 px-3 font-semibold text-gray-700">Progreso</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">PACIENTE</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">HORA</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">TIPO</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">ACCIONES</th>
                 </tr>
               </thead>
               <tbody>
-                {reports.map(report => (
+                {reports.slice(0, 3).map(report => (
                   <tr key={report.id} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-3 text-gray-700 font-mono text-xs">{report.id}</td>
-                    <td className="py-3 px-3 text-gray-700">{report.title}</td>
-                    <td className="py-3 px-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(report.status)}`}>
-                        {report.status.replace(/_/g, ' ')}
-                      </span>
+                    <td className="py-3 px-4 font-medium text-gray-900">
+                      {report.title?.substring(0, 20)}
                     </td>
-                    <td className="py-3 px-3">
+                    <td className="py-3 px-4 text-gray-600 text-xs">09:00 AM</td>
+                    <td className="py-3 px-4">
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
-                        report.priority === 'HIGH' ? 'bg-red-100 text-red-800' :
-                        report.priority === 'MEDIUM' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-green-100 text-green-800'
+                        report.type === 'PHYSICAL_VIOLENCE' ? 'bg-blue-100 text-blue-700' :
+                        'bg-purple-100 text-purple-700'
                       }`}>
-                        {report.priority}
+                        {report.type === 'PHYSICAL_VIOLENCE' ? 'Individual' : 'Familia'}
                       </span>
                     </td>
-                    <td className="py-3 px-3">
-                      <div className="w-24 bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full" 
-                          style={{ 
-                            width: report.status === 'RESOLVED' ? '100%' :
-                                   report.status === 'IN_FOLLOW_UP' ? '75%' :
-                                   report.status === 'UNDER_EVALUATION' ? '50%' : '25%'
-                          }}
-                        ></div>
-                      </div>
+                    <td className="py-3 px-4">
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            {reports.length === 0 && (
+              <div className="text-center py-8 text-gray-600">
+                <p className="text-sm">No hay casos asignados aún</p>
+              </div>
+            )}
           </div>
-        </Card>
-      ) : (
-        <Card type="info" className="text-center py-8">
-          <p className="text-gray-600">No tienes casos asignados actualmente.</p>
-        </Card>
-      )}
+        </div>
+
+        {/* Recursos de Ayuda */}
+        <div className="mt-12">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Recursos de Ayuda</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg p-4 border-l-4 border-teal hover:shadow-md transition">
+              <h4 className="font-semibold text-gray-900 mb-2">Protocolo de Evaluación</h4>
+              <p className="text-sm text-gray-600">Guía completa para evaluaciones psicológicas</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 border-l-4 border-secondary hover:shadow-md transition">
+              <h4 className="font-semibold text-gray-900 mb-2">Documentación Clínica</h4>
+              <p className="text-sm text-gray-600">Plantillas y formatos para reportes</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 border-l-4 border-accent hover:shadow-md transition">
+              <h4 className="font-semibold text-gray-900 mb-2">Contacto de Emergencia</h4>
+              <p className="text-sm text-gray-600">Línea de soporte 24/7 disponible</p>
+            </div>
+          </div>
+        </div>
     </div>
+
   )
 }

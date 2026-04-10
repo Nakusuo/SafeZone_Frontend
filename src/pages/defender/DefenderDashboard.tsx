@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react'
-import { Card, Button } from '../../components'
-import { Briefcase, FileText, Scale } from 'lucide-react'
+import { Briefcase, AlertCircle, CheckCircle, Clock } from 'lucide-react'
 import { reportService, Report } from '../../services/reports'
 
 export const DefenderDashboard = () => {
   const [reports, setReports] = useState<Report[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  const user = sessionStorage.getItem('user')
+  const userData = user ? JSON.parse(user) : null
+
   useEffect(() => {
     const loadData = async () => {
       try {
         const allReports = await reportService.getAllReports()
-        // Filtrar solo casos asignados a este defensor
-        const user = localStorage.getItem('user')
-        const userData = user ? JSON.parse(user) : null
-        
-        const myReports = allReports.filter(r => r.defenderId === userData.id)
+        const myReports = allReports.filter(r => r.defenderId === userData?.id)
         setReports(myReports)
       } catch (error) {
         console.error('Error cargando datos:', error)
@@ -23,143 +21,152 @@ export const DefenderDashboard = () => {
         setIsLoading(false)
       }
     }
-
     loadData()
-  }, [])
+  }, [userData?.id])
 
-  const resolvedCount = reports.filter(r => r.status === 'RESOLVED').length
   const activeCount = reports.filter(r => r.status !== 'RESOLVED').length
-  const urgentCount = reports.filter(r => r.priority === 'HIGH' && r.status !== 'RESOLVED').length
-
-  const getTypeColor = (type: string) => {
-    const colors: Record<string, string> = {
-      PHYSICAL_VIOLENCE: 'bg-accent/10 text-accent',
-      PSYCHOLOGICAL_ABUSE: 'bg-warning/10 text-warning',
-      OTHER: 'bg-gray-100 text-gray-800',
-    }
-    return colors[type] || 'bg-gray-100 text-gray-800'
-  }
+  const upcomingCount = reports.filter(r => r.status === 'PENDING').length
+  const closedCount = reports.filter(r => r.status === 'RESOLVED').length
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Panel del Defensor Legal</h1>
-        <p className="text-gray-600">Gestión de casos legales y seguimiento de defensoría</p>
-      </div>
+    <div className="w-full px-8 py-8 pb-32">
+        {/* Welcome section */}
+        <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
+          <h2 className="text-3xl font-bold mb-2">Bienvenido Defensor {userData?.name || 'Legal'}</h2>
+          <p className="text-teal-light">Panel de control de gestión legal. Aquí puede supervisar sus procesos activos y prepararse para las próximas audiencias programadas.</p>
+          <div className="flex gap-4 mt-6">
+            <button className="bg-white hover:bg-gray-100 text-teal px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2">
+              <Briefcase className="w-4 h-4" />
+              Registrar Audiencia
+            </button>
+            <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-white/40">
+              <AlertCircle className="w-4 h-4" />
+              Actualización Legal
+            </button>
+          </div>
+        </div>
 
-      {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-indigo-600 mb-2">{reports.length}</div>
-          <p className="text-sm text-gray-600">Casos en defensa</p>
-        </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-green-600 mb-2">{resolvedCount}</div>
-          <p className="text-sm text-gray-600">Casos resueltos</p>
-        </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-amber-600 mb-2">{activeCount}</div>
-          <p className="text-sm text-gray-600">En trámite</p>
-        </Card>
-        <Card className="text-center">
-          <div className="text-3xl font-bold text-red-600 mb-2">{urgentCount}</div>
-          <p className="text-sm text-gray-600">Casos urgentes</p>
-        </Card>
-      </div>
-
-      {/* Acciones principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <Card title="Nuevos Casos" className="flex flex-col">
-          <p className="text-sm text-gray-600 mb-4 flex-1">
-            Revisa asignaciones recientes.
-          </p>
-          <Button variant="primary" className="w-full">
-            <Briefcase className="w-4 h-4 inline mr-2" />
-            Ver nuevos
-          </Button>
-        </Card>
-
-        <Card title="Crear Reporte" className="flex flex-col">
-          <p className="text-sm text-gray-600 mb-4 flex-1">
-            Genera informes y documentación legal.
-          </p>
-          <Button variant="secondary" className="w-full">
-            <FileText className="w-4 h-4 inline mr-2" />
-            Nuevo reporte
-          </Button>
-        </Card>
-
-        <Card title="Audiencias" className="flex flex-col">
-          <p className="text-sm text-gray-600 mb-4 flex-1">
-            Calendario de audiencias y diligencias.
-          </p>
-          <Button variant="secondary" className="w-full">
-            <Scale className="w-4 h-4 inline mr-2" />
-            Ver agenda
-          </Button>
-        </Card>
-      </div>
-
-      {/* Casos activos */}
-      {isLoading ? (
-        <Card className="text-center py-8">
-          <p className="text-gray-600">Cargando tus casos...</p>
-        </Card>
-      ) : reports.length > 0 ? (
-        <Card title="Casos en Defensa" className="mb-8">
-          <div className="space-y-3">
-            {reports.map(report => (
-              <div key={report.id} className="border-l-4 border-indigo-500 pl-4 py-3 bg-indigo-50 rounded">
-                <div className="flex justify-between items-start mb-1">
-                  <h4 className="font-semibold text-gray-900 text-sm">{report.title}</h4>
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${getTypeColor(report.type)}`}>
-                    {report.type.replace(/_/g, ' ')}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-600">Caso: {report.id}</p>
-                <p className="text-xs text-gray-700 mt-2">
-                  Estado: <span className="font-semibold">{report.status.replace(/_/g, ' ')}</span>
-                </p>
-                {report.priority === 'HIGH' && (
-                  <p className="text-xs text-red-700 mt-1 font-semibold">⚠️ Caso urgente</p>
-                )}
+        {/* Stats cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {/* In Process */}
+          <div className="bg-teal-light rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-blue-500 text-white rounded flex items-center justify-center text-sm font-bold">
+                <Briefcase className="w-4 h-4" />
               </div>
-            ))}
+              <span className="text-blue-700 font-medium text-xs">CASOS EN PROCESO</span>
+            </div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{activeCount}</div>
+            <p className="text-gray-700 text-sm">+1 esta semana</p>
           </div>
-        </Card>
-      ) : (
-        <Card type="info" className="text-center py-8">
-          <p className="text-gray-600">No tienes casos asignados actualmente.</p>
-        </Card>
-      )}
 
-      {/* Colaboración */}
-      <Card title="Colaboración Multidisciplinaria" className="bg-purple-50">
-        <p className="text-sm text-gray-700 mb-4">
-          Profesionales psicológicos involucrados en tus casos:
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-            <div className="w-8 h-8 bg-secondary/20 rounded-full flex items-center justify-center text-sm font-bold text-secondary">
-              PS
+          {/* Upcoming */}
+          <div className="bg-danger-light rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-red-500 text-white rounded flex items-center justify-center text-sm font-bold">
+                ⏱
+              </div>
+              <span className="text-red-700 font-medium text-xs">AUDIENCIAS PRÓXIMAS</span>
             </div>
-            <div>
-              <p className="font-semibold text-sm text-gray-900">Dra. Patricia Sánchez</p>
-              <p className="text-xs text-gray-600">{reports.filter(r => r.psychologistId === 'user2').length} casos</p>
-            </div>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{upcomingCount}</div>
+            <p className="text-gray-700 text-sm">Próximas 48h</p>
           </div>
-          <div className="flex items-center gap-3 p-3 bg-white rounded-lg">
-            <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-sm font-bold text-primary">
-              JM
+
+          {/* Closed */}
+          <div className="bg-success-light rounded-xl p-6">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center text-sm font-bold">
+                ✓
+              </div>
+              <span className="text-green-700 font-medium text-xs">CASOS CERRADOS</span>
             </div>
-            <div>
-              <p className="font-semibold text-sm text-gray-900">Dr. Jorge Martínez</p>
-              <p className="text-xs text-gray-600">Psicólogo colaborador</p>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{closedCount}</div>
+            <p className="text-gray-700 text-sm">Este trimestre</p>
+          </div>
+        </div>
+
+        {/* Upcoming hearings */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-gray-900">Audiencias Próximas</h3>
+            <a href="#" className="text-teal text-sm hover:underline">Ver calendario completo</a>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">Caso</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">Fecha y Hora</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">Tribunal / Sala</th>
+                  <th className="text-left py-3 px-4 font-medium text-gray-700">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reports.slice(0, 2).map((report, idx) => (
+                  <tr key={report.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <span className="font-medium text-gray-900">{report.title?.substring(0, 30)}</span>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-gray-600">15 Oct. 10:30 AM</td>
+                    <td className="py-3 px-4 text-gray-600">Tribunal Superior 4</td>
+                    <td className="py-3 px-4">
+                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {reports.length === 0 && (
+              <div className="text-center py-8 text-gray-600">
+                <p className="text-sm">No hay audiencias próximas</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Recent notes */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Notas Recientes</h3>
+          <div className="space-y-3">
+            <div className="border-l-4 border-yellow-500 pl-4 py-2 bg-yellow-50/50">
+              <p className="text-xs text-yellow-700 font-medium">RECORDATORIO</p>
+              <p className="text-sm text-gray-800 mt-1">
+                Revisar precedentes jurisprudenciales en casos similares para audiencia del viernes.
+              </p>
+            </div>
+            <div className="border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50">
+              <p className="text-xs text-blue-700 font-medium">ESTADO</p>
+              <p className="text-sm text-gray-800 mt-1">
+                Actualización de jurisprudencia en derechos humanos cargada.
+              </p>
             </div>
           </div>
         </div>
-      </Card>
+
+        {/* Recursos de Apoyo Legal */}
+        <div className="mt-12">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">Recursos de Apoyo Legal</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg p-4 border-l-4 border-teal hover:shadow-md transition">
+              <h4 className="font-semibold text-gray-900 mb-2">Base de Jurisprudencia</h4>
+              <p className="text-sm text-gray-600">Acceso a sentencias y precedentes relevantes</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 border-l-4 border-secondary hover:shadow-md transition">
+              <h4 className="font-semibold text-gray-900 mb-2">Formularios Judiciales</h4>
+              <p className="text-sm text-gray-600">Plantillas y documentos requeridos</p>
+            </div>
+            <div className="bg-white rounded-lg p-4 border-l-4 border-accent hover:shadow-md transition">
+              <h4 className="font-semibold text-gray-900 mb-2">Asesor Legal 24/7</h4>
+              <p className="text-sm text-gray-600">Consultoría en casos complejos</p>
+            </div>
+          </div>
+        </div>
     </div>
   )
 }

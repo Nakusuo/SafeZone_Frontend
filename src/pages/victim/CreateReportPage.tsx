@@ -47,7 +47,7 @@ export const CreateReportPage = () => {
     
     if (!validateForm()) return
 
-    const userData = localStorage.getItem('user')
+    const userData = sessionStorage.getItem('user')
     const user = userData ? JSON.parse(userData) : null
 
     if (!user || user.role !== 'VICTIM') {

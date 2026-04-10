@@ -50,52 +50,66 @@ interface AppData {
   legalUpdates: LegalUpdate[]
 }
 
-// Clave para localStorage del navegador
+// Clave para sessionStorage del navegador (se borra al cerrar la pestaña)
 const STORAGE_KEY = 'safezone_appdata'
 
-// Función para obtener datos del localStorage del navegador o datos iniciales
+// Función para obtener datos del sessionStorage del navegador o datos iniciales
 const getAppData = (): AppData => {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY)
+    const stored = sessionStorage.getItem(STORAGE_KEY)
     if (stored) {
       return JSON.parse(stored)
     }
   } catch (error) {
-    console.warn('Error leyendo localStorage:', error)
+    console.warn('Error leyendo sessionStorage:', error)
   }
   
-  // Si no existe en localStorage, usar datos iniciales
+  // Si no existe en sessionStorage, usar datos iniciales
   return JSON.parse(JSON.stringify(mockData))
 }
 
-// Función para guardar datos en localStorage del navegador
+// Función para guardar datos en sessionStorage del navegador (se borra al cerrar)
 const saveAppData = (data: AppData) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   } catch (error) {
-    console.error('Error guardando en localStorage:', error)
+    console.error('Error guardando en sessionStorage:', error)
   }
 }
 
-// Datos iniciales (se cargan del localStorage o de mockData)
+// Datos iniciales (se cargan del sessionStorage o de mockData)
 let appData: AppData = getAppData()
 
 // Función para resetear datos (vuelve a datos iniciales de mockData)
 export const resetData = () => {
   appData = JSON.parse(JSON.stringify(mockData))
   saveAppData(appData)
-  console.log('✓ Datos reseteados a estado inicial')
+  console.log('✓ Datos reseteados a estado inicial (se borrarán al cerrar la pestaña)')
 }
 
 // Función para agregar pequeños delays que simular tiempo de red
 const delay = (ms: number = 300) => new Promise(resolve => setTimeout(resolve, ms))
 
+// Función auxiliar para obtener appData fresco del sessionStorage
+const getAppDataFresh = (): AppData => {
+  try {
+    const stored = sessionStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      return JSON.parse(stored)
+    }
+  } catch (error) {
+    console.warn('Error leyendo sessionStorage:', error)
+  }
+  return JSON.parse(JSON.stringify(mockData))
+}
+
 // USUARIOS
 export const localStorageService = {
-  // Login
+  // Login - Leer fresco del sessionStorage
   login: async (email: string, password: string) => {
     await delay()
-    const user = appData.users.find((u: User) => u.email === email && u.password === password)
+    const currentData = getAppDataFresh()
+    const user = currentData.users.find((u: User) => u.email === email && u.password === password)
     
     if (!user) {
       throw new Error('Credenciales inválidas')
@@ -113,12 +127,14 @@ export const localStorageService = {
     }
   },
 
-  // Registro
+  // Registro - Leer fresco y guardar
   register: async (userData: any) => {
     await delay()
     
+    const currentData = getAppDataFresh()
+    
     // Verificar email único
-    if (appData.users.some((u: User) => u.email === userData.email)) {
+    if (currentData.users.some((u: User) => u.email === userData.email)) {
       throw new Error('Este correo ya está registrado')
     }
 
@@ -131,8 +147,9 @@ export const localStorageService = {
       createdAt: new Date().toISOString(),
     }
 
-    appData.users.push(newUser)
-    saveAppData(appData)  // 💾 Guardar en localStorage
+    currentData.users.push(newUser)
+    saveAppData(currentData)  // 💾 Guardar en sessionStorage (temporal)
+    appData = currentData  // Actualizar appData en memoria también
 
     return {
       token: `token_${newUser.id}_${Date.now()}`,
@@ -146,25 +163,28 @@ export const localStorageService = {
     }
   },
 
-  // DENUNCIAS/REPORTES
+  // DENUNCIAS/REPORTES - Leer fresco
   getReports: async (victimId?: string) => {
     await delay()
     
+    const currentData = getAppDataFresh()
     if (victimId) {
-      return appData.reports.filter((r: Report) => r.victimId === victimId)
+      return currentData.reports.filter((r: Report) => r.victimId === victimId)
     }
     
-    return appData.reports
+    return currentData.reports
   },
 
   getReportById: async (reportId: string) => {
     await delay()
-    return appData.reports.find((r: Report) => r.id === reportId)
+    const currentData = getAppDataFresh()
+    return currentData.reports.find((r: Report) => r.id === reportId)
   },
 
   createReport: async (reportData: any) => {
     await delay()
     
+    const currentData = getAppDataFresh()
     const newReport = {
       id: `report_${Date.now()}`,
       ...reportData,
@@ -173,19 +193,22 @@ export const localStorageService = {
       status: 'PENDING',
     }
 
-    appData.reports.push(newReport)
-    saveAppData(appData)  // 💾 Guardar en localStorage
+    currentData.reports.push(newReport)
+    saveAppData(currentData)  // 💾 Guardar en sessionStorage
+    appData = currentData  // Actualizar en memoria
     return newReport
   },
 
   updateReport: async (reportId: string, updateData: any) => {
     await delay()
     
-    const report = appData.reports.find((r: Report) => r.id === reportId)
+    const currentData = getAppDataFresh()
+    const report = currentData.reports.find((r: Report) => r.id === reportId)
     if (!report) throw new Error('Reporte no encontrado')
 
     Object.assign(report, updateData, { updatedAt: new Date().toISOString() })
-    saveAppData(appData)  // 💾 Guardar en localStorage
+    saveAppData(currentData)  // 💾 Guardar en sessionStorage
+    appData = currentData
     return report
   },
 
@@ -193,24 +216,27 @@ export const localStorageService = {
   getEvaluations: async (reportId?: string) => {
     await delay()
     
+    const currentData = getAppDataFresh()
     if (reportId) {
-      return appData.evaluations.filter((e: Evaluation) => e.reportId === reportId)
+      return currentData.evaluations.filter((e: Evaluation) => e.reportId === reportId)
     }
     
-    return appData.evaluations
+    return currentData.evaluations
   },
 
   createEvaluation: async (evaluationData: any) => {
     await delay()
     
+    const currentData = getAppDataFresh()
     const newEvaluation = {
       id: `eval_${Date.now()}`,
       ...evaluationData,
       date: new Date().toISOString(),
     }
     
-    appData.evaluations.push(newEvaluation)
-    saveAppData(appData)  // 💾 Guardar en localStorage
+    currentData.evaluations.push(newEvaluation)
+    saveAppData(currentData)  // 💾 Guardar en sessionStorage
+    appData = currentData
     return newEvaluation
   },
 
@@ -218,38 +244,43 @@ export const localStorageService = {
   getLegalUpdates: async (reportId?: string) => {
     await delay()
     
+    const currentData = getAppDataFresh()
     if (reportId) {
-      return appData.legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
+      return currentData.legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
     }
     
-    return appData.legalUpdates
+    return currentData.legalUpdates
   },
 
   createLegalUpdate: async (updateData: any) => {
     await delay()
     
+    const currentData = getAppDataFresh()
     const newUpdate = {
       id: `legal_${Date.now()}`,
       ...updateData,
       date: new Date().toISOString(),
     }
 
-    appData.legalUpdates.push(newUpdate)
-    saveAppData(appData)  // 💾 Guardar en localStorage
+    currentData.legalUpdates.push(newUpdate)
+    saveAppData(currentData)  // 💾 Guardar en sessionStorage
+    appData = currentData
     return newUpdate
   },
 
   // USUARIOS (para obtener información de psicólogos, defensores, etc.)
   getUserById: async (userId: string) => {
     await delay()
-    return appData.users.find((u: User) => u.id === userId)
+    const currentData = getAppDataFresh()
+    return currentData.users.find((u: User) => u.id === userId)
   },
 
   getUsersByRole: async (role: string) => {
     await delay()
-    return appData.users.filter((u: User) => u.role === role)
+    const currentData = getAppDataFresh()
+    return currentData.users.filter((u: User) => u.role === role)
   },
 
   // Obtener toda la data para desarrollo
-  getAllData: () => appData,
+  getAllData: () => getAppDataFresh(),
 }
