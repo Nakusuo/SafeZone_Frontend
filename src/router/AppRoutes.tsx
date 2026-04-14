@@ -17,11 +17,7 @@ import { LegalUpdatePage } from '../pages/defender/LegalUpdatePage'
 import { HelpPage } from '../pages/victim/HelpPage'
 import { PasswordPage } from '../pages/victim/PasswordPage'
 import { DebugPage } from '../pages/debug/DebugPage'
-
-// NEW IMPORTS - Admin Module
 import { TriageView } from '../modules/admin/pages'
-
-// NEW IMPORTS - Shared Features
 import { NotificationCenter } from '../modules/shared-features/notifications/pages'
 import { CaseClosureView } from '../modules/shared-features/case-closure/pages'
 import { ChatView } from '../modules/shared-features/chat/pages'
