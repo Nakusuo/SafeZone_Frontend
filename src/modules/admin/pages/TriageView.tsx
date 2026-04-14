@@ -18,7 +18,6 @@ export const TriageView: React.FC = () => {
   const [psychologists, setPsychologists] = useState<any[]>([]);
   const [defenders, setDefenders] = useState<any[]>([]);
 
-  // Fetch pending cases on mount
   useEffect(() => {
     const loadCases = async () => {
       try {
@@ -41,19 +40,16 @@ export const TriageView: React.FC = () => {
     loadCases();
   }, []);
 
-  // Fetch professionals when modal opens
   useEffect(() => {
     if (!isModalOpen) return;
 
     const loadProfessionals = async () => {
       try {
         const [psychList, defList] = await Promise.all([
-          // Mock: would call adminProfessionalService.getAvailablePsychologists()
           Promise.resolve([
             { id: 'psy1', name: 'Dra. María García', caseCount: 3 },
             { id: 'psy2', name: 'Dr. José López', caseCount: 5 },
           ]),
-          // Mock: would call adminProfessionalService.getAvailableDefenders()
           Promise.resolve([
             { id: 'def1', name: 'Lic. Ana Martínez', caseCount: 2 },
             { id: 'def2', name: 'Lic. Roberto Díaz', caseCount: 4 },
@@ -75,7 +71,6 @@ export const TriageView: React.FC = () => {
     if (!selectedCaseId) return;
     try {
       await triageService.assignCase(assignment);
-      // Update case in list
       setCases((prevCases) =>
         prevCases.map((c) =>
           c.id === selectedCaseId

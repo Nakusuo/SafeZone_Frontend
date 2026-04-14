@@ -1,4 +1,3 @@
-// Tipos compartidos globales
 export type UserRole = 'victim' | 'psychologist' | 'defender' | 'admin';
 
 export interface User {

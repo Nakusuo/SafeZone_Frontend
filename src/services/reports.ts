@@ -35,7 +35,6 @@ export interface LegalUpdate {
 }
 
 export const reportService = {
-  // Reportes
   getVictimReports: async (victimId: string): Promise<Report[]> => {
     return (await localStorageService.getReports(victimId)) as Report[]
   },
@@ -59,7 +58,6 @@ export const reportService = {
     return (await localStorageService.updateReport(reportId, updateData)) as Report
   },
 
-  // Evaluaciones
   getReportEvaluations: async (reportId: string): Promise<Evaluation[]> => {
     return localStorageService.getEvaluations(reportId)
   },
@@ -68,7 +66,6 @@ export const reportService = {
     return localStorageService.createEvaluation(evaluationData)
   },
 
-  // Actualizaciones legales
   getReportLegalUpdates: async (reportId: string): Promise<LegalUpdate[]> => {
     return localStorageService.getLegalUpdates(reportId)
   },
