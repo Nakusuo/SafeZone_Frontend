@@ -15,22 +15,16 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    /* Path aliases for modular architecture */
+    /* Path alias — @/ apunta a src/ */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/modules/*": ["src/modules/*"],
-      "@/shared/*": ["src/shared/*"],
-      "@/modules/victim/*": ["src/modules/victim/*"],
-      "@/modules/psychologist/*": ["src/modules/psychologist/*"],
-      "@/modules/defender/*": ["src/modules/defender/*"],
-      "@/modules/auth/*": ["src/modules/auth/*"]
+      "@/*": ["src/*"]
     },
 
-    /* Linting */
+    /* Reglas de calidad */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

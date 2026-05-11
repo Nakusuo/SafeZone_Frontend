@@ -23,6 +23,14 @@
       "password": "password123",
       "role": "DEFENDER",
       "createdAt": "2024-01-12T10:00:00Z"
+    },
+    {
+      "id": "admin1",
+      "name": "Administrador SafeZone",
+      "email": "admin@safezone.cr",
+      "password": "admin123",
+      "role": "ADMIN",
+      "createdAt": "2024-01-01T08:00:00Z"
     }
   ],
   "reports": [

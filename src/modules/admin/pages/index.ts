@@ -1,1 +1,0 @@
-export { TriageView } from './TriageView';
