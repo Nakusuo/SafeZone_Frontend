@@ -19,7 +19,6 @@ export const PanicButton = () => {
   const [message, setMessage] = useState('')
   const [alertId, setAlertId] = useState<string | null>(null)
 
-  // Cuando se abre el modal intentamos obtener GPS automáticamente
   useEffect(() => {
     if (step !== 'confirming') return
     setStep('locating')

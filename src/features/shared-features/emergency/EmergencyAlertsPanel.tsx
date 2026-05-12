@@ -4,9 +4,6 @@ import { useAuth } from '@/core/auth/AuthContext'
 import { emergencyService, buildMapsUrl } from '@/features/victim/services/emergencyService'
 import { EmergencyAlert } from '@/shared/types'
 
-// Panel de alertas activas para psicólogos, defensores y admin
-// Se refresca cada 30 segundos automáticamente
-
 const timeAgo = (dateStr: string) => {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
