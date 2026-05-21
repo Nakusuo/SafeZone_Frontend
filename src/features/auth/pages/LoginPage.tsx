@@ -27,7 +27,15 @@ export const LoginPage = () => {
 
     setIsLoading(true)
     try {
-      const response = await authService.login(formData.email, formData.password)
+      const response = await authService.login(formData.email, formData.password);
+      
+      console.log("JSON final recibido:", JSON.stringify(response, null, 2));
+      console.log("Respuesta cruda del backend:", response);
+      console.log("¿Existe response.user?", response.user);
+      
+      if (!response.token || !response.user) {
+         throw new Error("El formato de respuesta del servidor no es el esperado.");
+      }
       // Guardar en AuthContext (que también persiste en sessionStorage)
       login(response.token, response.user)
 

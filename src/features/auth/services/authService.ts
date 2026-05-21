@@ -55,10 +55,21 @@ const mockRegister = async (userData: Partial<User> & { password: string }): Pro
 export const authService = {
   // Spring: POST /api/auth/login → { token, user }
   login: async (email: string, password: string): Promise<AuthResponse> => {
-    if (config.USE_MOCK) return mockLogin(email, password)
-    const { data } = await apiClient.post<AuthResponse>('/auth/login', { email, password })
-    return data
-  },
+    if (config.USE_MOCK) {
+        console.log("⚠️ Estamos en modo MOCK");
+        return mockLogin(email, password);
+    }
+    
+    console.log("🔗 Intentando conectar a:", config.API_URL + '/auth/login');
+    try {
+        const response = await apiClient.post<AuthResponse>('/auth/login', { email, password });
+        console.log("✅ Respuesta recibida:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("❌ Error en axios:", error); // Esto SI tiene que salir
+        throw error;
+    }
+},
 
   // Spring: POST /api/auth/register → { token, user }
   register: async (userData: Partial<User> & { password: string }): Promise<AuthResponse> => {
