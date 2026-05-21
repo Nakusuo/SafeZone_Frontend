@@ -1,81 +1,88 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { UserPlus, AlertCircle } from 'lucide-react'
-import { Button , Input, Select } from '@/shared/components'
-import { authService } from '@/features/auth/services/authService'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserPlus, AlertCircle } from "lucide-react";
+import { Button, Input, Select } from "@/shared/components";
+import { authService } from "@/features/auth/services/authService";
+import { useAuth } from "@/core/auth/AuthContext";
 
 export const RegisterPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    role: '',
-  })
-  const [error, setError] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+  });
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const roleOptions = [
-    { value: 'VICTIM', label: 'Víctima' },
-    { value: 'PSYCHOLOGIST', label: 'Psicólogo/a' },
-    { value: 'DEFENDER', label: 'Defensor Legal' },
-  ]
+    { value: "VICTIM", label: "Víctima" },
+    { value: "PSYCHOLOGIST", label: "Psicólogo/a" },
+    { value: "DEFENDER", label: "Defensor Legal" },
+  ];
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
-    setError('')
-  }
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setError("");
+  };
 
   const validateForm = () => {
-    if (!formData.name || !formData.email || !formData.password || !formData.role) {
-      setError('Por favor completa todos los campos')
-      return false
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.role
+    ) {
+      setError("Por favor completa todos los campos");
+      return false;
     }
 
     if (formData.password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres')
-      return false
+      setError("La contraseña debe tener al menos 8 caracteres");
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden')
-      return false
+      setError("Las contraseñas no coinciden");
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
+    e.preventDefault();
 
-    setIsLoading(true)
+    if (!validateForm()) return;
+
+    setIsLoading(true);
     try {
       const response = await authService.register({
         name: formData.name,
         email: formData.email,
         password: formData.password,
         role: formData.role as any,
-      })
-      
-      sessionStorage.setItem('token', response.token)
-      sessionStorage.setItem('user', JSON.stringify(response.user))
-      
+      });
+
+      // REEMPLAZA LOS sessionStorage POR ESTA LÍNEA:
+      login(response.token, response.user);
+
       const dashboardMap: Record<string, string> = {
-        VICTIM: '/dashboard/victim',
-        PSYCHOLOGIST: '/dashboard/psychologist',
-        DEFENDER: '/dashboard/defender',
-      }
-      
-      navigate(dashboardMap[response.user.role] || '/dashboard')
+        VICTIM: "/dashboard/victim",
+        PSYCHOLOGIST: "/dashboard/psychologist",
+        DEFENDER: "/dashboard/defender",
+      };
+
+      navigate(dashboardMap[response.user.role] || "/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al crear la cuenta')
+      setError(err.response?.data?.message || "Error al crear la cuenta");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
@@ -103,7 +110,7 @@ export const RegisterPage = () => {
               label="Nombre completo"
               placeholder="Juan Pérez"
               value={formData.name}
-              onChange={(value) => handleChange('name', value)}
+              onChange={(value) => handleChange("name", value)}
               required
             />
 
@@ -112,7 +119,7 @@ export const RegisterPage = () => {
               type="email"
               placeholder="tu@email.com"
               value={formData.email}
-              onChange={(value) => handleChange('email', value)}
+              onChange={(value) => handleChange("email", value)}
               required
             />
 
@@ -120,7 +127,7 @@ export const RegisterPage = () => {
               label="Tipo de usuario"
               options={roleOptions}
               value={formData.role}
-              onChange={(value) => handleChange('role', value)}
+              onChange={(value) => handleChange("role", value)}
               required
             />
 
@@ -129,7 +136,7 @@ export const RegisterPage = () => {
               type="password"
               placeholder="••••••••"
               value={formData.password}
-              onChange={(value) => handleChange('password', value)}
+              onChange={(value) => handleChange("password", value)}
               required
             />
 
@@ -138,7 +145,7 @@ export const RegisterPage = () => {
               type="password"
               placeholder="••••••••"
               value={formData.confirmPassword}
-              onChange={(value) => handleChange('confirmPassword', value)}
+              onChange={(value) => handleChange("confirmPassword", value)}
               required
             />
 
@@ -154,9 +161,9 @@ export const RegisterPage = () => {
           </form>
 
           <p className="text-center text-sm text-gray-600">
-            ¿Ya tienes cuenta?{' '}
+            ¿Ya tienes cuenta?{" "}
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => navigate("/login")}
               className="text-primary hover:text-primary/80 font-medium transition-colors"
             >
               Inicia sesión
@@ -166,11 +173,10 @@ export const RegisterPage = () => {
 
         {/* Footer */}
         <p className="text-center text-xs text-gray-600 mt-6 max-w-xs mx-auto">
-          Al registrarte, aceptas nuestras políticas de privacidad y protección de datos
+          Al registrarte, aceptas nuestras políticas de privacidad y protección
+          de datos
         </p>
       </div>
     </div>
-  )
-}
-
-
+  );
+};
