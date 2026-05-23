@@ -72,11 +72,35 @@ export const authService = {
 },
 
   // Spring: POST /api/auth/register → { token, user }
-  register: async (userData: Partial<User> & { password: string }): Promise<AuthResponse> => {
-    if (config.USE_MOCK) return mockRegister(userData)
-    const { data } = await apiClient.post<AuthResponse>('/auth/register', userData)
-    return data
-  },
+  register: async (
+  userData: Partial<User> & { password: string }
+): Promise<AuthResponse> => {
+
+  if (config.USE_MOCK) return mockRegister(userData)
+
+  const payload = {
+    nombre: userData.name,
+    apellido: "Sin apellido",
+    email: userData.email,
+    password: userData.password,
+    telefono: "999999999",
+    roles: userData.role,
+
+    region: {
+      id: "region-1",
+      nombre: "Lima"
+    }
+  }
+
+  console.log("📤 Payload enviado:", payload)
+
+  const { data } = await apiClient.post<AuthResponse>(
+    '/auth/register',
+    payload
+  )
+
+  return data
+},
 
   // JWT es stateless, el logout en Spring es opcional
   logout: async (): Promise<void> => {

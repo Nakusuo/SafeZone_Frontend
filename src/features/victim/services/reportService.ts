@@ -35,8 +35,25 @@ export const reportService = {
       await delay()
       return getMockData().reports.filter((r: Report) => r.victimId === victimId)
     }
-    const { data } = await apiClient.get<Report[]>('/reports', { params: { victimId } })
-    return data
+    const { data } = await apiClient.get<any[]>(`/denuncias/${victimId}`)
+
+  return data.map((d) => ({
+    id: d.id,
+    victimId: d.victimaId,
+    title: d.direccion,
+    description: d.descripcion,
+    type: d.tipoViolencia,
+    status:
+  d.estado === 'PENDIENTE'
+    ? 'PENDING'
+    : d.estado === 'ASIGNADO'
+    ? 'UNDER_EVALUATION'
+    : d.estado,
+    priority: d.nivelRiesgo,
+    createdAt: d.fechaDenuncia,
+    updatedAt: d.fechaDenuncia
+  }))
+    
   },
 
   /**
@@ -48,8 +65,24 @@ export const reportService = {
       await delay()
       return getMockData().reports
     }
-    const { data } = await apiClient.get<Report[]>('/reports')
-    return data
+    const { data } = await apiClient.get<any[]>('/denuncias/listar')
+
+  return data.map((d) => ({
+    id: d.id,
+    victimId: d.victimaId,
+    title: d.direccion,
+    description: d.descripcion,
+    type: d.tipoViolencia,
+    status:
+  d.estado === 'PENDIENTE'
+    ? 'PENDING'
+    : d.estado === 'ASIGNADO'
+    ? 'UNDER_EVALUATION'
+    : d.estado,
+    priority: d.nivelRiesgo,
+    createdAt: d.fechaDenuncia,
+    updatedAt: d.fechaDenuncia
+  }))
   },
 
   /**
@@ -88,9 +121,38 @@ export const reportService = {
       saveMockData(appData)
       return newReport
     }
-    const { data } = await apiClient.post<Report>('/reports', { victimId, ...reportData })
+    const storedUser = sessionStorage.getItem("user")
+
+    if (!storedUser) {
+      throw new Error("Usuario no autenticado")
+    }
+
+    const user = JSON.parse(storedUser)
+
+    console.log(sessionStorage.getItem("user"))
+
+    const payload = {
+      usuarioid: user.id,
+      victimaId: user.id,
+      tipoViolencia: reportData.type,
+      descripcion: reportData.description,
+      nivelRiesgo: reportData.priority,
+      direccion: reportData.title,
+      esAnonima: false,
+
+      region: {
+        id: "1",
+        nombre: "Amazonas"
+      }
+    }
+
+    console.log("📤 REPORT PAYLOAD:", payload)
+
+    const { data } = await apiClient.post('/denuncias/guardar', payload)
+
     return data
-  },
+    
+},
 
   /**
    * Actualizar estado o datos de un reporte.
@@ -187,4 +249,5 @@ export const reportService = {
     )
     return data
   },
+  
 }
