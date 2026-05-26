@@ -53,8 +53,45 @@ export const triageService = {
   // Casos pendientes de asignar — Spring: GET /api/admin/cases/pending
   getPendingCases: async (): Promise<TriageCase[]> => {
     if (config.USE_MOCK) { await delay(); return [...MOCK_CASES] }
-    const { data } = await apiClient.get<TriageCase[]>('/admin/cases/pending')
-    return data
+    const { data } = await apiClient.get<any[]>('/denuncias/listar')
+
+return data.map((d) => ({
+  id: d.id,
+  reportId: d.id,
+
+  victimName: d.usuario?.nombre || 'Víctima',
+  victimEmail: d.usuario?.email || 'Sin correo',
+
+  incidentType:
+    d.tipoViolencia === 'PHYSICAL_VIOLENCE'
+      ? 'physical'
+      : d.tipoViolencia === 'PSYCHOLOGICAL_ABUSE'
+      ? 'psychological'
+      : d.tipoViolencia === 'SEXUAL_VIOLENCE'
+      ? 'sexual'
+      : 'other',
+
+  priority:
+    d.nivelRiesgo === 'HIGH'
+      ? 'critical'
+      : d.nivelRiesgo === 'MEDIUM'
+      ? 'high'
+      : 'medium',
+
+  status:
+    d.estado === 'PENDIENTE'
+      ? 'new'
+      : d.estado === 'ASIGNADO'
+      ? 'assigned'
+      : 'in-progress',
+
+  description: d.descripcion,
+  location: d.direccion,
+  submittedAt: d.fechaDenuncia,
+
+  assignedTo: null,
+  notes: ''
+}))
   },
 
   // Detalle de un caso — Spring: GET /api/admin/cases/{id}
@@ -72,7 +109,14 @@ export const triageService = {
       if (c) { c.status = 'assigned'; c.assignedTo = { psychologist: 'Asignado', legalDefender: 'Asignado' } }
       return c ?? MOCK_CASES[0]
     }
-    const { data } = await apiClient.post<TriageCase>(`/admin/cases/${assignment.caseId}/assign`, assignment)
+    const { data } = await apiClient.patch<TriageCase>(
+  `/denuncias/${assignment.caseId}/asignar`,
+  {
+    psicologoId: assignment.psychologistId,
+    defensorLegalId: assignment.defenderLegalId,
+    asignadoPorId: assignment.assignedBy,
+    prioridad: assignment.priority,
+  }  )
     return data
   },
 
@@ -99,8 +143,27 @@ export const triageService = {
         casesByType: { physical: 2, psychological: 1, sexual: 1, legal: 1, other: 0 },
       }
     }
-    const { data } = await apiClient.get<TriageMetrics>('/admin/metrics')
-    return data
+    const reports = await triageService.getPendingCases()
+
+    return {
+      totalPending: reports.filter(c => c.status === 'new').length,
+
+      totalAssigned: reports.filter(c => c.status === 'assigned').length,
+
+      criticalCases: reports.filter(c => c.priority === 'critical').length,
+
+      casesByType: {
+        physical: reports.filter(c => c.incidentType === 'physical').length,
+
+        psychological: reports.filter(c => c.incidentType === 'psychological').length,
+
+        sexual: reports.filter(c => c.incidentType === 'sexual').length,
+
+        legal: reports.filter(c => c.incidentType === 'legal').length,
+
+        other: reports.filter(c => c.incidentType === 'other').length,
+      }
+    }
   },
 }
 
