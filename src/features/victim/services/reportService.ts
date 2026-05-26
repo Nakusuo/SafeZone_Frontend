@@ -123,42 +123,64 @@ export const reportService = {
   },
 
   getEvaluations: async (reportId: string): Promise<Evaluation[]> => {
-    await delay()
-    return getMockData().evaluations.filter((e: Evaluation) => e.reportId === reportId)
+    if (config.USE_MOCK) {
+      await delay()
+      return getMockData().evaluations.filter((e: Evaluation) => e.reportId === reportId)
+    }
+    const { data } = await apiClient.get<Evaluation[]>(`/reports/${reportId}/evaluations`)
+    return data
   },
 
   createEvaluation: async (
     evaluationData: Omit<Evaluation, 'id' | 'date'>
   ): Promise<Evaluation> => {
-    await delay()
-    const appData = getMockData()
-    const newEval: Evaluation = {
-      id: `eval_${Date.now()}`,
-      ...evaluationData,
-      date: new Date().toISOString(),
+    if (config.USE_MOCK) {
+      await delay()
+      const appData = getMockData()
+      const newEval: Evaluation = {
+        id: `eval_${Date.now()}`,
+        ...evaluationData,
+        date: new Date().toISOString(),
+      }
+      appData.evaluations.push(newEval)
+      saveMockData(appData)
+      return newEval
     }
-    appData.evaluations.push(newEval)
-    saveMockData(appData)
-    return newEval
+    const { data } = await apiClient.post<Evaluation>(
+      `/reports/${evaluationData.reportId}/evaluations`,
+      evaluationData
+    )
+    return data
   },
 
   getLegalUpdates: async (reportId: string): Promise<LegalUpdate[]> => {
-    await delay()
-    return getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
+    if (config.USE_MOCK) {
+      await delay()
+      return getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
+    }
+    const { data } = await apiClient.get<LegalUpdate[]>(`/reports/${reportId}/legal-updates`)
+    return data
   },
 
   createLegalUpdate: async (
     updateData: Omit<LegalUpdate, 'id' | 'date'>
   ): Promise<LegalUpdate> => {
-    await delay()
-    const appData = getMockData()
-    const newUpdate: LegalUpdate = {
-      id: `legal_${Date.now()}`,
-      ...updateData,
-      date: new Date().toISOString(),
+    if (config.USE_MOCK) {
+      await delay()
+      const appData = getMockData()
+      const newUpdate: LegalUpdate = {
+        id: `legal_${Date.now()}`,
+        ...updateData,
+        date: new Date().toISOString(),
+      }
+      appData.legalUpdates.push(newUpdate)
+      saveMockData(appData)
+      return newUpdate
     }
-    appData.legalUpdates.push(newUpdate)
-    saveMockData(appData)
-    return newUpdate
+    const { data } = await apiClient.post<LegalUpdate>(
+      `/reports/${updateData.reportId}/legal-updates`,
+      updateData
+    )
+    return data
   },
 }
