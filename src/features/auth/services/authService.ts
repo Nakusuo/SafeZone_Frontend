@@ -1,7 +1,33 @@
 import apiClient from '@/core/api/apiClient'
 import { config } from '@/core/config'
-import { AuthResponse, User } from '@/shared/types'
+import { AuthResponse, User, UserRole } from '@/shared/types'
 import mockData from '@/data/mockData.json'
+
+type BackendUserDto = {
+  id: string
+  name: string
+  lastName?: string
+  email: string
+  role: UserRole
+}
+
+type BackendAuthResponse = {
+  token: string
+  user: BackendUserDto
+}
+
+type RegisterPayload = {
+  nombre: string
+  apellido: string
+  email: string
+  password: string
+  telefono: string
+  roles: UserRole
+  region: {
+    id: string
+    nombre: string
+  }
+}
 
 const delay = (ms = config.MOCK_DELAY) => new Promise((r) => setTimeout(r, ms))
 const STORAGE_KEY = 'safezone_appdata'
@@ -19,6 +45,19 @@ const saveMockData = (data: unknown) => {
   try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch { /* empty */ }
 }
 
+const mapBackendUser = (user: BackendUserDto): User => ({
+  id: user.id,
+  name: user.lastName ? `${user.name} ${user.lastName}` : user.name,
+  email: user.email,
+  role: user.role,
+  createdAt: new Date().toISOString(),
+})
+
+const normalizeAuthResponse = (response: BackendAuthResponse): AuthResponse => ({
+  token: response.token,
+  user: mapBackendUser(response.user),
+})
+
 const mockLogin = async (email: string, password: string): Promise<AuthResponse> => {
   await delay()
   const data = getMockData()
@@ -30,7 +69,7 @@ const mockLogin = async (email: string, password: string): Promise<AuthResponse>
   }
 }
 
-const mockRegister = async (userData: Partial<User> & { password: string }): Promise<AuthResponse> => {
+const mockRegister = async (userData: RegisterPayload): Promise<AuthResponse> => {
   await delay()
   const data = getMockData()
   if (data.users.some((u: any) => u.email === userData.email)) {
@@ -38,10 +77,10 @@ const mockRegister = async (userData: Partial<User> & { password: string }): Pro
   }
   const newUser = {
     id: `user_${Date.now()}`,
-    name: userData.name ?? '',
+    name: `${userData.nombre} ${userData.apellido}`.trim(),
     email: userData.email ?? '',
     password: userData.password,
-    role: userData.role ?? 'VICTIM',
+    role: userData.roles ?? 'VICTIM',
     createdAt: new Date().toISOString(),
   }
   data.users.push(newUser)
@@ -62,9 +101,9 @@ export const authService = {
     
     console.log("🔗 Intentando conectar a:", config.API_URL + '/auth/login');
     try {
-        const response = await apiClient.post<AuthResponse>('/auth/login', { email, password });
+        const response = await apiClient.post<BackendAuthResponse>('/auth/login', { email, password });
         console.log("✅ Respuesta recibida:", response.data);
-        return response.data;
+        return normalizeAuthResponse(response.data);
     } catch (error) {
         console.error("❌ Error en axios:", error); // Esto SI tiene que salir
         throw error;
@@ -72,10 +111,10 @@ export const authService = {
 },
 
   // Spring: POST /api/auth/register → { token, user }
-  register: async (userData: Partial<User> & { password: string }): Promise<AuthResponse> => {
+  register: async (userData: RegisterPayload): Promise<AuthResponse> => {
     if (config.USE_MOCK) return mockRegister(userData)
-    const { data } = await apiClient.post<AuthResponse>('/auth/register', userData)
-    return data
+    const { data } = await apiClient.post<BackendAuthResponse>('/auth/register', userData)
+    return normalizeAuthResponse(data)
   },
 
   // JWT es stateless, el logout en Spring es opcional

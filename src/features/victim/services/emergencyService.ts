@@ -43,7 +43,18 @@ export const emergencyService = {
       saveMockAlerts(alerts)
       return alert
     }
-    const { data } = await apiClient.post<EmergencyAlert>('/emergency/alerts', params)
+    // Transformar al formato esperado por el backend (español)
+    const backendPayload = {
+      victimaId: params.victimId,
+      victimaNombre: params.victimName,
+      victimaEmail: params.victimEmail,
+      latitud: params.location?.latitude,
+      longitud: params.location?.longitude,
+      precision: params.location?.accuracy,
+      direccionManual: params.manualAddress,
+      mensaje: params.message,
+    }
+    const { data } = await apiClient.post<EmergencyAlert>('/emergency/alerts', backendPayload)
     return data
   },
 

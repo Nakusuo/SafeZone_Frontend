@@ -39,6 +39,10 @@ export const CreateReportPage = () => {
       setError('La descripción debe tener al menos 20 caracteres')
       return false
     }
+    if (!formData.location.trim()) {
+      setError('La ubicación o dirección es requerida')
+      return false
+    }
     return true
   }
 
@@ -63,6 +67,7 @@ export const CreateReportPage = () => {
         type: formData.type as any,
         priority: formData.priority as any,
         status: 'PENDING',
+        location: formData.location,
       })
 
       setSuccess(true)

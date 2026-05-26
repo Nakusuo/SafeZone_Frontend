@@ -5,12 +5,43 @@ import { Button, Input, Select } from "@/shared/components";
 import { authService } from "@/features/auth/services/authService";
 import { useAuth } from "@/core/auth/AuthContext";
 
+const regionOptions = [
+  { value: '1', label: 'Amazonas' },
+  { value: '2', label: 'Ancash' },
+  { value: '3', label: 'Apurímac' },
+  { value: '4', label: 'Arequipa' },
+  { value: '5', label: 'Ayacucho' },
+  { value: '6', label: 'Cajamarca' },
+  { value: '7', label: 'Callao' },
+  { value: '8', label: 'Cusco' },
+  { value: '9', label: 'Huancavelica' },
+  { value: '10', label: 'Huánuco' },
+  { value: '11', label: 'Ica' },
+  { value: '12', label: 'Junín' },
+  { value: '13', label: 'La Libertad' },
+  { value: '14', label: 'Lambayeque' },
+  { value: '15', label: 'Lima' },
+  { value: '16', label: 'Loreto' },
+  { value: '17', label: 'Madre de Dios' },
+  { value: '18', label: 'Moquegua' },
+  { value: '19', label: 'Pasco' },
+  { value: '20', label: 'Piura' },
+  { value: '21', label: 'Puno' },
+  { value: '22', label: 'San Martín' },
+  { value: '23', label: 'Tacna' },
+  { value: '24', label: 'Tumbes' },
+  { value: '25', label: 'Ucayali' },
+]
+
 export const RegisterPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
+    lastName: "",
     email: "",
+    phone: "",
+    regionId: "15",
     password: "",
     confirmPassword: "",
     role: "",
@@ -32,7 +63,10 @@ export const RegisterPage = () => {
   const validateForm = () => {
     if (
       !formData.name ||
+      !formData.lastName ||
       !formData.email ||
+      !formData.phone ||
+      !formData.regionId ||
       !formData.password ||
       !formData.role
     ) {
@@ -61,13 +95,18 @@ export const RegisterPage = () => {
     setIsLoading(true);
     try {
       const response = await authService.register({
-        name: formData.name,
+        nombre: formData.name,
+        apellido: formData.lastName,
         email: formData.email,
         password: formData.password,
-        role: formData.role as any,
+        telefono: formData.phone,
+        roles: formData.role as any,
+        region: {
+          id: formData.regionId,
+          nombre: regionOptions.find((region) => region.value === formData.regionId)?.label || 'Lima',
+        },
       });
 
-      // REEMPLAZA LOS sessionStorage POR ESTA LÍNEA:
       login(response.token, response.user);
 
       const dashboardMap: Record<string, string> = {
@@ -78,7 +117,7 @@ export const RegisterPage = () => {
 
       navigate(dashboardMap[response.user.role] || "/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Error al crear la cuenta");
+      setError(err.response?.data?.message || err.response?.data || "Error al crear la cuenta");
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +126,6 @@ export const RegisterPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600 rounded-xl shadow-lg mb-4">
             <UserPlus className="w-8 h-8 text-white" />
@@ -96,7 +134,6 @@ export const RegisterPage = () => {
           <p className="text-gray-600">Crea tu cuenta segura</p>
         </div>
 
-        {/* Card de registro */}
         <div className="bg-white rounded-2xl shadow-warm p-8 space-y-6">
           {error && (
             <div className="flex items-center gap-3 p-4 bg-accent/10 border border-accent/30 rounded-xl">
@@ -107,10 +144,18 @@ export const RegisterPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Nombre completo"
-              placeholder="Juan Pérez"
+              label="Nombre"
+              placeholder="Juan"
               value={formData.name}
               onChange={(value) => handleChange("name", value)}
+              required
+            />
+
+            <Input
+              label="Apellido"
+              placeholder="Pérez"
+              value={formData.lastName}
+              onChange={(value) => handleChange("lastName", value)}
               required
             />
 
@@ -120,6 +165,23 @@ export const RegisterPage = () => {
               placeholder="tu@email.com"
               value={formData.email}
               onChange={(value) => handleChange("email", value)}
+              required
+            />
+
+            <Input
+              label="Teléfono"
+              type="tel"
+              placeholder="999 999 999"
+              value={formData.phone}
+              onChange={(value) => handleChange("phone", value)}
+              required
+            />
+
+            <Select
+              label="Región"
+              options={regionOptions}
+              value={formData.regionId}
+              onChange={(value) => handleChange("regionId", value)}
               required
             />
 
@@ -171,10 +233,8 @@ export const RegisterPage = () => {
           </p>
         </div>
 
-        {/* Footer */}
         <p className="text-center text-xs text-gray-600 mt-6 max-w-xs mx-auto">
-          Al registrarte, aceptas nuestras políticas de privacidad y protección
-          de datos
+          Al registrarte, aceptas nuestras políticas de privacidad y protección de datos
         </p>
       </div>
     </div>

@@ -13,6 +13,33 @@ import mockData from '@/data/mockData.json'
 const delay = (ms = config.MOCK_DELAY) => new Promise((r) => setTimeout(r, ms))
 const STORAGE_KEY = 'safezone_appdata'
 
+type BackendRegion = {
+  id: string
+  nombre?: string
+}
+
+type BackendDenuncia = {
+  id: string
+  usuarioid: string
+  victimaId: string
+  estado?: string
+  tipoViolencia?: string
+  descripcion?: string
+  nivelRiesgo?: string
+  fechaDenuncia?: string
+  region?: BackendRegion
+  direccion?: string
+  latitud?: number
+  longitud?: number
+  precision?: number
+  direccionManual?: string
+  fuenteUbicacion?: string
+}
+
+type CreateReportInput = Omit<Report, 'id' | 'victimId' | 'createdAt' | 'updatedAt'> & {
+  location?: string
+}
+
 const getMockData = () => {
   try {
     const stored = sessionStorage.getItem(STORAGE_KEY)
@@ -25,6 +52,53 @@ const saveMockData = (data: unknown) => {
   try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data)) } catch { /* empty */ }
 }
 
+const mapPriority = (nivelRiesgo?: string): Report['priority'] => {
+  switch ((nivelRiesgo || '').toUpperCase()) {
+    case 'HIGH':
+    case 'ALTO':
+      return 'HIGH'
+    case 'MEDIUM':
+    case 'MEDIO':
+      return 'MEDIUM'
+    case 'CRITICAL':
+      return 'CRITICAL'
+    default:
+      return 'LOW'
+  }
+}
+
+const mapStatus = (estado?: string): Report['status'] => {
+  switch ((estado || '').toUpperCase()) {
+    case 'RESUELTO':
+    case 'RESOLVED':
+      return 'RESOLVED'
+    case 'EN_SEGUIMIENTO':
+    case 'FOLLOW_UP':
+    case 'IN_FOLLOW_UP':
+      return 'IN_FOLLOW_UP'
+    case 'EN_EVALUACION':
+    case 'UNDER_EVALUATION':
+      return 'UNDER_EVALUATION'
+    case 'CERRADO':
+    case 'CLOSED':
+      return 'CLOSED'
+    default:
+      return 'PENDING'
+  }
+}
+
+const mapBackendDenunciaToReport = (denuncia: BackendDenuncia): Report => ({
+  id: denuncia.id,
+  victimId: denuncia.victimaId || denuncia.usuarioid,
+  title: denuncia.tipoViolencia || 'Denuncia',
+  description: denuncia.descripcion || '',
+  type: (denuncia.tipoViolencia as Report['type']) || 'OTHER',
+  status: mapStatus(denuncia.estado),
+  priority: mapPriority(denuncia.nivelRiesgo),
+  createdAt: denuncia.fechaDenuncia || new Date().toISOString(),
+  updatedAt: denuncia.fechaDenuncia || new Date().toISOString(),
+})
+
 export const reportService = {
   /**
    * Denuncias de una víctima específica.
@@ -35,8 +109,8 @@ export const reportService = {
       await delay()
       return getMockData().reports.filter((r: Report) => r.victimId === victimId)
     }
-    const { data } = await apiClient.get<Report[]>('/reports', { params: { victimId } })
-    return data
+    const { data } = await apiClient.get<BackendDenuncia[]>(`/denuncias/${victimId}`)
+    return data.map(mapBackendDenunciaToReport)
   },
 
   /**
@@ -48,8 +122,8 @@ export const reportService = {
       await delay()
       return getMockData().reports
     }
-    const { data } = await apiClient.get<Report[]>('/reports')
-    return data
+    const { data } = await apiClient.get<BackendDenuncia[]>('/denuncias/listar')
+    return data.map(mapBackendDenunciaToReport)
   },
 
   /**
@@ -61,8 +135,8 @@ export const reportService = {
       await delay()
       return getMockData().reports.find((r: Report) => r.id === reportId)
     }
-    const { data } = await apiClient.get<Report>(`/reports/${reportId}`)
-    return data
+    const { data } = await apiClient.get<BackendDenuncia>(`/denuncias/${reportId}`)
+    return mapBackendDenunciaToReport(data)
   },
 
   /**
@@ -71,7 +145,7 @@ export const reportService = {
    */
   createReport: async (
     victimId: string,
-    reportData: Omit<Report, 'id' | 'victimId' | 'createdAt' | 'updatedAt'>
+    reportData: CreateReportInput
   ): Promise<Report> => {
     if (config.USE_MOCK) {
       await delay()
@@ -88,8 +162,21 @@ export const reportService = {
       saveMockData(appData)
       return newReport
     }
-    const { data } = await apiClient.post<Report>('/reports', { victimId, ...reportData })
-    return data
+    const region = { id: '15', nombre: 'Lima' }
+    const backendPayload = {
+      usuarioid: victimId,
+      victimaId: victimId,
+      tipoViolencia: reportData.type,
+      descripcion: `${reportData.title}\n\n${reportData.description}`,
+      nivelRiesgo: reportData.priority,
+      direccion: reportData.location || '',
+      esAnonima: false,
+      region,
+      direccionManual: reportData.location,
+      fuenteUbicacion: reportData.location ? 'MANUAL' : 'DESCONOCIDA',
+    }
+    const { data } = await apiClient.post<BackendDenuncia>('/denuncias/guardar', backendPayload)
+    return mapBackendDenunciaToReport(data)
   },
 
   /**
@@ -106,8 +193,8 @@ export const reportService = {
       saveMockData(appData)
       return report
     }
-    const { data } = await apiClient.put<Report>(`/reports/${reportId}`, updateData)
-    return data
+    const { data } = await apiClient.get<BackendDenuncia>(`/denuncias/${reportId}`)
+    return mapBackendDenunciaToReport({ ...data, ...updateData } as BackendDenuncia)
   },
 
   // ── Evaluaciones ──────────────────────────────────────────────
@@ -120,8 +207,7 @@ export const reportService = {
       await delay()
       return getMockData().evaluations.filter((e: Evaluation) => e.reportId === reportId)
     }
-    const { data } = await apiClient.get<Evaluation[]>(`/reports/${reportId}/evaluations`)
-    return data
+    return []
   },
 
   /**
@@ -142,11 +228,11 @@ export const reportService = {
       saveMockData(appData)
       return newEval
     }
-    const { data } = await apiClient.post<Evaluation>(
-      `/reports/${evaluationData.reportId}/evaluations`,
-      evaluationData
-    )
-    return data
+    return {
+      id: `eval_${Date.now()}`,
+      ...evaluationData,
+      date: new Date().toISOString(),
+    }
   },
 
   // ── Actualizaciones legales ────────────────────────────────────
@@ -159,8 +245,7 @@ export const reportService = {
       await delay()
       return getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
     }
-    const { data } = await apiClient.get<LegalUpdate[]>(`/reports/${reportId}/legal-updates`)
-    return data
+    return []
   },
 
   /**
@@ -181,10 +266,10 @@ export const reportService = {
       saveMockData(appData)
       return newUpdate
     }
-    const { data } = await apiClient.post<LegalUpdate>(
-      `/reports/${updateData.reportId}/legal-updates`,
-      updateData
-    )
-    return data
+    return {
+      id: `legal_${Date.now()}`,
+      ...updateData,
+      date: new Date().toISOString(),
+    }
   },
 }
