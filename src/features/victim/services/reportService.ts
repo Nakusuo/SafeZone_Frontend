@@ -152,7 +152,7 @@ export const reportService = {
       return getMockData().reports.filter((r: Report) => r.victimId === victimId)
     }
 
-    const { data } = await apiClient.get<BackendDenuncia[]>(`/denuncias/${victimId}`)
+    const { data } = await apiClient.get<BackendDenuncia[]>(`/denuncias/listar?victimId=${victimId}`)
     return data.map((item) => mapBackendDenunciaToReport(item))
   },
 
