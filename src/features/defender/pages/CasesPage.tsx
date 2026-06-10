@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Briefcase, Eye, Clock, AlertCircle, CheckCircle } from 'lucide-react'
 import { reportService, } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'
 
 export const DefenderCasesPage = () => {
+  const navigate = useNavigate()
   const [reports, setReports] = useState<Report[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'active' | 'closed'>('all')
@@ -188,7 +190,7 @@ export const DefenderCasesPage = () => {
                   )}
                 </div>
 
-                <button className="bg-teal hover:bg-teal/90 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                <button onClick={() => navigate(`/casos/${report.id}/bitacora`)} className="bg-teal hover:bg-teal/90 text-white px-4 py-2 rounded-lg flex items-center gap-2">
                   <Eye className="w-4 h-4" />
                   Ver Detalles
                 </button>

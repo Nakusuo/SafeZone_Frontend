@@ -5,6 +5,7 @@ import { ArrowLeft, Download, MessageCircle, Users } from 'lucide-react'
 import { reportService } from '@/features/victim/services/reportService'
 import { Report, Evaluation, LegalUpdate } from '@/shared/types'
 import { userService } from '@/features/victim/services/userService'
+import { EvidenceVault } from '@/features/shared-features/evidence/components/EvidenceVault'
 
 export const ReportDetailPage = () => {
   const { reportId } = useParams()
@@ -219,6 +220,11 @@ export const ReportDetailPage = () => {
           Enviar mensaje al equipo
         </Button>
       </Card>
+
+      {/* Evidencias */}
+      <div className="mb-6">
+        <EvidenceVault caseId={report.id} />
+      </div>
     </div>
   )
 }
