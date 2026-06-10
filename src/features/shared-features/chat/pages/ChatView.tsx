@@ -125,11 +125,11 @@ export const ChatView: React.FC = () => {
   return (
     <div className="flex h-screen flex-col gap-4">
       {/* Header */}
-      <div className="rounded-2xl bg-surface-container-highest p-6">
-        <h1 className="text-2xl font-bold text-on-surface">
+      <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6">
+        <h1 className="text-2xl font-bold text-gray-900">
           Mensajería y Chat
         </h1>
-        <p className="mt-2 text-on-surface-variant">
+        <p className="mt-2 text-gray-600">
           Comunícate de forma segura con el equipo del caso
         </p>
       </div>
@@ -145,8 +145,8 @@ export const ChatView: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 grid grid-cols-1 gap-4 lg:grid-cols-4 overflow-hidden">
         {/* Left: Conversation List */}
-        <div className="lg:col-span-1 rounded-2xl bg-surface-container-lowest p-4 overflow-y-auto">
-          <h2 className="mb-4 font-semibold text-on-surface">Conversaciones</h2>
+        <div className="lg:col-span-1 rounded-2xl bg-white shadow-sm border border-gray-100 p-4 overflow-y-auto">
+          <h2 className="mb-4 font-semibold text-gray-900">Conversaciones</h2>
           <ConversationList
             conversations={conversations}
             selectedConversationId={selectedConversationId}
@@ -156,15 +156,15 @@ export const ChatView: React.FC = () => {
         </div>
 
         {/* Right: Messages */}
-        <div className="lg:col-span-3 rounded-2xl bg-surface-container-lowest p-4 flex flex-col overflow-hidden">
+        <div className="lg:col-span-3 rounded-2xl bg-white shadow-sm border border-gray-100 p-4 flex flex-col overflow-hidden">
           {selectedConversation ? (
             <>
               {/* Header */}
-              <div className="mb-4 pb-4 border-b border-outline-variant/20">
-                <h2 className="font-semibold text-on-surface">
+              <div className="mb-4 pb-4 border-b border-gray-100">
+                <h2 className="font-semibold text-gray-900">
                   Caso: {selectedConversation.caseId}
                 </h2>
-                <p className="mt-1 text-sm text-on-surface-variant">
+                <p className="mt-1 text-sm text-gray-500">
                   {selectedConversation.participants.length} participante(s)
                 </p>
               </div>
@@ -183,12 +183,12 @@ export const ChatView: React.FC = () => {
               )}
 
               {/* Message Input */}
-              <div className="mt-4 pt-4 border-t border-outline-variant/20">
+              <div className="mt-4 pt-4 border-t border-gray-100">
                 <MessageInput onSend={handleSendMessage} isLoading={isSending} />
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-center h-full text-on-surface-variant">
+            <div className="flex items-center justify-center h-full text-gray-500">
               <p>Selecciona una conversación para empezar</p>
             </div>
           )}

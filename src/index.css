@@ -5,7 +5,6 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light dark;
   --primary: #084C61;
   --secondary: #6A994E;
   --accent: #BC4749;

@@ -33,14 +33,16 @@ export const Card = ({
   }
 
   return (
-    <div className={`rounded-2xl p-6 ${typeStyles[type]} ${className}`}>
+    <div className={`rounded-2xl p-6 text-slate-800 backdrop-blur-sm bg-white/90 ${typeStyles[type]} ${className}`}>
       {(title || type !== 'default') && (
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-5 border-b border-gray-100/50 pb-3">
           {iconMap[type]}
-          {title && <h3 className="font-semibold text-gray-900 text-lg">{title}</h3>}
+          {title && <h3 className="font-semibold text-slate-900 text-lg tracking-tight">{title}</h3>}
         </div>
       )}
-      {children}
+      <div className="text-slate-700">
+        {children}
+      </div>
     </div>
   )
 }

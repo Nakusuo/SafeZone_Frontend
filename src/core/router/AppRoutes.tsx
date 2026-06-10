@@ -35,6 +35,8 @@ import { TriageView }     from '@/features/admin/pages/TriageView'
 import { NotificationCenter } from '@/features/shared-features/notifications/pages'
 import { CaseClosureView }    from '@/features/shared-features/case-closure/pages'
 import { ChatView }           from '@/features/shared-features/chat/pages'
+import { CaseLogPage }        from '@/features/shared-features/case-log/pages/CaseLogPage'
+import { CalendarView }       from '@/features/shared-features/calendar/pages/CalendarView'
 
 
 // ─────────────────────────────────────────────────────────────
@@ -88,8 +90,10 @@ const AppRoutes = () => (
     {/* ── Compartidas (multi-rol) ───────────────────────────── */}
     <Route path="/notifications"        element={<Protected element={<NotificationCenter />} role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
     <Route path="/casos/:caseId/cerrar" element={<Protected element={<CaseClosureView />}    role={['VICTIM','PSYCHOLOGIST','DEFENDER']} />} />
+    <Route path="/casos/:caseId/bitacora" element={<Protected element={<CaseLogPage />}      role={['PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
     <Route path="/chat"                 element={<Protected element={<ChatView />}           role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
     <Route path="/chat/:conversationId" element={<Protected element={<ChatView />}           role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
+    <Route path="/calendario"           element={<Protected element={<CalendarView />}       role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
 
 
     {/* ── Redirección por defecto ───────────────────────────── */}
