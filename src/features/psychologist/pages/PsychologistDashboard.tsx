@@ -22,68 +22,68 @@ export const PsychologistDashboard = () => {
   return (
     <div className="w-full px-8 py-8 pb-32">
 
-      {/* ── Welcome ─────────────────────────────────────────── */}
+      
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
-        <h2 className="text-3xl font-bold mb-2">Bienvenida, {userData?.name || 'Psicólogo/a'}</h2>
-        <p className="text-teal-light">Su dedicación crea un entorno seguro para quienes más lo necesitan hoy.</p>
+        <h2 className="text-3xl font-bold mb-2">Welcome, {userData?.name || 'Psychologist'}</h2>
+        <p className="text-teal-light">Your dedication creates a safe environment for those who need it most today.</p>
         <div className="flex gap-4 mt-6">
           <button className="bg-white hover:bg-gray-100 text-teal px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2">
             <FileText className="w-4 h-4" />
-            Ver Casos Pendientes
+            View Pending Cases
           </button>
           <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-white/40">
             <AlertCircle className="w-4 h-4" />
-            Registrar Evaluación
+            Record Evaluation
           </button>
         </div>
       </div>
 
-      {/* ── RF-03: Alertas de emergencia activas ────────────── */}
+      
       <EmergencyAlertsPanel />
 
-      {/* ── Stats ───────────────────────────────────────────── */}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-teal-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-blue-500 text-white rounded flex items-center justify-center text-sm font-bold">
               <Clock className="w-4 h-4" />
             </div>
-            <span className="text-blue-700 font-medium text-xs">EN CURSO</span>
+            <span className="text-blue-700 font-medium text-xs">IN PROGRESS</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{activeCount}</div>
-          <p className="text-gray-700 text-sm">Casos Activos</p>
+          <p className="text-gray-700 text-sm">Active Cases</p>
         </div>
         <div className="bg-warning-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-yellow-500 text-white rounded flex items-center justify-center text-sm font-bold">⏱</div>
-            <span className="text-yellow-700 font-medium text-xs">PRIORIDAD</span>
+            <span className="text-yellow-700 font-medium text-xs">PRIORITY</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{pendingCount}</div>
-          <p className="text-gray-700 text-sm">Pendientes</p>
+          <p className="text-gray-700 text-sm">Pending</p>
         </div>
         <div className="bg-success-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center text-sm font-bold">
               <CheckCircle className="w-4 h-4" />
             </div>
-            <span className="text-green-700 font-medium text-xs">COMPLETADOS</span>
+            <span className="text-green-700 font-medium text-xs">COMPLETED</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{completedCount}</div>
-          <p className="text-gray-700 text-sm">Resueltos</p>
+          <p className="text-gray-700 text-sm">Resolved</p>
         </div>
       </div>
 
-      {/* ── Cases table ─────────────────────────────────────── */}
+      
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Mis Casos</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">My Cases</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-700">PACIENTE</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">TIPO</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">ESTADO</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">PRIORIDAD</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">PATIENT</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">TYPE</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">STATUS</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">PRIORITY</th>
               </tr>
             </thead>
             <tbody>
@@ -94,7 +94,7 @@ export const PsychologistDashboard = () => {
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                       report.type === 'PHYSICAL_VIOLENCE' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
                     }`}>
-                      {report.type === 'PHYSICAL_VIOLENCE' ? 'Individual' : 'Familia'}
+                      {report.type === 'PHYSICAL_VIOLENCE' ? 'Physical' : 'Psychological'}
                     </span>
                   </td>
                   <td className="py-3 px-4">
@@ -121,27 +121,27 @@ export const PsychologistDashboard = () => {
           </table>
           {reports.length === 0 && (
             <div className="text-center py-8 text-gray-600">
-              <p className="text-sm">No hay casos asignados aún</p>
+              <p className="text-sm">No cases assigned yet</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── Recursos ────────────────────────────────────────── */}
+      
       <div className="mt-12">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Recursos de Ayuda</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">Help Resources</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white rounded-lg p-4 border-l-4 border-teal hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Protocolo de Evaluación</h4>
-            <p className="text-sm text-gray-600">Guía completa para evaluaciones psicológicas</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Evaluation Protocol</h4>
+            <p className="text-sm text-gray-600">Complete guide for psychological evaluations</p>
           </div>
           <div className="bg-white rounded-lg p-4 border-l-4 border-secondary hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Documentación Clínica</h4>
-            <p className="text-sm text-gray-600">Plantillas y formatos para reportes</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Clinical Documentation</h4>
+            <p className="text-sm text-gray-600">Templates and formats for reports</p>
           </div>
           <div className="bg-white rounded-lg p-4 border-l-4 border-accent hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Contacto de Emergencia</h4>
-            <p className="text-sm text-gray-600">Línea de soporte 24/7 disponible</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Emergency Contact</h4>
+            <p className="text-sm text-gray-600">24/7 support hotline available</p>
           </div>
         </div>
       </div>

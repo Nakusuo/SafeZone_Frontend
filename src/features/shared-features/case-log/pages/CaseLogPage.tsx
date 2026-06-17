@@ -25,30 +25,34 @@ export const CaseLogPage = () => {
         if (!caseId) return
         const reportData = await reportService.getReportById(caseId)
         
-        // RF-05: Control de acceso a información sensible
-        // Verify if user is assigned to this case, otherwise throw error
-        if (user?.role === 'PSYCHOLOGIST' && reportData?.psychologistId !== user.id) {
-          throw new Error('No tienes acceso a este caso (no asignado).')
+        if (!reportData) {
+          throw new Error('Case not found.')
         }
-        if (user?.role === 'DEFENDER' && reportData?.defenderId !== user.id) {
-          throw new Error('No tienes acceso a este caso (no asignado).')
+
+        
+        
+        if (user?.role === 'PSYCHOLOGIST' && reportData.psychologistId !== user.id) {
+          throw new Error('You do not have access to this case (not assigned).')
+        }
+        if (user?.role === 'DEFENDER' && reportData.defenderId !== user.id) {
+          throw new Error('You do not have access to this case (not assigned).')
         }
 
         setReport(reportData)
         
-        // Mocking initial entries based on report creation
+        
         setLogEntries([
           {
             id: 'init-1',
-            title: 'Caso asignado y revisado',
-            description: 'El caso ha sido abierto y asignado al equipo multidisciplinario.',
+            title: 'Case assigned and reviewed',
+            description: 'The case has been opened and assigned to the multidisciplinary team.',
             date: reportData?.createdAt || new Date(),
             status: 'completed'
           }
         ])
 
       } catch (err: any) {
-        setError(err.message || 'Error cargando caso')
+        setError(err.message || 'Error loading case')
       } finally {
         setIsLoading(false)
       }
@@ -57,12 +61,12 @@ export const CaseLogPage = () => {
   }, [caseId, user?.id, user?.role])
 
   const handleAddLog = async (description: string, type: string) => {
-    // In a real scenario, this makes an API call.
-    // For now, we update the local state.
+    
+    
     const newEntry = {
       id: Date.now().toString(),
-      title: `Nota: ${type === 'NOTE' ? 'General' : type === 'EVALUATION' ? 'Evaluación' : type === 'LEGAL_ACTION' ? 'Acción Legal' : 'Reunión'}`,
-      description: `${description} (Añadido por ${user?.name})`,
+      title: `Note: ${type === 'NOTE' ? 'General' : type === 'EVALUATION' ? 'Evaluation' : type === 'LEGAL_ACTION' ? 'Legal Action' : 'Meeting'}`,
+      description: `${description} (Added by ${user?.name})`,
       date: new Date(),
       status: 'current'
     }
@@ -72,7 +76,7 @@ export const CaseLogPage = () => {
   if (isLoading) {
     return (
       <div className="p-8 text-center text-gray-500">
-        <p>Cargando información del caso...</p>
+        <p>Loading case information...</p>
       </div>
     )
   }
@@ -80,15 +84,15 @@ export const CaseLogPage = () => {
   if (error || !report) {
     return (
       <div className="p-8 max-w-4xl mx-auto">
-        <Alert type="danger" title="Acceso Denegado / Error" message={error} />
-        <Button className="mt-4" onClick={() => navigate(-1)}>Volver</Button>
+        <Alert type="danger" title="Access Denied / Error" message={error} />
+        <Button className="mt-4" onClick={() => navigate(-1)}>Go Back</Button>
       </div>
     )
   }
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8 flex items-center justify-between">
         <div>
           <button
@@ -96,60 +100,60 @@ export const CaseLogPage = () => {
             className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-4 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Volver a Mis Casos
+            Back to My Cases
           </button>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Bitácora del Caso</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Case Log</h1>
           <p className="text-gray-600">
             ID: {caseId} • {report.title}
           </p>
         </div>
         <Button variant="primary" onClick={() => setIsModalOpen(true)}>
           <Plus className="w-4 h-4 inline mr-2" />
-          Añadir Nota a Bitácora
+          Add Note to Log
         </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Case Details */}
+        
         <div className="space-y-6 lg:col-span-1">
-          <Card title="Información General" className="border-t-4 border-primary">
+          <Card title="General Information" className="border-t-4 border-primary">
             <div className="space-y-4">
               <div>
-                <p className="text-xs text-gray-500 font-semibold uppercase">Tipo de Violencia</p>
+                <p className="text-xs text-gray-500 font-semibold uppercase">Violence Type</p>
                 <p className="text-sm text-gray-900">{report.type}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-semibold uppercase">Prioridad</p>
+                <p className="text-xs text-gray-500 font-semibold uppercase">Priority</p>
                 <p className={`text-sm font-semibold ${report.priority === 'HIGH' ? 'text-red-600' : 'text-yellow-600'}`}>
                   {report.priority}
                 </p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-semibold uppercase">Estado</p>
+                <p className="text-xs text-gray-500 font-semibold uppercase">Status</p>
                 <p className="text-sm text-gray-900">{report.status}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-semibold uppercase">Ubicación</p>
+                <p className="text-xs text-gray-500 font-semibold uppercase">Location</p>
                 <p className="text-sm text-gray-900 flex items-center gap-1">
                   <ShieldAlert className="w-4 h-4 text-gray-400" />
-                  {report.location || 'No proporcionada'}
+                  {report.location || 'Not provided'}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card title="Descripción Original" className="bg-gray-50/50">
+          <Card title="Original Description" className="bg-gray-50/50">
             <p className="text-sm text-gray-700 whitespace-pre-wrap">{report.description}</p>
           </Card>
         </div>
 
-        {/* Right Column: Timeline / Bitácora */}
+        
         <div className="lg:col-span-2">
-          <Card title="Registro de Seguimiento (Bitácora)">
+          <Card title="Follow-up Registry (Log)">
             {logEntries.length === 0 ? (
               <div className="text-center py-8 text-gray-500">
                 <FileText className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                <p>No hay registros en la bitácora todavía.</p>
+                <p>There are no entries in the log yet.</p>
               </div>
             ) : (
               <Timeline events={logEntries} />

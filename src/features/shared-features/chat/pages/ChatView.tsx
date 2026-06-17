@@ -22,9 +22,10 @@ export const ChatView: React.FC = () => {
   const [isLoadingConversations, setIsLoadingConversations] = useState(true);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [isEncrypting, setIsEncrypting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load conversations on mount
+  
   useEffect(() => {
     const loadConversations = async () => {
       try {
@@ -33,13 +34,13 @@ export const ChatView: React.FC = () => {
         const data = await chatService.getConversations();
         setConversations(data);
 
-        // Auto-select first conversation if none selected
+        
         if (!selectedConversationId && data.length > 0) {
           setSelectedConversationId(data[0].id);
         }
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Error al cargar conversaciones'
+          err instanceof Error ? err.message : 'Error loading conversations'
         );
       } finally {
         setIsLoadingConversations(false);
@@ -49,7 +50,7 @@ export const ChatView: React.FC = () => {
     loadConversations();
   }, []);
 
-  // Load messages when conversation changes
+  
   useEffect(() => {
     if (!selectedConversationId) return;
 
@@ -62,10 +63,10 @@ export const ChatView: React.FC = () => {
         );
         setMessages(data.messages);
 
-        // Mark as read
+        
         await chatService.markConversationAsRead(selectedConversationId);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error al cargar mensajes');
+        setError(err instanceof Error ? err.message : 'Error loading messages');
       } finally {
         setIsLoadingMessages(false);
       }
@@ -73,7 +74,7 @@ export const ChatView: React.FC = () => {
 
     loadMessages();
 
-    // Subscribe to real-time messages
+    
     const unsubscribe = chatService.subscribeToMessages(
       selectedConversationId,
       (newMessage) => {
@@ -88,15 +89,20 @@ export const ChatView: React.FC = () => {
     if (!selectedConversationId) return;
 
     try {
-      setIsSending(true);
+      setIsEncrypting(true);
       setError(null);
+      
+      await new Promise(resolve => setTimeout(resolve, 600));
+      setIsEncrypting(false);
+
+      setIsSending(true);
       const message = await chatService.sendMessage({
         conversationId: selectedConversationId,
         content,
       });
       setMessages((prev) => [...prev, message]);
 
-      // Update last message in conversation
+      
       setConversations((prev) =>
         prev.map((c) =>
           c.id === selectedConversationId
@@ -109,7 +115,7 @@ export const ChatView: React.FC = () => {
         )
       );
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al enviar mensaje');
+      setError(err instanceof Error ? err.message : 'Error sending message');
     } finally {
       setIsSending(false);
     }
@@ -119,22 +125,22 @@ export const ChatView: React.FC = () => {
     (c) => c.id === selectedConversationId
   );
 
-  // Mock current user ID - in production, get from auth context
+  
   const currentUserId = 'current-user-id';
 
   return (
     <div className="flex h-screen flex-col gap-4">
-      {/* Header */}
+      
       <div className="rounded-2xl bg-white shadow-sm border border-gray-100 p-6">
         <h1 className="text-2xl font-bold text-gray-900">
-          Mensajería y Chat
+          Messaging and Chat
         </h1>
         <p className="mt-2 text-gray-600">
-          Comunícate de forma segura con el equipo del caso
+          Communicate securely with the case team
         </p>
       </div>
 
-      {/* Error Display */}
+      
       {error && (
         <div className="flex items-center gap-3 rounded-lg bg-error/10 p-4 text-error">
           <AlertTriangle className="h-5 w-5 flex-shrink-0" />
@@ -142,11 +148,11 @@ export const ChatView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Content */}
+      
       <div className="flex-1 grid grid-cols-1 gap-4 lg:grid-cols-4 overflow-hidden">
-        {/* Left: Conversation List */}
+        
         <div className="lg:col-span-1 rounded-2xl bg-white shadow-sm border border-gray-100 p-4 overflow-y-auto">
-          <h2 className="mb-4 font-semibold text-gray-900">Conversaciones</h2>
+          <h2 className="mb-4 font-semibold text-gray-900">Conversations</h2>
           <ConversationList
             conversations={conversations}
             selectedConversationId={selectedConversationId}
@@ -155,21 +161,21 @@ export const ChatView: React.FC = () => {
           />
         </div>
 
-        {/* Right: Messages */}
+        
         <div className="lg:col-span-3 rounded-2xl bg-white shadow-sm border border-gray-100 p-4 flex flex-col overflow-hidden">
           {selectedConversation ? (
             <>
-              {/* Header */}
+              
               <div className="mb-4 pb-4 border-b border-gray-100">
                 <h2 className="font-semibold text-gray-900">
-                  Caso: {selectedConversation.caseId}
+                  Case: {selectedConversation.caseId}
                 </h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  {selectedConversation.participants.length} participante(s)
+                  {selectedConversation.participants.length} participant(s)
                 </p>
               </div>
 
-              {/* Messages List */}
+              
               {isLoadingMessages ? (
                 <div className="flex items-center justify-center flex-1">
                   <Loader className="h-5 w-5 animate-spin text-primary" />
@@ -182,14 +188,14 @@ export const ChatView: React.FC = () => {
                 />
               )}
 
-              {/* Message Input */}
+              
               <div className="mt-4 pt-4 border-t border-gray-100">
-                <MessageInput onSend={handleSendMessage} isLoading={isSending} />
+                <MessageInput onSend={handleSendMessage} isLoading={isSending} isEncrypting={isEncrypting} />
               </div>
             </>
           ) : (
             <div className="flex items-center justify-center h-full text-gray-500">
-              <p>Selecciona una conversación para empezar</p>
+              <p>Select a conversation to start</p>
             </div>
           )}
         </div>

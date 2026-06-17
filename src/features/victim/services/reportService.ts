@@ -47,7 +47,7 @@ const getMockData = () => {
     const stored = sessionStorage.getItem(STORAGE_KEY)
     if (stored) return JSON.parse(stored)
   } catch {
-    /* empty */
+    
   }
 
   return JSON.parse(JSON.stringify(mockData))
@@ -57,7 +57,7 @@ const saveMockData = (data: unknown) => {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   } catch {
-    /* empty */
+    
   }
 }
 
@@ -142,6 +142,7 @@ const mapBackendDenunciaToReport = (
       denuncia.updatedAt || denuncia.fechaDenuncia || denuncia.createdAt || new Date().toISOString(),
     psychologistId: denuncia.psychologistId,
     defenderId: denuncia.defenderId,
+    location: denuncia.direccion || denuncia.location || fallback?.location,
   }
 }
 

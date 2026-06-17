@@ -31,7 +31,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
 
   const handleConfirm = async () => {
     if (!selectedPsychologist && !selectedDefender) {
-      alert('Selecciona al menos un profesional');
+      alert('Select at least one professional');
       return;
     }
 
@@ -41,7 +41,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
       defenderLegalId: selectedDefender,
       priority,
       assignedAt: new Date().toISOString(),
-      assignedBy: 'current-user-id', // TODO: Obtener del contexto
+      assignedBy: 'current-user-id', 
     });
 
     onCancel();
@@ -52,9 +52,9 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="w-full max-w-lg rounded-2xl bg-surface-container-lowest p-6 shadow-lg">
-        {/* Header */}
+        
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-primary">Asignar Caso</h2>
+          <h2 className="text-xl font-bold text-primary">Assign Case</h2>
           <button
             onClick={onCancel}
             className="rounded-full p-1 text-on-surface-variant hover:bg-surface-container-low"
@@ -63,10 +63,10 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
           </button>
         </div>
 
-        {/* Priority Assignment */}
+        
         <div className="mb-6 space-y-3">
           <label className="block text-sm font-semibold text-on-surface">
-            Prioridad
+            Priority
           </label>
           <div className="grid grid-cols-2 gap-2">
             {(['critical', 'high', 'medium', 'low'] as CasePriority[]).map(
@@ -87,67 +87,67 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
           </div>
         </div>
 
-        {/* Psychologist Selection */}
+        
         <div className="mb-6 space-y-3">
           <label className="block text-sm font-semibold text-on-surface">
-            Psicólogo
+            Psychologist
           </label>
           <select
             value={selectedPsychologist || ''}
             onChange={(e) => setSelectedPsychologist(e.target.value || undefined)}
             className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary"
           >
-            <option value="">-- Sin asignar --</option>
+            <option value="">-- Unassigned --</option>
             {psychologists.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} ({p.caseCount} casos)
+                {p.name} ({p.caseCount} cases)
               </option>
             ))}
           </select>
         </div>
 
-        {/* Defender Selection */}
+        
         <div className="mb-6 space-y-3">
           <label className="block text-sm font-semibold text-on-surface">
-            Defensor Legal
+            Legal Defender
           </label>
           <select
             value={selectedDefender || ''}
             onChange={(e) => setSelectedDefender(e.target.value || undefined)}
             className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary"
           >
-            <option value="">-- Sin asignar --</option>
+            <option value="">-- Unassigned --</option>
             {defenders.map((d) => (
               <option key={d.id} value={d.id}>
-                {d.name} ({d.caseCount} casos)
+                {d.name} ({d.caseCount} cases)
               </option>
             ))}
           </select>
         </div>
 
-        {/* Warning */}
+        
         {priority === 'critical' && (
           <div className="mb-6 flex gap-3 rounded-lg bg-red-100/50 p-3 text-sm text-red-700">
             <AlertTriangle className="h-5 w-5 flex-shrink-0" />
-            <p>Este es un caso crítico. Se notificará inmediatamente.</p>
+            <p>This is a critical case. It will be notified immediately.</p>
           </div>
         )}
 
-        {/* Actions */}
+        
         <div className="flex gap-3">
           <button
             onClick={onCancel}
             disabled={isLoading}
             className="flex-1 rounded-lg border border-outline-variant px-4 py-2 font-semibold text-on-surface transition-colors hover:bg-surface-container-low disabled:opacity-50"
           >
-            Cancelar
+            Cancel
           </button>
           <button
             onClick={handleConfirm}
             disabled={isLoading || (!selectedPsychologist && !selectedDefender)}
             className="flex-1 rounded-lg bg-primary px-4 py-2 font-semibold text-on-primary transition-colors hover:bg-primary-container disabled:opacity-50"
           >
-            {isLoading ? 'Asignando...' : 'Confirmar'}
+            {isLoading ? 'Assigning...' : 'Confirm'}
           </button>
         </div>
       </div>

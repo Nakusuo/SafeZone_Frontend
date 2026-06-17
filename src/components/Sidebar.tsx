@@ -22,12 +22,12 @@ const getNavigationItems = (role?: string) => {
     },
     {
       label: 'Calendar',
-      path: '/calendario',
+      path: '/calendar',
       icon: CalendarIcon,
     },
   ]
 
-  // Items adicionales según el rol (si se agregan páginas en el futuro)
+  
   const roleSpecificItems: Record<string, any[]> = {
     VICTIM: [
       { label: 'My Reports', path: '/victim/my-reports', icon: FileText },
@@ -50,7 +50,7 @@ const getNavigationItems = (role?: string) => {
 export const Sidebar = ({ isOpen = true }: SidebarProps) => {
   const location = useLocation()
   
-  // Obtener rol del usuario
+  
   const userData = sessionStorage.getItem('user')
   const user = userData ? JSON.parse(userData) : null
   const navigationItems = getNavigationItems(user?.role)

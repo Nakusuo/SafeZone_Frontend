@@ -15,7 +15,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Load notifications on mount
+  
   useEffect(() => {
     loadNotifications();
   }, []);
@@ -64,7 +64,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
 
   return (
     <div className="relative">
-      {/* Bell Button */}
+      
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative rounded-full p-2 hover:bg-surface-container transition-colors"
@@ -77,14 +77,14 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
         )}
       </button>
 
-      {/* Dropdown Panel */}
+      
       {isOpen && (
         <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl bg-surface-container-lowest shadow-lg">
-          {/* Header */}
+          
           <div className="border-b border-outline-variant/20 p-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-on-surface">
-                Notificaciones ({unreadCount})
+                Notifications ({unreadCount})
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
@@ -95,15 +95,15 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
             </div>
           </div>
 
-          {/* Notifications List */}
+          
           <div className="max-h-96 space-y-0 overflow-y-auto">
             {isLoading ? (
               <div className="p-4 text-center text-on-surface-variant">
-                Cargando...
+                Loading...
               </div>
             ) : notifications.length === 0 ? (
               <div className="p-4 text-center text-on-surface-variant">
-                Sin notificaciones
+                No notifications
               </div>
             ) : (
               notifications.map((notification) => (
@@ -131,7 +131,7 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
                       </p>
                       <p className="mt-1 text-xs text-on-surface-variant">
                         {new Date(notification.createdAt).toLocaleDateString(
-                          'es-ES',
+                          'en-US',
                           { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
                         )}
                       </p>
@@ -148,13 +148,13 @@ export const NotificationBell: React.FC<NotificationBellProps> = ({
             )}
           </div>
 
-          {/* Footer Link */}
+          
           <div className="border-t border-outline-variant/20 p-3 text-center">
             <a
               href="/notifications"
               className="text-sm font-semibold text-primary hover:text-primary/90"
             >
-              Ver todas las notificaciones →
+              See all notifications →
             </a>
           </div>
         </div>

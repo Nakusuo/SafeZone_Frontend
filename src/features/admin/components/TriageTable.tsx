@@ -17,10 +17,10 @@ const priorityColors: Record<CasePriority, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  new: 'Nuevo',
-  assigned: 'Asignado',
-  'in-progress': 'En Curso',
-  closed: 'Cerrado',
+  new: 'New',
+  assigned: 'Assigned',
+  'in-progress': 'In Progress',
+  closed: 'Closed',
 };
 
 export const TriageTable: React.FC<TriageTableProps> = ({
@@ -32,7 +32,7 @@ export const TriageTable: React.FC<TriageTableProps> = ({
   if (isLoading) {
     return (
       <div className="w-full p-8 text-center text-on-surface-variant">
-        Cargando casos...
+        Loading cases...
       </div>
     );
   }
@@ -41,7 +41,7 @@ export const TriageTable: React.FC<TriageTableProps> = ({
     return (
       <div className="w-full p-8 text-center">
         <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-on-surface-variant" />
-        <p className="text-on-surface-variant">No hay casos pendientes</p>
+        <p className="text-on-surface-variant">No pending cases</p>
       </div>
     );
   }
@@ -55,22 +55,22 @@ export const TriageTable: React.FC<TriageTableProps> = ({
               ID
             </th>
             <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Víctima
+              Victim
             </th>
             <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Tipo
+              Type
             </th>
             <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Prioridad
+              Priority
             </th>
             <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Estado
+              Status
             </th>
             <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Hace
+              Ago
             </th>
             <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Acciones
+              Actions
             </th>
           </tr>
         </thead>
@@ -133,7 +133,7 @@ export const TriageTable: React.FC<TriageTableProps> = ({
                 </td>
                 <td className="px-4 py-3">
                   <button className="rounded px-3 py-1 text-xs font-semibold text-primary hover:bg-primary-fixed transition-colors">
-                    Asignar
+                    Assign
                   </button>
                 </td>
               </tr>

@@ -26,7 +26,7 @@ export const ProfilePage = () => {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      // Actualizar en localStorage
+      
       sessionStorage.setItem('user', JSON.stringify(formData))
       setUser(formData)
       setIsEditing(false)
@@ -39,9 +39,9 @@ export const ProfilePage = () => {
 
   const getRoleLabel = (role: string) => {
     const labels: Record<string, string> = {
-      VICTIM: 'Víctima',
-      PSYCHOLOGIST: 'Psicólogo/a',
-      DEFENDER: 'Defensor/a Legal',
+      VICTIM: 'Victim',
+      PSYCHOLOGIST: 'Psychologist',
+      DEFENDER: 'Legal Defender',
     }
     return labels[role] || role
   }
@@ -58,37 +58,37 @@ export const ProfilePage = () => {
   if (!user) {
     return (
       <div className="p-8 text-center">
-        <p className="text-gray-600">Cargando perfil...</p>
+        <p className="text-gray-600">Loading profile...</p>
       </div>
     )
   }
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8">
         <button
           onClick={() => navigate('/dashboard/victim')}
           className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Volver
+          Back
         </button>
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">Mi Perfil</h1>
+          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
           {!isEditing && (
             <Button
               variant="outline"
               onClick={() => setIsEditing(true)}
             >
               <Edit2 className="w-4 h-4 mr-2" />
-              Editar
+              Edit
             </Button>
           )}
         </div>
       </div>
 
-      {/* Avatar y rol */}
+      
       <Card className="mb-6 text-center py-8">
         <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4">
           <User className="w-10 h-10 text-white" />
@@ -101,17 +101,17 @@ export const ProfilePage = () => {
         </div>
       </Card>
 
-      {/* Información Personal */}
+      
       {isEditing ? (
-        <Card title="Editar Información" className="mb-6">
+        <Card title="Edit Information" className="mb-6">
           <div className="space-y-4">
             <Input
-              label="Nombre completo"
+              label="Full name"
               value={formData?.name}
               onChange={(value) => handleChange('name', value)}
             />
             <Input
-              label="Correo electrónico"
+              label="Email address"
               type="email"
               value={formData?.email}
               onChange={(value) => handleChange('email', value)}
@@ -129,7 +129,7 @@ export const ProfilePage = () => {
                   disabled={isSaving}
                 >
                   <X className="w-4 h-4 mr-2" />
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button
                   variant="primary"
@@ -137,19 +137,19 @@ export const ProfilePage = () => {
                   isLoading={isSaving}
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Guardar cambios
+                  Save changes
                 </Button>
               </div>
             </div>
           </div>
         </Card>
       ) : (
-        <Card title="Información Personal" className="mb-6">
+        <Card title="Personal Information" className="mb-6">
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <User className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-600">Nombre</p>
+                <p className="text-sm text-gray-600">Name</p>
                 <p className="font-semibold text-gray-900">{user.name}</p>
               </div>
             </div>
@@ -157,7 +157,7 @@ export const ProfilePage = () => {
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <Mail className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-600">Correo electrónico</p>
+                <p className="text-sm text-gray-600">Email Address</p>
                 <p className="font-semibold text-gray-900">{user.email}</p>
               </div>
             </div>
@@ -165,7 +165,7 @@ export const ProfilePage = () => {
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <Shield className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-600">Rol</p>
+                <p className="text-sm text-gray-600">Role</p>
                 <p className="font-semibold text-gray-900">{getRoleLabel(user.role)}</p>
               </div>
             </div>
@@ -174,9 +174,9 @@ export const ProfilePage = () => {
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                 <Calendar className="w-5 h-5 text-gray-600" />
                 <div>
-                  <p className="text-sm text-gray-600">Fecha de registro</p>
+                  <p className="text-sm text-gray-600">Registration Date</p>
                   <p className="font-semibold text-gray-900">
-                    {new Date(user.createdAt).toLocaleDateString('es-ES', {
+                    {new Date(user.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
@@ -189,28 +189,28 @@ export const ProfilePage = () => {
         </Card>
       )}
 
-      {/* Seguridad */}
-      <Card title="Seguridad" className="mb-6">
+      
+      <Card title="Security" className="mb-6">
         <div className="space-y-3">
           <Alert
             type="info"
-            message="Tu contraseña está encriptada y protegida. Nunca la compartimos con terceros."
+            message="Your password is encrypted and protected. We never share it with third parties."
           />
-          <Button variant="outline" className="w-full">
-            Cambiar contraseña
+          <Button variant="outline" className="w-full" onClick={() => navigate('/victim/password')}>
+            Change password
           </Button>
         </div>
       </Card>
 
-      {/* Privacidad */}
-      <Card title="Privacidad y Datos">
+      
+      <Card title="Privacy and Data">
         <div className="space-y-3">
           <Alert
             type="info"
-            message="Todos tus datos están encriptados y solo los profesionales asignados pueden acceder a ellos."
+            message="All your data is encrypted and only assigned professionals can access it."
           />
           <Button variant="outline" className="w-full">
-            Ver política de privacidad
+            View privacy policy
           </Button>
         </div>
       </Card>

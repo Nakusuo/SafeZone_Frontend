@@ -30,7 +30,7 @@ export const TriageView: React.FC = () => {
         }
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : 'Error al cargar casos'
+          err instanceof Error ? err.message : 'Error loading cases'
         );
       } finally {
         setIsLoadingCases(false);
@@ -47,12 +47,12 @@ export const TriageView: React.FC = () => {
       try {
         const [psychList, defList] = await Promise.all([
           Promise.resolve([
-            { id: 'psy1', name: 'Dra. María García', caseCount: 3 },
-            { id: 'psy2', name: 'Dr. José López', caseCount: 5 },
+            { id: 'psy1', name: 'Dr. Maria Garcia', caseCount: 3 },
+            { id: 'psy2', name: 'Dr. Jose Lopez', caseCount: 5 },
           ]),
           Promise.resolve([
-            { id: 'def1', name: 'Lic. Ana Martínez', caseCount: 2 },
-            { id: 'def2', name: 'Lic. Roberto Díaz', caseCount: 4 },
+            { id: 'def1', name: 'Atty. Ana Martinez', caseCount: 2 },
+            { id: 'def2', name: 'Atty. Roberto Diaz', caseCount: 4 },
           ]),
         ]);
         setPsychologists(psychList);
@@ -91,7 +91,7 @@ export const TriageView: React.FC = () => {
       );
       setIsModalOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al asignar caso');
+      setError(err instanceof Error ? err.message : 'Error assigning case');
     }
   };
 
@@ -101,17 +101,17 @@ export const TriageView: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      
       <div className="rounded-2xl bg-surface-container-highest p-6">
         <h1 className="text-2xl font-bold text-on-surface">
-          Centro de Triaje y Asignación
+          Triage and Assignment Center
         </h1>
         <p className="mt-2 text-on-surface-variant">
-          Casos pendientes de revisión y asignación
+          Cases pending review and assignment
         </p>
       </div>
 
-      {/* Error Display */}
+      
       {error && (
         <div className="flex items-center gap-3 rounded-lg bg-error/10 p-4 text-error">
           <AlertTriangle className="h-5 w-5 flex-shrink-0" />
@@ -119,20 +119,20 @@ export const TriageView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Content Grid */}
+      
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Left: Case Table */}
+        
         <div className="lg:col-span-2">
           <div className="rounded-2xl bg-surface-container-lowest p-4">
             {isLoadingCases ? (
               <div className="flex items-center justify-center gap-2 py-12 text-on-surface-variant">
                 <Loader className="h-5 w-5 animate-spin" />
-                <span>Cargando casos...</span>
+                <span>Loading cases...</span>
               </div>
             ) : cases.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                 <AlertTriangle className="h-8 w-8 text-on-surface-variant" />
-                <p className="text-on-surface-variant">No hay casos pendientes</p>
+                <p className="text-on-surface-variant">No pending cases</p>
               </div>
             ) : (
               <TriageTable
@@ -145,31 +145,31 @@ export const TriageView: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Case Details & Actions */}
+        
         <div className="flex flex-col gap-4">
           <CaseDetailSidebar
             caseData={selectedCase ?? null}
             isLoading={isLoadingDetail}
           />
 
-          {/* Action Button */}
+          
           {selectedCase && selectedCase.status === 'new' && (
             <button
               onClick={() => setIsModalOpen(true)}
               className="rounded-lg bg-primary px-4 py-3 font-semibold text-on-primary hover:bg-primary/90 transition-colors"
             >
-              Asignar Caso
+              Assign Case
             </button>
           )}
           {selectedCase && selectedCase.status !== 'new' && (
             <button className="rounded-lg bg-surface-container px-4 py-3 font-semibold text-on-surface-variant cursor-not-allowed opacity-50">
-              Ya Asignado
+              Already Assigned
             </button>
           )}
         </div>
       </div>
 
-      {/* Assignment Modal */}
+      
       {selectedCase && (
         <AssignmentModal
           isOpen={isModalOpen}

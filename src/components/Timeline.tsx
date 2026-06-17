@@ -58,7 +58,7 @@ export const Timeline = ({ events, orientation = 'vertical' }: TimelineProps) =>
                 <Icon className={`w-5 h-5 ${styles.color}`} />
                 <p className="text-xs font-medium text-gray-900 mt-1 text-center">{event.title}</p>
                 <p className="text-xs text-gray-600 text-center">
-                  {new Date(event.date).toLocaleDateString('es-ES')}
+                  {new Date(event.date).toLocaleDateString('en-US')}
                 </p>
               </div>
               {index < events.length - 1 && (
@@ -73,7 +73,7 @@ export const Timeline = ({ events, orientation = 'vertical' }: TimelineProps) =>
 
   return (
     <div className="space-y-6 relative">
-      {/* Línea vertical */}
+      
       <div className="absolute left-5 top-8 bottom-0 w-1 bg-gradient-to-b from-primary to-gray-300" />
 
       {events.map((event) => {
@@ -82,21 +82,21 @@ export const Timeline = ({ events, orientation = 'vertical' }: TimelineProps) =>
 
         return (
           <div key={event.id} className="flex gap-6 relative">
-            {/* Icono */}
+            
             <div className="flex-shrink-0 flex items-center justify-center w-11 h-11 rounded-full z-10 relative">
               <div className={`${styles.bg} rounded-full p-2`}>
                 <Icon className={`w-5 h-5 ${styles.color}`} />
               </div>
             </div>
 
-            {/* Contenido */}
+            
             <div className="flex-1 pt-1">
               <h4 className="font-semibold text-gray-900">{event.title}</h4>
               {event.description && (
                 <p className="text-sm text-gray-600 mt-1">{event.description}</p>
               )}
               <p className="text-xs text-gray-500 mt-2">
-                {new Date(event.date).toLocaleDateString('es-ES', {
+                {new Date(event.date).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',

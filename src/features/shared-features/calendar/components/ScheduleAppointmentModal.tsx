@@ -24,7 +24,7 @@ export const ScheduleAppointmentModal: React.FC<ScheduleAppointmentModalProps> =
     e.preventDefault()
     setIsLoading(true)
 
-    // Simulate API call
+    
     setTimeout(() => {
       onAdd({
         id: Date.now().toString(),
@@ -43,7 +43,7 @@ export const ScheduleAppointmentModal: React.FC<ScheduleAppointmentModalProps> =
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
             <CalendarIcon className="w-5 h-5 text-primary" />
-            Agendar Nueva Cita
+            Schedule New Appointment
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X className="w-5 h-5" />
@@ -52,21 +52,21 @@ export const ScheduleAppointmentModal: React.FC<ScheduleAppointmentModalProps> =
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <Input
-            label="Título de la reunión"
-            placeholder="Ej. Entrevista preliminar, Audiencia #1..."
+            label="Meeting Title"
+            placeholder="e.g., Preliminary interview, Hearing #1..."
             value={formData.title}
             onChange={(val) => setFormData(prev => ({ ...prev, title: val }))}
             required
           />
 
           <Select
-            label="Tipo de Cita"
+            label="Appointment Type"
             value={formData.type}
             onChange={(val) => setFormData(prev => ({ ...prev, type: val }))}
             options={[
-              { value: 'PSYCHOLOGICAL', label: 'Atención Psicológica' },
-              { value: 'LEGAL', label: 'Audiencia / Revisión Legal' },
-              { value: 'GENERAL', label: 'Reunión General' }
+              { value: 'PSYCHOLOGICAL', label: 'Psychological Consultation' },
+              { value: 'LEGAL', label: 'Hearing / Legal Review' },
+              { value: 'GENERAL', label: 'General Meeting' }
             ]}
             required
           />
@@ -74,7 +74,7 @@ export const ScheduleAppointmentModal: React.FC<ScheduleAppointmentModalProps> =
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Fecha
+                Date
               </label>
               <input
                 type="date"
@@ -86,7 +86,7 @@ export const ScheduleAppointmentModal: React.FC<ScheduleAppointmentModalProps> =
             </div>
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Hora
+                Time
               </label>
               <input
                 type="time"
@@ -99,19 +99,19 @@ export const ScheduleAppointmentModal: React.FC<ScheduleAppointmentModalProps> =
           </div>
 
           <TextArea
-            label="Descripción o Enlace de Videollamada"
+            label="Description or Video Call Link"
             value={formData.description}
             onChange={(val) => setFormData(prev => ({ ...prev, description: val }))}
-            placeholder="Añade detalles, instrucciones o el enlace de Meet/Zoom..."
+            placeholder="Add details, instructions or the Meet/Zoom link..."
             rows={3}
           />
 
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
             <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
-              Cancelar
+              Cancel
             </Button>
             <Button type="submit" variant="primary" isLoading={isLoading}>
-              Agendar
+              Schedule
             </Button>
           </div>
         </form>

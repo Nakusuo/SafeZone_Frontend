@@ -8,17 +8,17 @@ export const CalendarView = () => {
   const [appointments, setAppointments] = useState([
     {
       id: '1',
-      title: 'Entrevista Preliminar (Caso #123)',
-      description: 'Evaluación inicial con la víctima. Enlace: meet.google.com/abc-xyz',
+      title: 'Preliminary Interview (Case #123)',
+      description: 'Initial evaluation with the victim. Link: meet.google.com/abc-xyz',
       type: 'PSYCHOLOGICAL',
-      date: new Date(new Date().getTime() + 86400000), // Tomorrow
+      date: new Date(new Date().getTime() + 86400000), 
     },
     {
       id: '2',
-      title: 'Audiencia Cautelar (Caso #98)',
-      description: 'Presentación de pruebas ante el juzgado 5to penal.',
+      title: 'Pre-trial Hearing (Case #98)',
+      description: 'Presentation of evidence before the 5th criminal court.',
       type: 'LEGAL',
-      date: new Date(new Date().getTime() + 86400000 * 3), // In 3 days
+      date: new Date(new Date().getTime() + 86400000 * 3), 
     }
   ])
 
@@ -48,58 +48,58 @@ export const CalendarView = () => {
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
             <CalendarIcon className="w-8 h-8 text-primary" />
-            Agenda de Atención
+            Calendar Schedule
           </h1>
           <p className="text-gray-600">
-            Gestiona y visualiza tus próximas citas, audiencias y evaluaciones.
+            Manage and view your upcoming appointments, hearings, and evaluations.
           </p>
         </div>
         
         {isProfessional && (
           <Button variant="primary" onClick={() => setIsModalOpen(true)}>
             <Plus className="w-4 h-4 mr-2 inline" />
-            Nueva Cita
+            New Appointment
           </Button>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Mini Calendar or Summary */}
+        
         <div className="lg:col-span-1 space-y-6">
-          <Card title="Resumen del Mes" className="border-t-4 border-primary">
+          <Card title="Month Summary" className="border-t-4 border-primary">
             <div className="space-y-4">
               <div className="flex justify-between items-center p-3 bg-teal-50 rounded-xl">
-                <span className="text-sm font-medium text-teal-900">Atenciones Psicológicas</span>
+                <span className="text-sm font-medium text-teal-900">Psychological Consultations</span>
                 <span className="text-lg font-bold text-teal-700">
                   {appointments.filter(a => a.type === 'PSYCHOLOGICAL').length}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-indigo-50 rounded-xl">
-                <span className="text-sm font-medium text-indigo-900">Audiencias Legales</span>
+                <span className="text-sm font-medium text-indigo-900">Legal Hearings</span>
                 <span className="text-lg font-bold text-indigo-700">
                   {appointments.filter(a => a.type === 'LEGAL').length}
                 </span>
               </div>
               <div className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
-                <span className="text-sm font-medium text-gray-900">Total Programado</span>
+                <span className="text-sm font-medium text-gray-900">Total Scheduled</span>
                 <span className="text-lg font-bold text-gray-700">{appointments.length}</span>
               </div>
             </div>
           </Card>
         </div>
 
-        {/* Right Column: Upcoming Events List */}
+        
         <div className="lg:col-span-2">
-          <Card title="Próximos Eventos">
+          <Card title="Upcoming Events">
             {appointments.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 <CalendarIcon className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                <p>No tienes citas programadas próximamente.</p>
+                <p>You have no appointments scheduled soon.</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -119,11 +119,11 @@ export const CalendarView = () => {
                     <div className="flex items-center gap-4 text-sm font-medium">
                       <div className="flex items-center gap-1.5 bg-white/50 px-3 py-1.5 rounded-full">
                         <CalendarIcon className="w-4 h-4" />
-                        {app.date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' })}
+                        {app.date.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
                       </div>
                       <div className="flex items-center gap-1.5 bg-white/50 px-3 py-1.5 rounded-full">
                         <Clock className="w-4 h-4" />
-                        {app.date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                        {app.date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
                   </div>

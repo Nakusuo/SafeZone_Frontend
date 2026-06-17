@@ -6,15 +6,15 @@ import type {
   ConversationSettings,
 } from '../types';
 
-// Mock Data
+
 const MOCK_MESSAGES: ChatMessage[] = [
   {
     id: 'msg-001',
     conversationId: 'conv-001',
     senderId: 'user-victim-001',
-    senderName: 'María González',
+    senderName: 'Maria Gonzalez',
     senderRole: 'victim',
-    content: '¿Cuándo podré hablar con la psicóloga?',
+    content: 'When will I be able to talk to the psychologist?',
     createdAt: new Date(Date.now() - 2 * 60 * 60000),
     isRead: true,
   },
@@ -22,9 +22,9 @@ const MOCK_MESSAGES: ChatMessage[] = [
     id: 'msg-002',
     conversationId: 'conv-001',
     senderId: 'psy-001',
-    senderName: 'Dra. María García',
+    senderName: 'Dr. Maria Garcia',
     senderRole: 'psychologist',
-    content: 'Hola María, estoy disponible mañana a las 10:00 AM. ¿Te viene bien?',
+    content: 'Hello Maria, I am available tomorrow at 10:00 AM. Does that work for you?',
     createdAt: new Date(Date.now() - 90 * 60000),
     isRead: true,
   },
@@ -32,9 +32,9 @@ const MOCK_MESSAGES: ChatMessage[] = [
     id: 'msg-003',
     conversationId: 'conv-001',
     senderId: 'def-001',
-    senderName: 'Lic. Ana Martínez',
+    senderName: 'Atty. Ana Martinez',
     senderRole: 'defender',
-    content: 'María, tengo buenas noticias sobre tu caso. He obtenido la orden de alejamiento.',
+    content: 'Maria, I have good news about your case. I have obtained the restraining order.',
     createdAt: new Date(Date.now() - 60 * 60000),
     isRead: true,
   },
@@ -42,9 +42,9 @@ const MOCK_MESSAGES: ChatMessage[] = [
     id: 'msg-004',
     conversationId: 'conv-001',
     senderId: 'user-victim-001',
-    senderName: 'María González',
+    senderName: 'Maria Gonzalez',
     senderRole: 'victim',
-    content: 'Gracias Lic. Ana, eso me hace sentir más segura. ¿Qué sigue ahora?',
+    content: 'Thank you Atty. Ana, that makes me feel safer. What follows next?',
     createdAt: new Date(Date.now() - 30 * 60000),
     isRead: true,
   },
@@ -52,9 +52,9 @@ const MOCK_MESSAGES: ChatMessage[] = [
     id: 'msg-005',
     conversationId: 'conv-001',
     senderId: 'def-001',
-    senderName: 'Lic. Ana Martínez',
+    senderName: 'Atty. Ana Martinez',
     senderRole: 'defender',
-    content: 'Ahora procederemos con la audiencia de custodia. Te citaré cuando tenga la fecha confirmada.',
+    content: 'Now we will proceed with the custody hearing. I will cite you once I have the confirmed date.',
     createdAt: new Date(Date.now() - 10 * 60000),
     isRead: false,
   },
@@ -65,9 +65,9 @@ const MOCK_CONVERSATIONS: Conversation[] = [
     id: 'conv-001',
     caseId: 'CASE-001',
     participants: [
-      { userId: 'user-victim-001', userName: 'María González', userRole: 'victim', joinedAt: new Date(Date.now() - 48 * 60 * 60000), status: 'available' },
-      { userId: 'psy-001', userName: 'Dra. María García', userRole: 'psychologist', joinedAt: new Date(Date.now() - 48 * 60 * 60000), status: 'available' },
-      { userId: 'def-001', userName: 'Lic. Ana Martínez', userRole: 'defender', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'offline' },
+      { userId: 'user-victim-001', userName: 'Maria Gonzalez', userRole: 'victim', joinedAt: new Date(Date.now() - 48 * 60 * 60000), status: 'available' },
+      { userId: 'psy-001', userName: 'Dr. Maria Garcia', userRole: 'psychologist', joinedAt: new Date(Date.now() - 48 * 60 * 60000), status: 'available' },
+      { userId: 'def-001', userName: 'Atty. Ana Martinez', userRole: 'defender', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'offline' },
     ],
     lastMessage: MOCK_MESSAGES[4],
     lastMessageAt: MOCK_MESSAGES[4].createdAt,
@@ -79,16 +79,16 @@ const MOCK_CONVERSATIONS: Conversation[] = [
     id: 'conv-002',
     caseId: 'CASE-002',
     participants: [
-      { userId: 'user-victim-002', userName: 'Ana Rodríguez', userRole: 'victim', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'available' },
-      { userId: 'psy-002', userName: 'Dr. José López', userRole: 'psychologist', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'available' },
+      { userId: 'user-victim-002', userName: 'Ana Rodriguez', userRole: 'victim', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'available' },
+      { userId: 'psy-002', userName: 'Dr. Jose Lopez', userRole: 'psychologist', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'available' },
     ],
     lastMessage: {
       id: 'msg-006',
       conversationId: 'conv-002',
       senderId: 'psy-002',
-      senderName: 'Dr. José López',
+      senderName: 'Dr. Jose Lopez',
       senderRole: 'psychologist',
-      content: 'Ana, tenemos una buena estrategia para trabajar el control emocional. Veamos en la sesión.',
+      content: 'Ana, we have a good strategy to work on emotional control. Let us see in the session.',
       createdAt: new Date(Date.now() - 2 * 60 * 60000),
       isRead: true,
     },
@@ -100,7 +100,7 @@ const MOCK_CONVERSATIONS: Conversation[] = [
 ];
 
 export const chatService = {
-  // Get all conversations for current user
+  
   async getConversations(): Promise<Conversation[]> {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -109,7 +109,7 @@ export const chatService = {
     });
   },
 
-  // Get specific conversation with message history
+  
   async getConversation(
     conversationId: string,
     limit = 50,
@@ -132,7 +132,7 @@ export const chatService = {
     });
   },
 
-  // Get or create conversation for a case
+  
   async getOrCreateConversation(caseId: string): Promise<Conversation> {
     const existing = MOCK_CONVERSATIONS.find(c => c.caseId === caseId);
     if (existing) {
@@ -149,7 +149,7 @@ export const chatService = {
     return new Promise(resolve => setTimeout(() => resolve(newConv), 300));
   },
 
-  // Send a message
+  
   async sendMessage(data: CreateMessageDto): Promise<ChatMessage> {
     const newMessage: ChatMessage = {
       id: `msg-${Date.now()}`,
@@ -172,7 +172,7 @@ export const chatService = {
     return new Promise(resolve => setTimeout(() => resolve(newMessage), 300));
   },
 
-  // Edit message
+  
   async editMessage(messageId: string, content: string): Promise<ChatMessage> {
     const message = MOCK_MESSAGES.find(m => m.id === messageId);
     if (message) {
@@ -182,21 +182,21 @@ export const chatService = {
     return new Promise(resolve => setTimeout(() => resolve(message!), 200));
   },
 
-  // Delete message
+  
   async deleteMessage(messageId: string): Promise<void> {
     const index = MOCK_MESSAGES.findIndex(m => m.id === messageId);
     if (index > -1) MOCK_MESSAGES.splice(index, 1);
     return new Promise(resolve => setTimeout(resolve, 200));
   },
 
-  // Mark message as read
+  
   async markAsRead(messageId: string): Promise<void> {
     const message = MOCK_MESSAGES.find(m => m.id === messageId);
     if (message) message.isRead = true;
     return new Promise(resolve => setTimeout(resolve, 100));
   },
 
-  // Mark all messages in conversation as read
+  
   async markConversationAsRead(conversationId: string): Promise<void> {
     MOCK_MESSAGES.filter(m => m.conversationId === conversationId).forEach(m => m.isRead = true);
     const conv = MOCK_CONVERSATIONS.find(c => c.id === conversationId);
@@ -204,7 +204,7 @@ export const chatService = {
     return new Promise(resolve => setTimeout(resolve, 200));
   },
 
-  // Get unread message count
+  
   async getUnreadCount(): Promise<{ total: number; byConversation: Record<string, number> }> {
     const byConversation: Record<string, number> = {};
     let total = 0;
@@ -219,7 +219,7 @@ export const chatService = {
     });
   },
 
-  // Update conversation settings
+  
   async updateConversationSettings(
     conversationId: string,
     settings: Partial<ConversationSettings>
@@ -235,14 +235,14 @@ export const chatService = {
     });
   },
 
-  // Archive conversation
+  
   async archiveConversation(conversationId: string): Promise<void> {
     const conversation = MOCK_CONVERSATIONS.find(c => c.id === conversationId);
     if (conversation) conversation.isArchived = true;
     return new Promise(resolve => setTimeout(resolve, 200));
   },
 
-  // Subscribe to real-time messages (WebSocket)
+  
   subscribeToMessages(
     conversationId: string,
     onMessage: (message: ChatMessage) => void,
@@ -257,7 +257,7 @@ export const chatService = {
     return cleanup;
   },
 
-  // Subscribe to participant status changes
+  
   subscribeToStatusUpdates(
     conversationId: string,
     onStatusChange: (participant: any) => void

@@ -50,51 +50,49 @@ const MOCK_CASES: TriageCase[] = [
 const delay = (ms = config.MOCK_DELAY) => new Promise((r) => setTimeout(r, ms))
 
 export const triageService = {
-  // Casos pendientes de asignar — Spring: GET /api/admin/cases/pending
   getPendingCases: async (): Promise<TriageCase[]> => {
     if (config.USE_MOCK) { await delay(); return [...MOCK_CASES] }
     const { data } = await apiClient.get<any[]>('/denuncias/listar')
 
-return data.map((d) => ({
-  id: d.id,
-  reportId: d.id,
+    return data.map((d) => ({
+      id: d.id,
+      reportId: d.id,
 
-  victimName: d.usuario?.nombre || 'Víctima',
-  victimEmail: d.usuario?.email || 'Sin correo',
+      victimName: d.usuario?.nombre || 'Víctima',
+      victimEmail: d.usuario?.email || 'Sin correo',
 
-  incidentType:
-    d.tipoViolencia === 'PHYSICAL_VIOLENCE'
-      ? 'physical'
-      : d.tipoViolencia === 'PSYCHOLOGICAL_ABUSE'
-      ? 'psychological'
-      : d.tipoViolencia === 'SEXUAL_VIOLENCE'
-      ? 'sexual'
-      : 'other',
+      incidentType:
+        d.tipoViolencia === 'PHYSICAL_VIOLENCE'
+          ? 'physical'
+          : d.tipoViolencia === 'PSYCHOLOGICAL_ABUSE'
+            ? 'psychological'
+            : d.tipoViolencia === 'SEXUAL_VIOLENCE'
+              ? 'sexual'
+              : 'other',
 
-  priority:
-    d.nivelRiesgo === 'HIGH'
-      ? 'critical'
-      : d.nivelRiesgo === 'MEDIUM'
-      ? 'high'
-      : 'medium',
+      priority:
+        d.nivelRiesgo === 'HIGH'
+          ? 'critical'
+          : d.nivelRiesgo === 'MEDIUM'
+            ? 'high'
+            : 'medium',
 
-  status:
-    d.estado === 'PENDIENTE'
-      ? 'new'
-      : d.estado === 'ASIGNADO'
-      ? 'assigned'
-      : 'in-progress',
+      status:
+        d.estado === 'PENDIENTE'
+          ? 'new'
+          : d.estado === 'ASIGNADO'
+            ? 'assigned'
+            : 'in-progress',
 
-  description: d.descripcion,
-  location: d.direccion,
-  submittedAt: d.fechaDenuncia,
+      description: d.descripcion,
+      location: d.direccion,
+      submittedAt: d.fechaDenuncia,
 
-  assignedTo: null,
-  notes: ''
-}))
+      assignedTo: null,
+      notes: ''
+    }))
   },
 
-  // Detalle de un caso — Spring: GET /api/admin/cases/{id}
   getCaseDetail: async (caseId: string): Promise<TriageCase> => {
     if (config.USE_MOCK) { await delay(200); return MOCK_CASES.find(c => c.id === caseId) ?? MOCK_CASES[0] }
     const { data } = await apiClient.get<TriageCase>(`/admin/cases/${caseId}`)
@@ -110,13 +108,13 @@ return data.map((d) => ({
       return c ?? MOCK_CASES[0]
     }
     const { data } = await apiClient.patch<TriageCase>(
-  `/denuncias/${assignment.caseId}/asignar`,
-  {
-    psicologoId: assignment.psychologistId,
-    defensorLegalId: assignment.defenderLegalId,
-    asignadoPorId: assignment.assignedBy,
-    prioridad: assignment.priority,
-  }  )
+      `/denuncias/${assignment.caseId}/asignar`,
+      {
+        psicologoId: assignment.psychologistId,
+        defensorLegalId: assignment.defenderLegalId,
+        asignadoPorId: assignment.assignedBy,
+        prioridad: assignment.priority,
+      })
     return data
   },
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { UploadCloud, FileText, Image as ImageIcon, FileAudio, FileVideo, Trash2, Download, Eye } from 'lucide-react'
+import { UploadCloud, FileText, Image as ImageIcon, FileAudio, FileVideo, Trash2, Download, Eye, Lock } from 'lucide-react'
 import { Button } from '@/components'
 
 interface EvidenceFile {
@@ -16,11 +16,11 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
   const [files, setFiles] = useState<EvidenceFile[]>([
     {
       id: 'mock-1',
-      name: 'reporte_medico_inicial.pdf',
-      size: 1024 * 2500, // 2.5MB
+      name: 'initial_medical_report.pdf',
+      size: 1024 * 2500, 
       type: 'application/pdf',
       uploadedAt: new Date(Date.now() - 86400000),
-      uploadedBy: 'Dr. López (Psicólogo)',
+      uploadedBy: 'Dr. Lopez (Psychologist)',
     }
   ])
   const [isDragging, setIsDragging] = useState(false)
@@ -29,7 +29,7 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
 
   const userData = sessionStorage.getItem('user')
   const user = userData ? JSON.parse(userData) : null
-  const canUpload = user?.role !== 'ADMIN' // All participants can upload
+  const canUpload = user?.role !== 'ADMIN' 
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
@@ -57,20 +57,22 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
 
   const handleFiles = (newFiles: File[]) => {
     setIsUploading(true)
-    // Simulate upload delay
+    
     setTimeout(() => {
-      const uploadedFiles: EvidenceFile[] = newFiles.map(file => ({
-        id: Date.now().toString() + Math.random().toString(),
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        uploadedAt: new Date(),
-        uploadedBy: user?.name || 'Usuario',
-        url: URL.createObjectURL(file),
-      }))
-      setFiles(prev => [...uploadedFiles, ...prev])
-      setIsUploading(false)
-    }, 1000)
+      setTimeout(() => {
+        const uploadedFiles: EvidenceFile[] = newFiles.map(file => ({
+          id: Date.now().toString() + Math.random().toString(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          uploadedAt: new Date(),
+          uploadedBy: user?.name || 'User',
+          url: URL.createObjectURL(file),
+        }))
+        setFiles(prev => [...uploadedFiles, ...prev])
+        setIsUploading(false)
+      }, 800)
+    }, 1200)
   }
 
   const deleteFile = (id: string) => {
@@ -95,9 +97,9 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
       <div className="mb-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Repositorio de Evidencias</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Evidence Repository</h2>
         <p className="text-sm text-gray-600">
-          Archivos cifrados y restringidos únicamente al equipo asignado a este caso.
+          Encrypted files restricted only to the team assigned to this case.
         </p>
       </div>
 
@@ -122,7 +124,12 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
           />
           <UploadCloud className={`w-12 h-12 mx-auto mb-4 ${isDragging ? 'text-primary' : 'text-gray-400'}`} />
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
-            {isUploading ? 'Subiendo archivos...' : 'Sube o arrastra archivos aquí'}
+            {isUploading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Lock className="w-5 h-5 text-teal-600 animate-pulse" />
+                Encrypting and securing file (E2EE)...
+              </span>
+            ) : 'Upload or drag files here'}
           </h3>
           <p className="text-sm text-gray-500">
             JPG, PNG, PDF, MP4, MP3 (Max 50MB)
@@ -131,11 +138,11 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
       )}
 
       <div className="space-y-3">
-        <h3 className="font-semibold text-gray-900 mb-4">Archivos en el expediente ({files.length})</h3>
+        <h3 className="font-semibold text-gray-900 mb-4">Files in the case file ({files.length})</h3>
         
         {files.length === 0 ? (
           <div className="text-center py-8 text-gray-500 text-sm">
-            No hay evidencias subidas aún.
+            No evidence uploaded yet.
           </div>
         ) : (
           files.map(file => (
@@ -149,18 +156,18 @@ export const EvidenceVault = ({ caseId }: { caseId: string }) => {
                   <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
                     <span>{formatSize(file.size)}</span>
                     <span>•</span>
-                    <span>Subido por {file.uploadedBy}</span>
+                    <span>Uploaded by {file.uploadedBy}</span>
                     <span>•</span>
-                    <span>{file.uploadedAt.toLocaleDateString()}</span>
+                    <span>{file.uploadedAt.toLocaleDateString('en-US')}</span>
                   </div>
                 </div>
               </div>
               
               <div className="flex items-center gap-2">
                 <button 
-                  onClick={() => file.url ? window.open(file.url, '_blank') : alert('Este es un archivo de prueba. Sube uno nuevo para visualizarlo.')}
+                  onClick={() => file.url ? window.open(file.url, '_blank') : alert('This is a test file. Upload a new one to view it.')}
                   className="p-2 text-gray-500 hover:text-primary transition-colors rounded-lg hover:bg-white"
-                  title="Ver archivo"
+                  title="View file"
                 >
                   <Eye className="w-4 h-4" />
                 </button>

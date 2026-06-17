@@ -25,11 +25,11 @@ export const ReportDetailPage = () => {
         if (reportData) {
           setReport(reportData)
 
-          // Cargar evaluaciones
+          
           const evals = await reportService.getEvaluations(reportId)
           setEvaluations(evals)
 
-          // Cargar profesionales
+          
           if (reportData.psychologistId) {
             const psych = await userService.getUserById(reportData.psychologistId)
             setPsychologist(psych)
@@ -40,7 +40,7 @@ export const ReportDetailPage = () => {
           }
         }
       } catch (error) {
-        console.error('Error cargando datos:', error)
+        console.error('Error loading data:', error)
       } finally {
         setIsLoading(false)
       }
@@ -51,10 +51,10 @@ export const ReportDetailPage = () => {
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
-      PENDING: 'Pendiente de revisión',
-      UNDER_EVALUATION: 'En evaluación',
-      IN_FOLLOW_UP: 'En seguimiento',
-      RESOLVED: 'Resuelto',
+      PENDING: 'Pending Review',
+      UNDER_EVALUATION: 'Under Evaluation',
+      IN_FOLLOW_UP: 'In Follow-up',
+      RESOLVED: 'Resolved',
     }
     return labels[status] || status
   }
@@ -71,29 +71,29 @@ export const ReportDetailPage = () => {
   const timelineEvents = [
     {
       id: '1',
-      title: 'Denuncia registrada',
-      description: 'Tu denuncia ha sido recibida y registrada en el sistema',
+      title: 'Report Registered',
+      description: 'Your report has been received and registered in the system',
       date: report?.createdAt || new Date(),
       status: 'completed' as const,
     },
     {
       id: '2',
-      title: 'Asignación de profesionales',
-      description: psychologist ? `Asignado a ${psychologist.name}` : 'Pendiente asignación',
+      title: 'Professional Assignment',
+      description: psychologist ? `Assigned to ${psychologist.name}` : 'Pending assignment',
       date: new Date(),
       status: report?.status !== 'PENDING' ? ('completed' as const) : ('pending' as const),
     },
     {
       id: '3',
-      title: 'Evaluación psicológica',
-      description: evaluations.length > 0 ? 'Evaluación completada' : 'Pendiente de evaluación',
+      title: 'Psychological Evaluation',
+      description: evaluations.length > 0 ? 'Evaluation completed' : 'Pending evaluation',
       date: new Date(),
       status: evaluations.length > 0 ? ('completed' as const) : (report?.status === 'UNDER_EVALUATION' ? ('current' as const) : ('pending' as const)),
     },
     {
       id: '4',
-      title: 'Seguimiento y cierre',
-      description: 'Seguimiento del caso y resolución',
+      title: 'Follow-up and Closure',
+      description: 'Case monitoring and resolution',
       date: new Date(),
       status: report?.status === 'RESOLVED' ? ('completed' as const) : (report?.status === 'IN_FOLLOW_UP' ? ('current' as const) : ('pending' as const)),
     },
@@ -102,7 +102,7 @@ export const ReportDetailPage = () => {
   if (isLoading) {
     return (
       <div className="p-8 text-center">
-        <p className="text-gray-600">Cargando información...</p>
+        <p className="text-gray-600">Loading information...</p>
       </div>
     )
   }
@@ -113,7 +113,7 @@ export const ReportDetailPage = () => {
         <Alert
           type="danger"
           title="Error"
-          message="No se pudo cargar la denuncia"
+          message="Could not load the report"
         />
       </div>
     )
@@ -121,21 +121,21 @@ export const ReportDetailPage = () => {
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8">
         <button
           onClick={() => navigate('/dashboard/victim')}
           className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Volver
+          Back
         </button>
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">{report.title}</h1>
             <div className="flex gap-3 flex-wrap">
               <span className={`px-3 py-1 rounded-full text-sm font-medium ${getPriorityColor(report.priority)}`}>
-                {report.priority === 'HIGH' ? 'Urgente' : report.priority === 'MEDIUM' ? 'Media prioridad' : 'Baja prioridad'}
+                {report.priority === 'HIGH' ? 'Urgent' : report.priority === 'MEDIUM' ? 'Medium priority' : 'Low priority'}
               </span>
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary">
                 {getStatusLabel(report.status)}
@@ -144,24 +144,24 @@ export const ReportDetailPage = () => {
           </div>
           <Button variant="outline" size="md">
             <Download className="w-4 h-4 mr-2" />
-            Descargar PDF
+            Download PDF
           </Button>
         </div>
       </div>
 
-      {/* Descripción */}
-      <Card title="Detalles del Caso" className="mb-6">
+      
+      <Card title="Case Details" className="mb-6">
         <p className="text-gray-700 mb-4">{report.description}</p>
       </Card>
 
-      {/* Seguimiento (Timeline) */}
-      <Card title="Progreso del Caso" className="mb-6">
+      
+      <Card title="Case Progress" className="mb-6">
         <Timeline events={timelineEvents} />
       </Card>
 
-      {/* Equipo Profesional */}
+      
       {(psychologist || defender) && (
-        <Card title="Tu Equipo Profesional" className="mb-6">
+        <Card title="Your Professional Team" className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {psychologist && (
               <div className="flex items-center gap-4 p-4 bg-gradient-to-br from-secondary/5 to-secondary/10 rounded-xl">
@@ -170,7 +170,7 @@ export const ReportDetailPage = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">{psychologist.name}</h4>
-                  <p className="text-sm text-gray-600">Psicólogo/a</p>
+                  <p className="text-sm text-gray-600">Psychologist</p>
                 </div>
               </div>
             )}
@@ -181,7 +181,7 @@ export const ReportDetailPage = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">{defender.name}</h4>
-                  <p className="text-sm text-gray-600">Defensor/a Legal</p>
+                  <p className="text-sm text-gray-600">Legal Defender</p>
                 </div>
               </div>
             )}
@@ -189,23 +189,23 @@ export const ReportDetailPage = () => {
         </Card>
       )}
 
-      {/* Evaluaciones */}
+      
       {evaluations.length > 0 && (
-        <Card title="Evaluaciones Psicológicas" className="mb-6">
+        <Card title="Psychological Evaluations" className="mb-6">
           <div className="space-y-4">
             {evaluations.map((evaluation) => (
               <div key={evaluation.id} className="border border-gray-200 rounded-xl p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h4 className="font-semibold text-gray-900">Evaluación</h4>
+                  <h4 className="font-semibold text-gray-900">Evaluation</h4>
                   <span className="text-xs text-gray-500">
-                    {new Date(evaluation.date).toLocaleDateString('es-ES')}
+                    {new Date(evaluation.date).toLocaleDateString('en-US')}
                   </span>
                 </div>
                 <p className="text-sm text-gray-700 mb-2">
-                  <strong>Diagnóstico:</strong> {evaluation.diagnosis}
+                  <strong>Diagnosis:</strong> {evaluation.diagnosis}
                 </p>
                 <p className="text-sm text-gray-700">
-                  <strong>Recomendaciones:</strong> {evaluation.recommendations.join(', ')}
+                  <strong>Recommendations:</strong> {evaluation.recommendations.join(', ')}
                 </p>
               </div>
             ))}
@@ -213,15 +213,15 @@ export const ReportDetailPage = () => {
         </Card>
       )}
 
-      {/* Comunicación */}
-      <Card title="Centro de Comunicación" className="mb-6">
-        <Button variant="primary" className="w-full flex items-center justify-center gap-2">
+      
+      <Card title="Communication Center" className="mb-6">
+        <Button variant="primary" className="w-full flex items-center justify-center gap-2" onClick={() => navigate('/chat')}>
           <MessageCircle className="w-4 h-4" />
-          Enviar mensaje al equipo
+          Send message to team
         </Button>
       </Card>
 
-      {/* Evidencias */}
+      
       <div className="mb-6">
         <EvidenceVault caseId={report.id} />
       </div>

@@ -12,19 +12,19 @@ export const ClosureProgress: React.FC<ClosureProgressProps> = ({
   const steps = [
     {
       id: 'psychologist',
-      label: 'Resumen Psicológico',
+      label: 'Psychological Summary',
       completed: !!closure.psychologistApprovedAt,
       date: closure.psychologistApprovedAt,
     },
     {
       id: 'defender',
-      label: 'Resumen Legal',
+      label: 'Legal Summary',
       completed: !!closure.defenderApprovedAt,
       date: closure.defenderApprovedAt,
     },
     {
       id: 'victim',
-      label: 'Confirmación de Víctima',
+      label: 'Victim Confirmation',
       completed: !!closure.victimConfirmedAt,
       date: closure.victimConfirmedAt,
     },
@@ -36,7 +36,7 @@ export const ClosureProgress: React.FC<ClosureProgressProps> = ({
   return (
     <div className="space-y-6 rounded-2xl bg-surface-container-lowest p-6">
       <div>
-        <h3 className="font-bold text-on-surface">Progreso del Cierre</h3>
+        <h3 className="font-bold text-on-surface">Closure Progress</h3>
         <div className="mt-4 h-2 rounded-full bg-surface-container overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-primary to-secondary transition-all duration-500"
@@ -44,7 +44,7 @@ export const ClosureProgress: React.FC<ClosureProgressProps> = ({
           ></div>
         </div>
         <p className="mt-2 text-sm text-on-surface-variant">
-          {completedSteps} de {steps.length} pasos completados
+          {completedSteps} of {steps.length} steps completed
         </p>
       </div>
 
@@ -75,7 +75,7 @@ export const ClosureProgress: React.FC<ClosureProgressProps> = ({
               <p className="font-semibold text-on-surface">{step.label}</p>
               {step.date && (
                 <p className="text-xs text-on-surface-variant">
-                  {new Date(step.date).toLocaleDateString('es-ES', {
+                  {new Date(step.date).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
@@ -92,8 +92,8 @@ export const ClosureProgress: React.FC<ClosureProgressProps> = ({
         <div className="flex gap-2 rounded-lg bg-error/10 p-3 text-error">
           <AlertCircle className="h-5 w-5 flex-shrink-0" />
           <div>
-            <p className="text-sm font-semibold">Cierre Rechazado</p>
-            <p className="text-xs">El cierre fue rechazado y necesita revisión</p>
+            <p className="text-sm font-semibold">Closure Rejected</p>
+            <p className="text-xs">The closure was rejected and requires review</p>
           </div>
         </div>
       )}
