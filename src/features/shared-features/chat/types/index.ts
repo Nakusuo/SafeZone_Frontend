@@ -45,7 +45,7 @@ export interface CreateMessageDto {
     fileName: string;
     fileSize: number;
     fileType: string;
-    fileData: string; // base64
+    fileData: string; 
   }>;
 }
 

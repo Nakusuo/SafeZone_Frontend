@@ -2,11 +2,11 @@ import apiClient from '@/core/api/apiClient'
 import { config } from '@/core/config'
 import { User } from '@/shared/types'
 
-// ============================================================
-// User Service
-// USE_MOCK=true  → usa sessionStorage
-// USE_MOCK=false → llama al backend Spring Boot
-// ============================================================
+
+
+
+
+
 
 import mockData from '@/data/mockData.json'
 
@@ -17,14 +17,12 @@ const getMockData = () => {
   try {
     const stored = sessionStorage.getItem(STORAGE_KEY)
     if (stored) return JSON.parse(stored)
-  } catch { /* empty */ }
+  } catch {  }
   return JSON.parse(JSON.stringify(mockData))
 }
 
 export const userService = {
-  /**
-   * Spring: GET /api/users/{id}
-   */
+  
   getUserById: async (userId: string): Promise<User | undefined> => {
     if (config.USE_MOCK) {
       await delay()
@@ -35,9 +33,7 @@ export const userService = {
     return data
   },
 
-  /**
-   * Spring: GET /api/users?role=PSYCHOLOGIST
-   */
+  
   getPsychologists: async (): Promise<User[]> => {
     if (config.USE_MOCK) {
       await delay()
@@ -49,9 +45,7 @@ export const userService = {
     return data
   },
 
-  /**
-   * Spring: GET /api/users?role=DEFENDER
-   */
+  
   getDefenders: async (): Promise<User[]> => {
     if (config.USE_MOCK) {
       await delay()
@@ -63,9 +57,7 @@ export const userService = {
     return data
   },
 
-  /**
-   * Spring: GET /api/users?role=VICTIM
-   */
+  
   getVictims: async (): Promise<User[]> => {
     if (config.USE_MOCK) {
       await delay()
@@ -77,10 +69,7 @@ export const userService = {
     return data
   },
 
-  /**
-   * Actualizar perfil del usuario autenticado.
-   * Spring: PUT /api/users/{id}
-   */
+  
   updateProfile: async (userId: string, updates: Partial<Pick<User, 'name' | 'email'>>): Promise<User> => {
     if (config.USE_MOCK) {
       await delay()

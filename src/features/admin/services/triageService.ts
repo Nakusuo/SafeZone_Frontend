@@ -2,7 +2,7 @@ import apiClient from '@/core/api/apiClient'
 import { config } from '@/core/config'
 import { TriageCase, TriageAssignment, TriageMetrics, AdminUser } from '@/shared/types'
 
-// Datos de prueba para modo mock
+
 const MOCK_CASES: TriageCase[] = [
   {
     id: 'CASE-001', reportId: 'RPT-2026-001',
@@ -99,7 +99,7 @@ export const triageService = {
     return data
   },
 
-  // Asignar psicólogo y defensor a un caso — Spring: POST /api/admin/cases/{id}/assign
+  
   assignCase: async (assignment: TriageAssignment): Promise<TriageCase> => {
     if (config.USE_MOCK) {
       await delay()
@@ -118,7 +118,7 @@ export const triageService = {
     return data
   },
 
-  // Cambiar estado de un caso — Spring: PATCH /api/admin/cases/{id}/status
+  
   updateCaseStatus: async (caseId: string, status: string, notes?: string): Promise<TriageCase> => {
     if (config.USE_MOCK) {
       await delay(200)
@@ -130,7 +130,7 @@ export const triageService = {
     return data
   },
 
-  // Métricas del dashboard admin — Spring: GET /api/admin/metrics
+  
   getMetrics: async (): Promise<TriageMetrics> => {
     if (config.USE_MOCK) {
       await delay(200)
@@ -165,7 +165,7 @@ export const triageService = {
   },
 }
 
-// Profesionales disponibles para asignar — Spring: GET /api/admin/professionals
+
 export const adminProfessionalService = {
   getAvailablePsychologists: async () => {
     if (config.USE_MOCK) {
@@ -194,7 +194,7 @@ export const adminProfessionalService = {
   },
 }
 
-// CRUD de usuarios administrativos — Spring: /api/admin/users
+
 export const adminUserService = {
   getAdmins: async (): Promise<AdminUser[]> => {
     if (config.USE_MOCK) {

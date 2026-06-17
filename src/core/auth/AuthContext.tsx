@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { User, UserRole } from '@/shared/types'
 
-// Usá useAuth() en cualquier componente en vez de leer sessionStorage directo
+
 interface AuthContextType {
   user: User | null
   token: string | null
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Al montar la app, recuperamos la sesión si el usuario ya estaba logueado
+  
   useEffect(() => {
     try {
       const storedToken = sessionStorage.getItem('token')
@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null)
   }
 
-  // Acepta un rol o un array de roles
+  
   const hasRole = (role: UserRole | UserRole[]): boolean => {
     if (!user) return false
     if (Array.isArray(role)) return role.includes(user.role)
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   )
 }
 
-// Hook principal — lanza error si se usa fuera del AuthProvider
+
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext)
   if (!context) throw new Error('useAuth debe usarse dentro de <AuthProvider>')

@@ -8,16 +8,16 @@ interface ProtectedRouteProps {
   requiredRole?: UserRole | UserRole[]
 }
 
-// ============================================================
-// ProtectedRoute — Guarda de rutas con verificación de rol
-// Redirige a /login si no hay sesión activa.
-// Redirige a / si el rol no coincide.
-// ============================================================
+
+
+
+
+
 
 export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { isAuthenticated, isLoading, hasRole } = useAuth()
 
-  // Mientras restaura la sesión del storage, no redirigir
+  
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">

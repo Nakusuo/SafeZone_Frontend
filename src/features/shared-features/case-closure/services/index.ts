@@ -1,7 +1,7 @@
 import apiClient from '@/core/api/apiClient';
 import type { CaseClosureSummary, CaseClosureHistory } from '../types';
 
-// Mock Data
+
 const MOCK_CLOSURE: CaseClosureSummary = {
   id: 'closure-001',
   caseId: 'CASE-001',
@@ -28,13 +28,13 @@ const MOCK_CLOSURE: CaseClosureSummary = {
 };
 
 export const caseClosureService = {
-  // Get closure details for a case
+  
   async getClosureSummary(caseId: string): Promise<CaseClosureSummary> {
     const mockClosure = { ...MOCK_CLOSURE, caseId };
     return new Promise(resolve => setTimeout(() => resolve(mockClosure), 300));
   },
 
-  // Get all closure attempts for a case
+  
   async getClosureHistory(caseId: string): Promise<CaseClosureHistory> {
     const history: CaseClosureHistory = {
       caseId,
@@ -46,7 +46,7 @@ export const caseClosureService = {
     return new Promise(resolve => setTimeout(() => resolve(history), 200));
   },
 
-  // Psychologist submits their closure summary
+  
   async submitPsychologistSummary(
     caseId: string,
     data: {
@@ -65,7 +65,7 @@ export const caseClosureService = {
     return new Promise(resolve => setTimeout(() => resolve(updated), 300));
   },
 
-  // Defender submits their closure summary
+  
   async submitDefenderSummary(
     caseId: string,
     data: {
@@ -82,7 +82,7 @@ export const caseClosureService = {
     return new Promise(resolve => setTimeout(() => resolve(updated), 300));
   },
 
-  // Victim confirms safety and approves closure
+  
   async confirmVictimApproval(
     caseId: string,
     data: {
@@ -101,7 +101,7 @@ export const caseClosureService = {
     return new Promise(resolve => setTimeout(() => resolve(updated), 300));
   },
 
-  // Reject closure and return to pending
+  
   async rejectClosure(
     caseId: string,
     reason: string
@@ -112,7 +112,7 @@ export const caseClosureService = {
     return new Promise(resolve => setTimeout(() => resolve(updated), 200));
   },
 
-  // Finalize closure (admin only)
+  
   async finalizeClosure(caseId: string): Promise<CaseClosureSummary> {
     const updated = { ...MOCK_CLOSURE, caseId };
     updated.status = 'completed';
@@ -120,7 +120,7 @@ export const caseClosureService = {
     return new Promise(resolve => setTimeout(() => resolve(updated), 200));
   },
 
-  // Get cases pending closure
+  
   async getPendingClosures(): Promise<CaseClosureSummary[]> {
     const mockClosures = [MOCK_CLOSURE];
     return new Promise(resolve => setTimeout(() => resolve(mockClosures), 200));

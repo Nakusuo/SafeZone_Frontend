@@ -29,18 +29,18 @@ export const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+      
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
       />
       
-      {/* Modal */}
+      
       <div 
         className={`relative bg-white rounded-2xl shadow-2xl ${sizeClasses[size]} w-full mx-4 max-h-[90vh] overflow-auto pointer-events-auto`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        
         <div className="sticky top-0 flex items-center justify-between p-6 border-b border-gray-200 bg-white rounded-t-2xl">
           <h2 className="text-xl font-bold text-gray-900">{title}</h2>
           <button
@@ -51,12 +51,12 @@ export const Modal = ({
           </button>
         </div>
 
-        {/* Content */}
+        
         <div className="p-6">
           {children}
         </div>
 
-        {/* Footer */}
+        
         {footer && (
           <div className="border-t border-gray-200 p-6 bg-gray-50 rounded-b-2xl">
             {footer}

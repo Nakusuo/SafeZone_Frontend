@@ -1,7 +1,4 @@
-/**
- * Simulated E2EE Cryptography Service
- * Uses Web Crypto API (AES-GCM) to simulate encryption/decryption
- */
+
 
 const getKeyMaterial = async (password: string) => {
   const enc = new TextEncoder()
@@ -15,8 +12,8 @@ const getKeyMaterial = async (password: string) => {
 }
 
 export const getSessionKey = async (): Promise<CryptoKey> => {
-  // In a real scenario, this key is exchanged securely between parties using asymmetric cryptography (e.g., ECDH).
-  // Here we use a static mock session secret for demonstration.
+  
+  
   const keyMaterial = await getKeyMaterial('safezone-e2ee-session-secret-2026')
   return await window.crypto.subtle.deriveKey(
     {
@@ -43,7 +40,7 @@ export const encryptData = async (data: string): Promise<string> => {
     encoded
   )
   
-  // Combine IV and Ciphertext and convert to base64
+  
   const combined = new Uint8Array(iv.length + ciphertext.byteLength)
   combined.set(iv, 0)
   combined.set(new Uint8Array(ciphertext), iv.length)

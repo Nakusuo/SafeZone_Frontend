@@ -4,8 +4,8 @@ import { useAuth } from '@/core/auth/AuthContext'
 import { emergencyService, getCurrentPosition, buildMapsUrl } from '../services/emergencyService'
 import { GeoLocation } from '@/shared/types'
 
-// Botón de pánico — RF-03
-// Flujo: víctima presiona → captura GPS → confirmación → envío de alerta
+
+
 
 type Step = 'idle' | 'confirming' | 'locating' | 'ready' | 'sending' | 'sent' | 'error'
 
@@ -31,11 +31,11 @@ export const PanicButton = () => {
       })
       .catch((err: Error) => {
         setGpsError(err.message)
-        setStep('ready') // we continue, the user can still type an address
+        setStep('ready') 
       })
   }, [step === 'confirming'])
 
-  // 10s countdown — sends automatically if it reaches 0
+  
   useEffect(() => {
     if (step !== 'ready') return
     setCountdown(10)
@@ -82,7 +82,7 @@ export const PanicButton = () => {
       })
       setAlertId(result.id)
       setStep('sent')
-      // Redirigir automáticamente a Google después de 3 segundos
+      
       setTimeout(handleSafeExit, 3000)
     } catch {
       setStep('error')
@@ -93,7 +93,7 @@ export const PanicButton = () => {
 
   return (
     <>
-      {/* Fixed red button */}
+      
       <button
         id="panic-button"
         onClick={handleOpen}
@@ -114,7 +114,7 @@ export const PanicButton = () => {
         <span className="leading-tight">SOS</span>
       </button>
 
-      {/* Confirmation Modal */}
+      
       {isOpen && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4"
@@ -127,7 +127,7 @@ export const PanicButton = () => {
           />
 
           <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
-            {/* Header */}
+            
             <div className="bg-red-600 px-6 py-5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -202,13 +202,13 @@ export const PanicButton = () => {
 
               {step === 'ready' && (
                 <>
-                  {/* Countdown */}
+                  
                   <div className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-200">
                     <p className="text-red-700 text-sm font-medium">Sending automatically in</p>
                     <span className="text-red-600 font-bold text-2xl w-10 text-center">{countdown}</span>
                   </div>
 
-                  {/* Captured GPS */}
+                  
                   {gpsLocation ? (
                     <div className="p-4 bg-green-50 rounded-xl border border-green-200">
                       <div className="flex items-center gap-2 mb-2">
@@ -239,7 +239,7 @@ export const PanicButton = () => {
                     </div>
                   ) : null}
 
-                  {/* Manual Address */}
+                  
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                       <MapPin className="w-4 h-4 inline-block mr-1 text-gray-500" />

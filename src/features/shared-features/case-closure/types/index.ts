@@ -7,7 +7,7 @@ export interface CaseClosureSummary {
   victimName: string;
   victimEmail: string;
   
-  // Psychologist section
+  
   psychologistId: string;
   psychologistName: string;
   psychologistSummary: string;
@@ -16,7 +16,7 @@ export interface CaseClosureSummary {
   recommendations: string;
   psychologistApprovedAt?: Date;
   
-  // Defender section
+  
   defenderId: string;
   defenderName: string;
   legalSummary: string;
@@ -24,12 +24,12 @@ export interface CaseClosureSummary {
   legalOutcome: 'won' | 'settled' | 'ongoing' | 'dismissed';
   defenderApprovedAt?: Date;
   
-  // Victim confirmation
+  
   victimConfirmedAt?: Date;
   safetyConfirmed: boolean;
   victimNotes?: string;
   
-  // Administrative
+  
   createdAt: Date;
   lastUpdatedAt: Date;
   closedAt?: Date;
