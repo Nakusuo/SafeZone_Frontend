@@ -88,7 +88,7 @@ export const CreateReportPage = () => {
       setSuccess(true)
       setFormData({ title: '', description: '', type: '', priority: 'MEDIUM', location: '' })
       
-      // Redirect after 2 seconds
+      
       setTimeout(() => {
         navigate('/dashboard/victim')
       }, 2000)
@@ -101,7 +101,7 @@ export const CreateReportPage = () => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8">
         <button
           onClick={() => navigate('/dashboard/victim')}
@@ -116,7 +116,7 @@ export const CreateReportPage = () => {
         </p>
       </div>
 
-      {/* Alerts */}
+      
       <div className="mb-6 space-y-3">
         {success && (
           <Alert
@@ -136,7 +136,7 @@ export const CreateReportPage = () => {
         )}
       </div>
 
-      {/* Form */}
+      
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card title="General Information" className="space-y-4">
           <Input
@@ -216,7 +216,7 @@ export const CreateReportPage = () => {
           </div>
         </Card>
 
-        {/* Buttons */}
+        
         <div className="flex gap-3 justify-end pt-4">
           <Button
             type="button"
