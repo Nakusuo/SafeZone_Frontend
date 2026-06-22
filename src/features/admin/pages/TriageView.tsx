@@ -5,7 +5,7 @@ import {
   AssignmentModal,
   CaseDetailSidebar,
 } from '../components/index';
-import { triageService } from '../services/triageService';
+import { triageService, adminProfessionalService } from '../services/triageService';
 import type { TriageCase, TriageAssignment } from '@/shared/types';
 
 export const TriageView: React.FC = () => {
@@ -15,8 +15,10 @@ export const TriageView: React.FC = () => {
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [psychologists, setPsychologists] = useState<any[]>([]);
-  const [defenders, setDefenders] = useState<any[]>([]);
+  const [psychologistsList, setPsychologistsList] = useState<any[]>([]);
+  const [defendersList, setDefendersList] = useState<any[]>([]);
+  const [isLoadingProfessionals, setIsLoadingProfessionals] = useState(false);
+  const [isAssigning, setIsAssigning] = useState(false);
 
   useEffect(() => {
     const loadCases = async () => {
@@ -39,38 +41,59 @@ export const TriageView: React.FC = () => {
 
     loadCases();
   }, []);
-
   useEffect(() => {
-    if (!isModalOpen) return;
+  // 1. Si no está abierto, salimos
+  if (!isModalOpen) return;
+  
+  // 2. Si ya tenemos datos, NO volvemos a cargar (evita el parpadeo)
+  if (psychologistsList.length > 0 || defendersList.length > 0) return;
 
-    const loadProfessionals = async () => {
-      try {
-        const [psychList, defList] = await Promise.all([
-          Promise.resolve([
-            { id: 'psy1', name: 'Dra. María García', caseCount: 3 },
-            { id: 'psy2', name: 'Dr. José López', caseCount: 5 },
-          ]),
-          Promise.resolve([
-            { id: 'def1', name: 'Lic. Ana Martínez', caseCount: 2 },
-            { id: 'def2', name: 'Lic. Roberto Díaz', caseCount: 4 },
-          ]),
-        ]);
-        setPsychologists(psychList);
-        setDefenders(defList);
-      } catch (err) {
-        console.error('Error loading professionals:', err);
-      }
-    };
+  const loadProfessionals = async () => {
+    try {
+      setIsLoadingProfessionals(true);
+      
+      const [psychList, defList] = await Promise.all([
+        adminProfessionalService.getAvailablePsychologists(),
+        adminProfessionalService.getAvailableDefenders(),
+      ]);
+      
+      setPsychologistsList(psychList || []);
+      setDefendersList(defList || []);
+      
+    } catch (err) {
+      console.error('Error al cargar profesionales:', err);
+    } finally {
+      setIsLoadingProfessionals(false);
+    }
+  };
 
-    loadProfessionals();
-  }, [isModalOpen]);
-
+  loadProfessionals();
+}, [isModalOpen]);
   const selectedCase = cases.find((c) => c.id === selectedCaseId);
 
   const handleAssignCase = async (assignment: TriageAssignment) => {
     if (!selectedCaseId) return;
+    setIsAssigning(true);
     try {
-      await triageService.assignCase(assignment);
+      const updatedCase = await triageService.assignCase(assignment);
+      const assignedFromApi = updatedCase.assignedTo || {
+        psychologist:
+          (updatedCase as any).psychologist ||
+          (updatedCase as any).psychologistName ||
+          (updatedCase as any).psicologoNombre,
+        legalDefender:
+          (updatedCase as any).legalDefender ||
+          (updatedCase as any).defenderLegal ||
+          (updatedCase as any).defenderName ||
+          (updatedCase as any).defensorNombre,
+      };
+      const psychologistName =
+        assignedFromApi.psychologist ||
+        psychologistsList.find((p) => p.id === assignment.psychologistId)?.name;
+      const defenderName =
+        assignedFromApi.legalDefender ||
+        defendersList.find((d) => d.id === assignment.defenderLegalId)?.name;
+
       setCases((prevCases) =>
         prevCases.map((c) =>
           c.id === selectedCaseId
@@ -78,12 +101,8 @@ export const TriageView: React.FC = () => {
                 ...c,
                 status: 'assigned',
                 assignedTo: {
-                  psychologist: psychologists.find(
-                    (p) => p.id === assignment.psychologistId
-                  )?.name,
-                  legalDefender: defenders.find(
-                    (d) => d.id === assignment.defenderLegalId
-                  )?.name,
+                  psychologist: psychologistName,
+                  legalDefender: defenderName,
                 },
               }
             : c
@@ -92,6 +111,8 @@ export const TriageView: React.FC = () => {
       setIsModalOpen(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al asignar caso');
+    } finally {
+      setIsAssigning(false);
     }
   };
 
@@ -139,6 +160,10 @@ export const TriageView: React.FC = () => {
                 cases={cases}
                 selectedCaseId={selectedCaseId}
                 onSelectCase={handleSelectCase}
+                onOpenAssign={(caseId) => {
+                  handleSelectCase(caseId)
+                  setIsModalOpen(true)
+                }}
                 isLoading={false}
               />
             )}
@@ -169,19 +194,18 @@ export const TriageView: React.FC = () => {
         </div>
       </div>
 
-      {/* Assignment Modal */}
-      {selectedCase && (
-        <AssignmentModal
-          isOpen={isModalOpen}
-          caseId={selectedCase.id}
-          currentPriority={selectedCase.priority}
-          psychologists={psychologists}
-          defenders={defenders}
-          onAssign={handleAssignCase}
-          onCancel={() => setIsModalOpen(false)}
-          isLoading={false}
-        />
-      )}
+     {selectedCase && isModalOpen && (
+     <AssignmentModal
+  isOpen={isModalOpen}
+  caseId={selectedCase.id}
+  currentPriority={selectedCase.priority}
+  psychologists={psychologistsList} 
+  defenders={defendersList}         
+  onAssign={handleAssignCase}
+  onCancel={() => setIsModalOpen(false)}
+  isLoading={isLoadingProfessionals || isAssigning}
+/>
+)}
     </div>
   );
 };

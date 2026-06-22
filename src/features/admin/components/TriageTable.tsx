@@ -5,6 +5,7 @@ import type { TriageCase, CasePriority } from '../types';
 interface TriageTableProps {
   cases: TriageCase[];
   onSelectCase: (caseId: string) => void;
+  onOpenAssign?: (caseId: string) => void;
   selectedCaseId?: string;
   isLoading?: boolean;
 }
@@ -26,6 +27,7 @@ const statusLabels: Record<string, string> = {
 export const TriageTable: React.FC<TriageTableProps> = ({
   cases,
   onSelectCase,
+  onOpenAssign,
   selectedCaseId,
   isLoading,
 }) => {
@@ -132,7 +134,13 @@ export const TriageTable: React.FC<TriageTableProps> = ({
                   {timeDisplay}
                 </td>
                 <td className="px-4 py-3">
-                  <button className="rounded px-3 py-1 text-xs font-semibold text-primary hover:bg-primary-fixed transition-colors">
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onOpenAssign?.(caseItem.id);
+                    }}
+                    className="rounded px-3 py-1 text-xs font-semibold text-primary hover:bg-primary-fixed transition-colors"
+                  >
                     Asignar
                   </button>
                 </td>

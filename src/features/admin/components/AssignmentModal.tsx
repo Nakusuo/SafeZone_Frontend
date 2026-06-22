@@ -34,24 +34,36 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
       alert('Selecciona al menos un profesional');
       return;
     }
-
-    await onAssign({
-      caseId,
-      psychologistId: selectedPsychologist,
-      defenderLegalId: selectedDefender,
-      priority,
-      assignedAt: new Date().toISOString(),
-      assignedBy: 'current-user-id', // TODO: Obtener del contexto
-    });
-
-    onCancel();
+    // 1. Definimos el payload correctamente
+  const payload = {
+    caseId: caseId, // Asegúrate de incluir el caseId aquí
+    psicologoId: selectedPsychologist,
+    defensorLegalId: selectedDefender,
+    asignadoPorId: 'current-user-id', 
+    prioridad: priority,
   };
+
+  // 2. Verificamos en consola
+  console.log("Enviando al servidor:", payload);
+
+  // 3. Llamamos a la función UNA SOLA VEZ
+  try {
+    await onAssign(payload);
+    onCancel();
+  } catch (error) {
+    console.error("Error al asignar:", error);
+    alert("Hubo un error al intentar asignar el caso.");
+  }
+};
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-lg">
+      <div 
+      className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-lg"
+      onClick={(e) => e.stopPropagation()} 
+       >
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-xl font-bold text-primary">Asignar Caso</h2>
@@ -86,44 +98,39 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             )}
           </div>
         </div>
-
-        {/* Psychologist Selection */}
-        <div className="mb-6 space-y-3">
-          <label className="block text-sm font-semibold text-on-surface">
-            Psicólogo
-          </label>
-          <select
-            value={selectedPsychologist || ''}
-            onChange={(e) => setSelectedPsychologist(e.target.value || undefined)}
-            className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary"
-          >
-            <option value="">-- Sin asignar --</option>
-            {psychologists.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} ({p.caseCount} casos)
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Defender Selection */}
-        <div className="mb-6 space-y-3">
-          <label className="block text-sm font-semibold text-on-surface">
-            Defensor Legal
-          </label>
-          <select
-            value={selectedDefender || ''}
-            onChange={(e) => setSelectedDefender(e.target.value || undefined)}
-            className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary"
-          >
-            <option value="">-- Sin asignar --</option>
-            {defenders.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name} ({d.caseCount} casos)
-              </option>
-            ))}
-          </select>
-        </div>
+   {/* Psychologist Selection */}
+        <select
+  value={selectedPsychologist || ''}
+  onChange={(e) => setSelectedPsychologist(e.target.value || undefined)}
+  style={{ color: '#000000', opacity: 1 }} // 🚨 FUERZA EL COLOR NEGRO
+  className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 focus:ring-2 focus:ring-primary"
+  >
+  <option value="" className="text-gray-500">-- Sin asignar --</option>
+  {(psychologists || []).map((p) => (
+    <option key={p.id} value={p.id} style={{ color: '#000000' }}>
+      {p.name} ({p.caseCount} casos)
+    </option>
+  ))}
+   </select>
+ {/* Defender Selection */}
+  <div className="mb-6 space-y-3">
+  <label className="block text-sm font-semibold text-on-surface">
+    Defensor Legal
+  </label>
+  <select
+    value={selectedDefender || ''}
+    onChange={(e) => setSelectedDefender(e.target.value || undefined)}
+    disabled={isLoading || !defenders?.length}
+    className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary disabled:opacity-50"
+  >
+    <option value="">{isLoading ? 'Cargando...' : '-- Sin asignar --'}</option>
+    {(defenders || []).map((d) => (
+      <option key={d.id} value={d.id}>
+        {d.name} ({d.caseCount} casos)
+      </option>
+    ))}
+  </select>
+</div>
 
         {/* Warning */}
         {priority === 'critical' && (
