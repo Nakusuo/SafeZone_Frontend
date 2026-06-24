@@ -170,29 +170,15 @@ return data.map((d) => ({
 // Profesionales disponibles para asignar — Spring: GET /api/admin/professionals
 export const adminProfessionalService = {
   getAvailablePsychologists: async () => {
-    if (config.USE_MOCK) {
-      await delay(200)
-      return [
-        { id: 'psy-001', name: 'Dra. María García', email: 'maria.garcia@safezone.cr', caseCount: 3, available: true },
-        { id: 'psy-002', name: 'Dr. José López', email: 'jose.lopez@safezone.cr', caseCount: 5, available: true },
-        { id: 'psy-003', name: 'Dra. Carmen Ruiz', email: 'carmen.ruiz@safezone.cr', caseCount: 4, available: false },
-      ]
-    }
-    const { data } = await apiClient.get('/admin/professionals', { params: { role: 'PSYCHOLOGIST' } })
-    return data
+    // Corregido al endpoint real del controlador
+    const { data } = await apiClient.get('/usuarios/psyphocolyst'); 
+    return data;
   },
 
   getAvailableDefenders: async () => {
-    if (config.USE_MOCK) {
-      await delay(200)
-      return [
-        { id: 'def-001', name: 'Lic. Ana Martínez', email: 'ana.martinez@safezone.cr', caseCount: 2, available: true },
-        { id: 'def-002', name: 'Lic. Roberto Díaz', email: 'roberto.diaz@safezone.cr', caseCount: 4, available: true },
-        { id: 'def-003', name: 'Lic. Francisco Vega', email: 'francisco.vega@safezone.cr', caseCount: 6, available: false },
-      ]
-    }
-    const { data } = await apiClient.get('/admin/professionals', { params: { role: 'DEFENDER' } })
-    return data
+    // Corregido al endpoint real del controlador
+    const { data } = await apiClient.get('/usuarios/defender');
+    return data;
   },
 }
 

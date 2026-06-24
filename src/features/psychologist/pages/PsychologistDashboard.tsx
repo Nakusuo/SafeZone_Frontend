@@ -10,8 +10,8 @@ export const PsychologistDashboard = () => {
   const [reports, setReports] = useState<Report[]>([])
 
   useEffect(() => {
-    reportService.getAllReports()
-      .then(all => setReports(all.filter(r => r.psychologistId === userData?.id)))
+    reportService.getAssignedCases()
+      .then(setReports)
       .catch(console.error)
   }, [userData?.id])
 
@@ -21,8 +21,6 @@ export const PsychologistDashboard = () => {
 
   return (
     <div className="w-full px-8 py-8 pb-32">
-
-      {/* ── Welcome ─────────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
         <h2 className="text-3xl font-bold mb-2">Bienvenida, {userData?.name || 'Psicólogo/a'}</h2>
         <p className="text-teal-light">Su dedicación crea un entorno seguro para quienes más lo necesitan hoy.</p>

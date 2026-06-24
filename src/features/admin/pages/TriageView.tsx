@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { AlertTriangle, Loader } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { AlertTriangle, Loader } from "lucide-react";
 import {
   TriageTable,
   AssignmentModal,
   CaseDetailSidebar,
-} from '../components/index';
-import { triageService } from '../services/triageService';
-import type { TriageCase, TriageAssignment } from '@/shared/types';
+} from "../components/index";
+import {
+  adminProfessionalService,
+  triageService,
+} from "../services/triageService";
+import type { TriageCase, TriageAssignment } from "@/shared/types";
 
 export const TriageView: React.FC = () => {
   const [cases, setCases] = useState<TriageCase[]>([]);
-  const [selectedCaseId, setSelectedCaseId] = useState<string | undefined>(undefined);
+  const [selectedCaseId, setSelectedCaseId] = useState<string | undefined>(
+    undefined,
+  );
   const [isLoadingCases, setIsLoadingCases] = useState(true);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,9 +34,7 @@ export const TriageView: React.FC = () => {
           setSelectedCaseId(data[0].id);
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Error al cargar casos'
-        );
+        setError(err instanceof Error ? err.message : "Error al cargar casos");
       } finally {
         setIsLoadingCases(false);
       }
@@ -45,20 +48,21 @@ export const TriageView: React.FC = () => {
 
     const loadProfessionals = async () => {
       try {
+        // Llamamos al servicio real
         const [psychList, defList] = await Promise.all([
-          Promise.resolve([
-            { id: 'psy1', name: 'Dra. María García', caseCount: 3 },
-            { id: 'psy2', name: 'Dr. José López', caseCount: 5 },
-          ]),
-          Promise.resolve([
-            { id: 'def1', name: 'Lic. Ana Martínez', caseCount: 2 },
-            { id: 'def2', name: 'Lic. Roberto Díaz', caseCount: 4 },
-          ]),
+          adminProfessionalService.getAvailablePsychologists(),
+          adminProfessionalService.getAvailableDefenders(),
         ]);
+
+        // AGREGA ESTO PARA DEPURAR
+        console.log(">>> Datos de psicólogos:", psychList);
+        console.log(">>> Datos de defensores:", defList);
+
         setPsychologists(psychList);
         setDefenders(defList);
       } catch (err) {
-        console.error('Error loading professionals:', err);
+        console.error("Error cargando profesionales:", err);
+        setError("No se pudieron cargar los especialistas.");
       }
     };
 
@@ -76,22 +80,22 @@ export const TriageView: React.FC = () => {
           c.id === selectedCaseId
             ? {
                 ...c,
-                status: 'assigned',
+                status: "assigned",
                 assignedTo: {
                   psychologist: psychologists.find(
-                    (p) => p.id === assignment.psychologistId
+                    (p) => p.id === assignment.psychologistId,
                   )?.name,
                   legalDefender: defenders.find(
-                    (d) => d.id === assignment.defenderLegalId
+                    (d) => d.id === assignment.defenderLegalId,
                   )?.name,
                 },
               }
-            : c
-        )
+            : c,
+        ),
       );
       setIsModalOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al asignar caso');
+      setError(err instanceof Error ? err.message : "Error al asignar caso");
     }
   };
 
@@ -132,7 +136,9 @@ export const TriageView: React.FC = () => {
             ) : cases.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                 <AlertTriangle className="h-8 w-8 text-on-surface-variant" />
-                <p className="text-on-surface-variant">No hay casos pendientes</p>
+                <p className="text-on-surface-variant">
+                  No hay casos pendientes
+                </p>
               </div>
             ) : (
               <TriageTable
@@ -153,7 +159,7 @@ export const TriageView: React.FC = () => {
           />
 
           {/* Action Button */}
-          {selectedCase && selectedCase.status === 'new' && (
+          {selectedCase && selectedCase.status === "new" && (
             <button
               onClick={() => setIsModalOpen(true)}
               className="rounded-lg bg-primary px-4 py-3 font-semibold text-on-primary hover:bg-primary/90 transition-colors"
@@ -161,7 +167,7 @@ export const TriageView: React.FC = () => {
               Asignar Caso
             </button>
           )}
-          {selectedCase && selectedCase.status !== 'new' && (
+          {selectedCase && selectedCase.status !== "new" && (
             <button className="rounded-lg bg-surface-container px-4 py-3 font-semibold text-on-surface-variant cursor-not-allowed opacity-50">
               Ya Asignado
             </button>

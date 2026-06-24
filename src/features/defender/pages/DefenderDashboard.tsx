@@ -10,8 +10,9 @@ export const DefenderDashboard = () => {
   const [reports, setReports] = useState<Report[]>([])
 
   useEffect(() => {
-    reportService.getAllReports()
-      .then(all => setReports(all.filter(r => r.defenderId === userData?.id)))
+    // AQUÍ EL CAMBIO: Llamamos directamente a getAssignedCases()
+    reportService.getAssignedCases()
+      .then(setReports)
       .catch(console.error)
   }, [userData?.id])
 
@@ -21,7 +22,6 @@ export const DefenderDashboard = () => {
 
   return (
     <div className="w-full px-8 py-8 pb-32">
-
       {/* ── Welcome ─────────────────────────────────────────── */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
         <h2 className="text-3xl font-bold mb-2">Bienvenido, {userData?.name || 'Defensor/a Legal'}</h2>

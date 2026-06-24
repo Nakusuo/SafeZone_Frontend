@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { FileText, Eye, Clock, CheckCircle, AlertCircle } from 'lucide-react'
-import { reportService, } from '@/features/victim/services/reportService'
+import { FileText, Eye, Clock, AlertCircle } from 'lucide-react'
+import { reportService } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'
 
 export const CasesPage = () => {
@@ -14,8 +14,8 @@ export const CasesPage = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const allReports = await reportService.getAllReports()
-        const myReports = allReports.filter(r => r.psychologistId === userData?.id)
+        // AQUÍ EL CAMBIO: Llamamos directamente a getAssignedCases() y quitamos el .filter()
+        const myReports = await reportService.getAssignedCases()
         setReports(myReports)
       } catch (error) {
         console.error('Error cargando datos:', error)
@@ -31,6 +31,9 @@ export const CasesPage = () => {
     if (filter === 'resolved') return r.status === 'RESOLVED'
     return true
   })
+
+  console.log("Casos totales recibidos:", reports);
+  console.log("Casos después de filtrar:", filteredReports);
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -189,4 +192,3 @@ export const CasesPage = () => {
     </div>
   )
 }
-
