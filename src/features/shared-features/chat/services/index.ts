@@ -1,3 +1,13 @@
+/**
+ * RF-07 – Chat service conectado al backend real
+ *
+ * Endpoints consumidos:
+ *   GET    /api/denuncias/listar                → conversaciones del usuario
+ *   GET    /api/mensajes/{denunciaid}           → mensajes de una conversación
+ *   POST   /api/mensajes/{denunciaid}           → enviar mensaje
+ *   PATCH  /api/mensajes/{denunciaid}/leer      → marcar como leídos
+ *   GET    /api/mensajes/no-leidos/count        → badge de no leídos
+ */
 
 import apiClient from '@/core/api/apiClient';
 import type {
@@ -19,13 +29,13 @@ interface BackendMensaje {
   destinatarioid: string;
   contenido: string;
   leido: boolean;
-  fechaenvio: string; // ISO-8601
+  fechaenvio: string;
 }
 
 interface BackendDenuncia {
   id: string;
   usuarioid: string;
-  victimaid: string;
+  victimaid?: string;
   titulo: string;
   descripcion: string;
   tipoViolencia: string;
@@ -49,6 +59,15 @@ function mapRol(backendRol: string): ChatMessage['senderRole'] {
   return map[backendRol?.toUpperCase()] ?? 'victim';
 }
 
+function getCurrentUserId(): string | null {
+  try {
+    const u = localStorage.getItem('user') || sessionStorage.getItem('user');
+    return u ? JSON.parse(u).id : null;
+  } catch {
+    return null;
+  }
+}
+
 function backendMensajeToMessage(m: BackendMensaje): ChatMessage {
   return {
     id: m.id,
@@ -62,17 +81,12 @@ function backendMensajeToMessage(m: BackendMensaje): ChatMessage {
   };
 }
 
-/**
- * Construye una Conversation desde una denuncia del backend.
- * Los participantes reales se derivan de los campos de la denuncia.
- */
 function denunciaToConversation(
   d: BackendDenuncia,
   lastMessage?: ChatMessage
 ): Conversation {
   const participants: ChatParticipant[] = [];
 
-  // Víctima siempre está
   if (d.victimaid || d.usuarioid) {
     participants.push({
       userId: d.victimaid || d.usuarioid,
@@ -107,7 +121,7 @@ function denunciaToConversation(
     participants,
     lastMessage,
     lastMessageAt: lastMessage?.createdAt,
-    unreadCount: 0, // se actualiza al cargar mensajes
+    unreadCount: 0,
     isArchived: false,
     createdAt: new Date(d.fechaDenuncia),
   };
@@ -118,12 +132,13 @@ function denunciaToConversation(
 export const chatService = {
 
   /**
-   * Obtiene la lista de conversaciones del usuario (basadas en sus denuncias activas).
+   * Lista las conversaciones disponibles para el usuario autenticado.
+   * Llama a /api/denuncias/listar (todos los roles permitidos por SecurityConfig).
    */
   async getConversations(): Promise<Conversation[]> {
     const { data } = await apiClient.get<BackendDenuncia[]>('/denuncias/listar');
+    const userId = getCurrentUserId();
 
-    // Para cada denuncia, cargamos el último mensaje
     const conversations = await Promise.all(
       data.map(async (d) => {
         try {
@@ -132,25 +147,14 @@ export const chatService = {
           );
           const messages = mensajes.map(backendMensajeToMessage);
           const lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined;
-
           const conv = denunciaToConversation(d, lastMessage);
 
-          // Contar no leídos
-          const userId = (() => {
-            try {
-              const u = sessionStorage.getItem('user');
-              return u ? JSON.parse(u).id : null;
-            } catch {
-              return null;
-            }
-          })();
           conv.unreadCount = messages.filter(
             (m) => !m.isRead && m.senderId !== userId
           ).length;
 
           return conv;
         } catch {
-          // Si no hay mensajes aún, retornamos la conversación vacía
           return denunciaToConversation(d);
         }
       })
@@ -165,60 +169,66 @@ export const chatService = {
   async getConversation(
     conversationId: string
   ): Promise<{ conversation: Conversation; messages: ChatMessage[]; total: number }> {
-    const [{ data: mensajes }, { data: denuncias }] = await Promise.all([
-      apiClient.get<BackendMensaje[]>(`/mensajes/${conversationId}`),
-      apiClient.get<BackendDenuncia[]>('/denuncias/listar'),
-    ]);
+    const { data: mensajes } = await apiClient.get<BackendMensaje[]>(
+      `/mensajes/${conversationId}`
+    );
 
     const messages = mensajes.map(backendMensajeToMessage);
-    const denuncia = denuncias.find((d) => d.id === conversationId);
     const lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined;
-    const conversation = denuncia
-      ? denunciaToConversation(denuncia, lastMessage)
-      : ({
-          id: conversationId,
-          caseId: conversationId,
-          participants: [],
-          lastMessage,
-          lastMessageAt: lastMessage?.createdAt,
-          unreadCount: 0,
-          isArchived: false,
-          createdAt: new Date(),
-        } as Conversation);
+
+    // Intentamos obtener los datos de la denuncia para construir la conversación
+    let conversation: Conversation;
+    try {
+      const { data: denuncias } = await apiClient.get<BackendDenuncia[]>('/denuncias/listar');
+      const denuncia = denuncias.find((d) => d.id === conversationId);
+      conversation = denuncia
+        ? denunciaToConversation(denuncia, lastMessage)
+        : {
+            id: conversationId,
+            caseId: conversationId,
+            participants: [],
+            lastMessage,
+            lastMessageAt: lastMessage?.createdAt,
+            unreadCount: 0,
+            isArchived: false,
+            createdAt: new Date(),
+          };
+    } catch {
+      conversation = {
+        id: conversationId,
+        caseId: conversationId,
+        participants: [],
+        lastMessage,
+        lastMessageAt: lastMessage?.createdAt,
+        unreadCount: 0,
+        isArchived: false,
+        createdAt: new Date(),
+      };
+    }
 
     return { conversation, messages, total: messages.length };
   },
 
   /**
-   * Envía un mensaje en una conversación.
-   * El backend identifica al remitente por el JWT.
+   * Envía un mensaje. El backend resuelve el destinatario automáticamente
+   * si no se pasa destinatarioid.
    */
   async sendMessage(data: CreateMessageDto): Promise<ChatMessage> {
-    // 🔥 obtener usuario actual
-  const currentUser = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const payload: Record<string, string> = {
+      contenido: data.content,
+    };
 
-  // 🔥 buscar el destinatario (el otro participante)
-  const conversation = await this.getConversation(data.conversationId);
+    // Solo incluir destinatarioid si viene explícito
+    if ((data as any).destinatarioid) {
+      payload.destinatarioid = (data as any).destinatarioid;
+    }
 
-  const destinatario = conversation.conversation.participants.find(
-    (p) => p.userId !== currentUser.id
-  );
+    const { data: mensaje } = await apiClient.post<BackendMensaje>(
+      `/mensajes/${data.conversationId}`,
+      payload
+    );
 
-  if (!destinatario) {
-    throw new Error("No se encontró destinatario");
-  }
-
-  const payload = {
-    contenido: data.content,
-    destinatarioid: destinatario.userId, // ✅ AQUÍ VA EL FIX
-  };
-
-  const { data: mensaje } = await apiClient.post<BackendMensaje>(
-    `/mensajes`,
-    payload
-  );
-
-  return backendMensajeToMessage(mensaje);
+    return backendMensajeToMessage(mensaje);
   },
 
   /**
@@ -238,42 +248,8 @@ export const chatService = {
     return { total: data.total, byConversation: {} };
   },
 
-  // ── stubs compatibles (no usados con backend real) ────────────────────────
+  // ── polling para tiempo real ──────────────────────────────────────────────
 
-  async getOrCreateConversation(caseId: string): Promise<Conversation> {
-    const convs = await chatService.getConversations();
-    const existing = convs.find((c) => c.caseId === caseId);
-    if (existing) return existing;
-    throw new Error('Conversación no encontrada para el caso: ' + caseId);
-  },
-
-  async editMessage(_messageId: string, _content: string): Promise<ChatMessage> {
-    throw new Error('Edición de mensajes no soportada por el backend');
-  },
-
-  async deleteMessage(_messageId: string): Promise<void> {
-    throw new Error('Eliminación de mensajes no soportada por el backend');
-  },
-
-  async markAsRead(_messageId: string): Promise<void> {
-    // No expuesto individualmente; usar markConversationAsRead
-  },
-
-  async updateConversationSettings(
-    _conversationId: string,
-    _settings: Partial<ConversationSettings>
-  ): Promise<Conversation> {
-    throw new Error('Configuración de conversación no soportada por el backend');
-  },
-
-  async archiveConversation(_conversationId: string): Promise<void> {
-    throw new Error('Archivar conversación no soportado por el backend');
-  },
-
-  /**
-   * Polling ligero para simular tiempo real (sin WebSocket).
-   * Llama al callback con el nuevo mensaje si hay uno nuevo desde `lastMessageId`.
-   */
   subscribeToMessages(
     conversationId: string,
     onMessage: (message: ChatMessage) => void,
@@ -290,26 +266,54 @@ export const chatService = {
         );
         const messages = data.map(backendMensajeToMessage);
         const newest = messages.length > 0 ? messages[messages.length - 1] : undefined;
+
         if (newest && newest.id !== lastMessageId) {
           if (lastMessageId !== null) {
-            // Solo emitir mensajes que llegaron después de la carga inicial
-            const newOnes = messages.filter((m) => m.id !== lastMessageId);
+            // Emitir solo los mensajes que llegaron después de la carga inicial
+            const idx = messages.findIndex((m) => m.id === lastMessageId);
+            const newOnes = idx >= 0 ? messages.slice(idx + 1) : [];
             newOnes.forEach((m) => onMessage(m));
           }
           lastMessageId = newest.id;
         }
       } catch {
-        // silencioso — el componente maneja errores de carga
+        // silencioso
       }
-      if (active) setTimeout(poll, 8000); // poll cada 8 segundos
+      if (active) setTimeout(poll, 8000);
     };
 
-    // Primer poll retrasado para no duplicar la carga inicial
     setTimeout(poll, 8000);
+    return () => { active = false; };
+  },
 
-    return () => {
-      active = false;
-    };
+  // ── stubs ─────────────────────────────────────────────────────────────────
+
+  async getOrCreateConversation(caseId: string): Promise<Conversation> {
+    const convs = await chatService.getConversations();
+    const existing = convs.find((c) => c.caseId === caseId);
+    if (existing) return existing;
+    throw new Error('Conversación no encontrada para el caso: ' + caseId);
+  },
+
+  async markAsRead(_messageId: string): Promise<void> {},
+
+  async editMessage(_messageId: string, _content: string): Promise<ChatMessage> {
+    throw new Error('No soportado');
+  },
+
+  async deleteMessage(_messageId: string): Promise<void> {
+    throw new Error('No soportado');
+  },
+
+  async updateConversationSettings(
+    _conversationId: string,
+    _settings: Partial<ConversationSettings>
+  ): Promise<Conversation> {
+    throw new Error('No soportado');
+  },
+
+  async archiveConversation(_conversationId: string): Promise<void> {
+    throw new Error('No soportado');
   },
 
   subscribeToStatusUpdates(

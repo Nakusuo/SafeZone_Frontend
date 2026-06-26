@@ -145,7 +145,7 @@ export const ChatButton: React.FC = () => {
   return (
     <>
       {/* Floating button */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+      <div className="flex flex-col items-end gap-3">
         {/* Chat panel */}
         {isOpen && (
           <div className="w-[360px] max-h-[580px] flex flex-col rounded-2xl shadow-2xl border border-gray-200 bg-white overflow-hidden animate-in slide-in-from-bottom-4 duration-200">
@@ -317,8 +317,9 @@ export const ChatButton: React.FC = () => {
                             <div
                               className={`rounded-2xl px-3 py-2 text-sm leading-snug ${
                                 isOwn
-                                  ? 'bg-teal-600 text-white rounded-tr-none'
+                                  ? 'bg-teal-600 text-black rounded-tr-none'
                                   : 'bg-gray-100 text-gray-800 rounded-tl-none'
+                                  
                               }`}
                             >
                               {msg.content}

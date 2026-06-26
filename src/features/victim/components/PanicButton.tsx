@@ -97,9 +97,7 @@ export const PanicButton = () => {
       <button
         id="panic-button"
         onClick={handleOpen}
-        aria-label="Panic Button — send emergency alert"
         className="
-          fixed bottom-8 right-8 z-50
           w-20 h-20 rounded-full
           bg-red-600 hover:bg-red-700 active:scale-95
           text-white font-bold text-xs text-center
