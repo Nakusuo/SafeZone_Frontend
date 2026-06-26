@@ -4,6 +4,7 @@ import { reportService } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'
 import { useAuth } from '@/core/auth/AuthContext'
 import { EmergencyAlertsPanel } from '@/features/shared-features/emergency/EmergencyAlertsPanel'
+import { ChatButton } from '@/features/shared-features/chat/components/ChatButton'
 
 export const PsychologistDashboard = () => {
   const { user: userData } = useAuth()
@@ -22,7 +23,7 @@ export const PsychologistDashboard = () => {
   return (
     <div className="w-full px-8 py-8 pb-32">
 
-      
+      {/* Hero */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
         <h2 className="text-3xl font-bold mb-2">Welcome, {userData?.name || 'Psychologist'}</h2>
         <p className="text-teal-light">Your dedication creates a safe environment for those who need it most today.</p>
@@ -38,10 +39,10 @@ export const PsychologistDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Emergency alerts */}
       <EmergencyAlertsPanel />
 
-      
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-teal-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
@@ -73,7 +74,7 @@ export const PsychologistDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Cases table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-6">My Cases</h3>
         <div className="overflow-x-auto">
@@ -127,7 +128,7 @@ export const PsychologistDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Resources */}
       <div className="mt-12">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Help Resources</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -145,6 +146,9 @@ export const PsychologistDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Floating Chat Button (RF-07) */}
+      <ChatButton />
     </div>
   )
 }

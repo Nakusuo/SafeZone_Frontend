@@ -41,11 +41,13 @@ export interface ChatParticipant {
 export interface CreateMessageDto {
   conversationId: string;
   content: string;
+  /** ID del destinatario principal. Si se omite el backend asigna al equipo del caso. */
+  destinatarioid?: string;
   attachments?: Array<{
     fileName: string;
     fileSize: number;
     fileType: string;
-    fileData: string; 
+    fileData: string;
   }>;
 }
 

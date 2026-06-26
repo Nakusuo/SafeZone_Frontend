@@ -5,6 +5,7 @@ import { reportService } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'
 import { useAuth } from '@/core/auth/AuthContext'
 import { PanicButton } from '../components/PanicButton'
+import { ChatButton } from '@/features/shared-features/chat/components/ChatButton'
 
 export const VictimDashboard = () => {
   const navigate = useNavigate()
@@ -35,7 +36,7 @@ export const VictimDashboard = () => {
   return (
     <div className="w-full px-8 py-8 pb-32">
 
-      
+      {/* Hero */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
         <h2 className="text-3xl font-bold mb-2">Welcome, {userData?.name || 'User'}</h2>
         <p className="text-teal-light">Your safety is our top priority. Access your security tools and reports below.</p>
@@ -57,7 +58,7 @@ export const VictimDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-success-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
@@ -85,7 +86,7 @@ export const VictimDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Action buttons */}
       <div className="flex gap-4 mb-8">
         <button
           onClick={() => navigate('/victim/create-report')}
@@ -103,7 +104,7 @@ export const VictimDashboard = () => {
         </button>
       </div>
 
-      
+      {/* Recent reports table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Recent Reports</h3>
         <div className="overflow-x-auto">
@@ -156,7 +157,7 @@ export const VictimDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Resources */}
       <div className="mt-12">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Resources and Support</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -175,8 +176,11 @@ export const VictimDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Panic button */}
       <PanicButton />
+
+      {/* Floating Chat Button (RF-07) */}
+      <ChatButton />
     </div>
   )
 }
