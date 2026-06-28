@@ -5,6 +5,7 @@ import {
   Users, 
   Settings, 
   HelpCircle,
+  Calendar,
   ChevronRight 
 } from 'lucide-react'
 
@@ -23,19 +24,23 @@ const getNavigationItems = (role?: string) => {
 
   const roleSpecificItems: Record<string, any[]> = {
     VICTIM: [
+      { label: 'Mi Agenda', path: '/dashboard/victim/agenda', icon: Calendar },
       { label: 'Mis Denuncias', path: '/victim/my-reports', icon: FileText },
       { label: 'Ayuda', path: '/victim/help', icon: HelpCircle },
       { label: 'Contraseña', path: '/victim/password', icon: Settings },
     ],
     PSYCHOLOGIST: [
+      { label: 'Mi Agenda', path: '/dashboard/psychologist/agenda', icon: Calendar },
       { label: 'Mis Casos', path: '/psychologist/cases', icon: FileText },
       { label: 'Nueva Sesión', path: '/psychologist/session-form', icon: FileText },
     ],
     DEFENDER: [
+      { label: 'Mi Agenda', path: '/dashboard/defender/agenda', icon: Calendar },
       { label: 'Mis Casos', path: '/defender/cases', icon: FileText },
       { label: 'Actualizar Legal', path: '/defender/legal-update', icon: FileText },
     ],
     ADMIN: [
+      { label: 'Mi Agenda', path: '/dashboard/admin/agenda', icon: Calendar },
       { label: 'Triaje de Casos', path: '/admin/triage', icon: FileText },
       { label: 'Gestión Usuarios', path: '/admin/users', icon: Users },
     ],
@@ -69,7 +74,9 @@ export const Sidebar = ({ isOpen = true }: SidebarProps) => {
         <ul className="space-y-1">
           {navigationItems.map((item: any) => {
             const Icon = item.icon
-            const isActive = location.pathname.startsWith(item.path)
+            const isActive = item.label === 'Dashboard' 
+              ? location.pathname === item.path
+              : location.pathname.startsWith(item.path)
             const isDisabled = item.disabled
 
             return (

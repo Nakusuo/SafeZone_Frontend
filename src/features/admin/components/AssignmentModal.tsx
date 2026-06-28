@@ -36,12 +36,13 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
     }
     // 1. Definimos el payload correctamente
   const payload = {
-    caseId: caseId, // Asegúrate de incluir el caseId aquí
-    psicologoId: selectedPsychologist,
-    defensorLegalId: selectedDefender,
-    asignadoPorId: 'current-user-id', 
-    prioridad: priority,
-  };
+    caseId,
+    psychologistId: selectedPsychologist,
+    defenderLegalId: selectedDefender,
+    assignedAt: new Date().toISOString(),
+    assignedBy: 'current-user-id',
+    priority,
+  } satisfies TriageAssignment;
 
   // 2. Verificamos en consola
   console.log("Enviando al servidor:", payload);
