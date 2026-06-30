@@ -53,19 +53,22 @@ export const Sidebar = ({ isOpen = true }: SidebarProps) => {
   const navigationItems = getNavigationItems(user?.role)
 
   return (
-    <aside className={`${
-      isOpen ? 'w-64' : 'w-20'
-    } bg-gradient-to-b from-primary to-primary/90 text-white min-h-screen transition-all duration-300 flex flex-col shadow-warm`}>
-      <div className="p-6 border-b border-primary/30">
-        <div className={`flex items-center ${isOpen ? 'gap-3' : 'justify-center'}`}>
-          <div className="w-8 h-8 bg-secondary rounded-xl flex items-center justify-center font-bold text-sm">
+    <aside className={`
+      fixed inset-y-0 left-0 md:relative z-50
+      bg-gradient-to-b from-primary to-primary/90 text-white min-h-screen transition-all duration-300 flex flex-col shadow-warm
+      overflow-y-auto overflow-x-hidden
+      ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:w-20 md:translate-x-0'}
+    `}>
+      <div className="p-6 border-b border-primary/30 min-w-[16rem] md:min-w-[5rem]">
+        <div className={`flex items-center ${isOpen ? 'gap-3' : 'md:justify-center'}`}>
+          <div className="w-8 h-8 bg-secondary rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0">
             Z
           </div>
           {isOpen && <span className="font-bold text-lg tracking-tight">SafeZone</span>}
         </div>
       </div>
 
-      <nav className="flex-1 py-6 px-3">
+      <nav className="flex-1 py-6 px-3 min-w-[16rem] md:min-w-[5rem]">
         <ul className="space-y-1">
           {navigationItems.map((item: any) => {
             const Icon = item.icon
@@ -104,7 +107,7 @@ export const Sidebar = ({ isOpen = true }: SidebarProps) => {
       </nav>
 
       {isOpen && (
-        <div className="p-4 border-t border-white/10 bg-white/5 backdrop-blur-sm">
+        <div className="p-4 border-t border-white/10 bg-white/5 backdrop-blur-sm min-w-[16rem]">
           <div className="text-xs text-white/80 space-y-1">
             <p className="font-semibold">SafeZone</p>
             <p className="text-white/60">Comprehensive Protection</p>
