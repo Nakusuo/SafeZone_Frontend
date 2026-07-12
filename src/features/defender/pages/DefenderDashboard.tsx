@@ -4,6 +4,7 @@ import { reportService } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'
 import { useAuth } from '@/core/auth/AuthContext'
 import { EmergencyAlertsPanel } from '@/features/shared-features/emergency/EmergencyAlertsPanel'
+import { ChatButton } from '@/features/shared-features/chat/components/ChatButton'
 
 export const DefenderDashboard = () => {
   const { user: userData } = useAuth()
@@ -22,7 +23,8 @@ export const DefenderDashboard = () => {
 
   return (
     <div className="w-full px-8 py-8 pb-32">
-      {/* ── Welcome ─────────────────────────────────────────── */}
+
+      {/* Hero */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
         <h2 className="text-3xl font-bold mb-2">Welcome, {userData?.name || 'Legal Defender'}</h2>
         <p className="text-teal-light">Legal management panel. Supervise your active cases and scheduled hearings.</p>
@@ -38,10 +40,10 @@ export const DefenderDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Emergency alerts */}
       <EmergencyAlertsPanel />
 
-      
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-teal-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
@@ -73,7 +75,7 @@ export const DefenderDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Upcoming hearings */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-gray-900">Upcoming Hearings</h3>
@@ -111,7 +113,7 @@ export const DefenderDashboard = () => {
         </div>
       </div>
 
-      
+      {/* Notes */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Notes</h3>
         <div className="space-y-3">
@@ -126,7 +128,7 @@ export const DefenderDashboard = () => {
         </div>
       </div>
 
-      {/* ── Recursos ────────────────────────────────────────── */}
+      {/* Resources */}
       <div className="mt-12">
         <h3 className="text-lg font-bold text-gray-900 mb-6">Legal Support Resources</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -144,6 +146,9 @@ export const DefenderDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Floating Chat Button (RF-07) */}
+      <ChatButton />
     </div>
   )
 }
