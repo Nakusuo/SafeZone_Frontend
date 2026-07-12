@@ -11,8 +11,8 @@ export const PsychologistDashboard = () => {
   const [reports, setReports] = useState<Report[]>([])
 
   useEffect(() => {
-    reportService.getAllReports()
-      .then(all => setReports(all.filter(r => r.psychologistId === userData?.id)))
+    reportService.getAssignedCases()
+      .then(setReports)
       .catch(console.error)
   }, [userData?.id])
 

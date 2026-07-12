@@ -11,8 +11,9 @@ export const DefenderDashboard = () => {
   const [reports, setReports] = useState<Report[]>([])
 
   useEffect(() => {
-    reportService.getAllReports()
-      .then(all => setReports(all.filter(r => r.defenderId === userData?.id)))
+    // AQUÍ EL CAMBIO: Llamamos directamente a getAssignedCases()
+    reportService.getAssignedCases()
+      .then(setReports)
       .catch(console.error)
   }, [userData?.id])
 
