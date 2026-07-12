@@ -2,7 +2,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from '@/core/auth/AuthContext'
 import AppRoutes from '@/core/router/AppRoutes'
 import './App.css'
-
+import { IonApp } from '@ionic/react';
 // ============================================================
 // App — Raíz de la aplicación
 // AuthProvider envuelve toda la app para que cualquier
@@ -11,11 +11,13 @@ import './App.css'
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </BrowserRouter>
+    <IonApp>
+      <BrowserRouter>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </BrowserRouter>
+    </IonApp>
   )
 }
 

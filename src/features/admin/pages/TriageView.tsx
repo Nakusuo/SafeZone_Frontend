@@ -123,11 +123,11 @@ export const TriageView: React.FC = () => {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="rounded-2xl bg-surface-container-highest p-6">
-        <h1 className="text-2xl font-bold text-on-surface">
+      <div className="rounded-2xl bg-white p-6">
+        <h1 className="text-2xl font-bold text-slate-900">
           Centro de Triaje y Asignación
         </h1>
-        <p className="mt-2 text-on-surface-variant">
+        <p className="mt-2 text-slate-500 font-medium">
           Casos pendientes de revisión y asignación
         </p>
       </div>

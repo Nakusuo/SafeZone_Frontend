@@ -41,10 +41,11 @@ export const Input = ({
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
         className={`
-          w-full px-4 py-2 rounded-xl border-2
-          ${error ? 'border-accent' : 'border-gray-200'}
-          focus:outline-none focus:border-primary focus:shadow-soft
-          disabled:bg-gray-100 disabled:cursor-not-allowed
+          w-full px-4 py-2 rounded-xl border border-slate-600 bg-[#374151] text-slate-100
+          ${error ? 'border-red-400' : 'border-slate-600'}
+          focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30
+          disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-[#f1f5f9] disabled:border-slate-300 disabled:text-[#475569]
+          placeholder:text-slate-400
           transition-all duration-200
           ${className}
         `}
@@ -95,10 +96,11 @@ export const TextArea = ({
         rows={rows}
         maxLength={maxLength}
         className={`
-          w-full px-4 py-2 rounded-xl border-2
-          ${error ? 'border-accent' : 'border-gray-200'}
-          focus:outline-none focus:border-primary focus:shadow-soft
-          disabled:bg-gray-100 disabled:cursor-not-allowed
+          w-full px-4 py-2 rounded-xl border border-slate-600 bg-[#374151] text-slate-100
+          ${error ? 'border-red-400' : 'border-slate-600'}
+          focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30
+          disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-[#f1f5f9] disabled:border-slate-300 disabled:text-[#475569]
+          placeholder:text-slate-400
           transition-all duration-200
           font-sans
           ${maxLength ? 'resize-none' : 'resize-vertical'}
@@ -152,10 +154,10 @@ export const Select = ({
         onChange={(e) => onChange?.(e.target.value)}
         disabled={disabled}
         className={`
-          w-full px-4 py-2 rounded-xl border-2
-          ${error ? 'border-accent' : 'border-gray-200'}
-          focus:outline-none focus:border-primary focus:shadow-soft
-          disabled:bg-gray-100 disabled:cursor-not-allowed
+          w-full px-4 py-2 rounded-xl border border-slate-600 bg-[#374151] text-slate-100
+          ${error ? 'border-red-400' : 'border-slate-600'}
+          focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/30
+          disabled:opacity-100 disabled:cursor-not-allowed disabled:bg-[#f1f5f9] disabled:border-slate-300 disabled:text-[#475569]
           transition-all duration-200
         `}
       >
