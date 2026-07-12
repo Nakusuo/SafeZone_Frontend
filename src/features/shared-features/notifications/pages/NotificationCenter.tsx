@@ -64,15 +64,15 @@ export const NotificationCenter: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      
       <div className="rounded-2xl bg-surface-container-highest p-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-on-surface">
-              Centro de Notificaciones
+              Notification Center
             </h1>
             <p className="mt-2 text-on-surface-variant">
-              Aquí encontrarás todas tus notificaciones y actualizaciones
+              Here you will find all your notifications and updates
             </p>
           </div>
           {unreadCount > 0 && (
@@ -80,13 +80,13 @@ export const NotificationCenter: React.FC = () => {
               onClick={handleMarkAllAsRead}
               className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-on-primary hover:bg-primary/90"
             >
-              Marcar todo como leído
+              Mark all as read
             </button>
           )}
         </div>
       </div>
 
-      {/* Filters */}
+      
       <div className="flex gap-2">
         <button
           onClick={() => setFilter('all')}
@@ -96,7 +96,7 @@ export const NotificationCenter: React.FC = () => {
               : 'bg-surface-container text-on-surface hover:bg-surface-container-high'
           }`}
         >
-          Todas ({notifications.length})
+          All ({notifications.length})
         </button>
         <button
           onClick={() => setFilter('unread')}
@@ -106,26 +106,26 @@ export const NotificationCenter: React.FC = () => {
               : 'bg-surface-container text-on-surface hover:bg-surface-container-high'
           }`}
         >
-          Sin leer ({unreadCount})
+          Unread ({unreadCount})
         </button>
       </div>
 
-      {/* Main Content */}
+      
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Notifications List */}
+        
         <div className="space-y-2 lg:col-span-2">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 rounded-2xl bg-surface-container-lowest py-12 text-on-surface-variant">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-              <span>Cargando notificaciones...</span>
+              <span>Loading notifications...</span>
             </div>
           ) : filteredNotifications.length === 0 ? (
             <div className="rounded-2xl bg-surface-container-lowest p-8 text-center">
               <Mail className="mx-auto mb-3 h-12 w-12 text-on-surface-variant/50" />
               <p className="text-on-surface-variant">
                 {filter === 'unread'
-                  ? 'No tienes notificaciones sin leer'
-                  : 'No hay notificaciones'}
+                  ? 'You have no unread notifications'
+                  : 'No notifications'}
               </p>
             </div>
           ) : (
@@ -167,11 +167,11 @@ export const NotificationCenter: React.FC = () => {
                       <Clock className="h-3 w-3" />
                       <span>
                         {new Date(notification.createdAt).toLocaleDateString(
-                          'es-ES'
+                          'en-US'
                         )}{' '}
-                        a las{' '}
+                        at{' '}
                         {new Date(notification.createdAt).toLocaleTimeString(
-                          'es-ES',
+                          'en-US',
                           { hour: '2-digit', minute: '2-digit' }
                         )}
                       </span>
@@ -183,17 +183,17 @@ export const NotificationCenter: React.FC = () => {
           )}
         </div>
 
-        {/* Details Panel */}
+        
         <div className="lg:col-span-1">
           {selectedNotification ? (
             <div className="rounded-2xl bg-surface-container-lowest p-6 space-y-4">
               <h3 className="font-bold text-on-surface">
-                Detalles de la Notificación
+                Notification Details
               </h3>
 
               <div>
                 <p className="text-xs font-semibold text-on-surface-variant uppercase">
-                  Asunto
+                  Subject
                 </p>
                 <p className="mt-1 text-sm text-on-surface">
                   {selectedNotification.title}
@@ -202,7 +202,7 @@ export const NotificationCenter: React.FC = () => {
 
               <div>
                 <p className="text-xs font-semibold text-on-surface-variant uppercase">
-                  Mensaje
+                  Message
                 </p>
                 <p className="mt-1 text-sm leading-relaxed text-on-surface">
                   {selectedNotification.message}
@@ -211,7 +211,7 @@ export const NotificationCenter: React.FC = () => {
 
               <div>
                 <p className="text-xs font-semibold text-on-surface-variant uppercase">
-                  Tipo
+                  Type
                 </p>
                 <p className="mt-1 text-sm capitalize text-on-surface">
                   {selectedNotification.type.replace('-', ' ')}
@@ -221,7 +221,7 @@ export const NotificationCenter: React.FC = () => {
               {selectedNotification.relatedCaseId && (
                 <div className="rounded-lg bg-surface-container p-3">
                   <p className="text-xs font-semibold text-on-surface-variant">
-                    Caso Relacionado
+                    Related Case
                   </p>
                   <p className="mt-1 text-sm font-semibold text-primary">
                     {selectedNotification.relatedCaseId}
@@ -237,20 +237,20 @@ export const NotificationCenter: React.FC = () => {
                     }
                     className="w-full rounded-lg bg-secondary px-4 py-2 text-sm font-semibold text-on-secondary hover:bg-secondary/90"
                   >
-                    Marcar como leído
+                    Mark as read
                   </button>
                 )}
                 <button
                   onClick={() => handleDelete(selectedNotification.id)}
                   className="w-full rounded-lg bg-error/10 px-4 py-2 text-sm font-semibold text-error hover:bg-error/20"
                 >
-                  Eliminar
+                  Delete
                 </button>
               </div>
             </div>
           ) : (
             <div className="rounded-2xl bg-surface-container-lowest p-6 text-center text-on-surface-variant">
-              Selecciona una notificación para ver detalles
+              Select a notification to view details
             </div>
           )}
         </div>

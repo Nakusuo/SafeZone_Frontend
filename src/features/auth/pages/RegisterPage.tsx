@@ -50,9 +50,9 @@ export const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const roleOptions = [
-    { value: "VICTIM", label: "Víctima" },
-    { value: "PSYCHOLOGIST", label: "Psicólogo/a" },
-    { value: "DEFENDER", label: "Defensor Legal" },
+    { value: "VICTIM", label: "Victim" },
+    { value: "PSYCHOLOGIST", label: "Psychologist" },
+    { value: "DEFENDER", label: "Legal Defender" },
   ];
 
   const handleChange = (field: string, value: string) => {
@@ -70,17 +70,17 @@ export const RegisterPage = () => {
       !formData.password ||
       !formData.role
     ) {
-      setError("Por favor completa todos los campos");
+      setError("Please complete all fields");
       return false;
     }
 
     if (formData.password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres");
+      setError("The password must be at least 8 characters long");
       return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Las contraseñas no coinciden");
+      setError("Passwords do not match");
       return false;
     }
 
@@ -117,7 +117,7 @@ export const RegisterPage = () => {
 
       navigate(dashboardMap[response.user.role] || "/dashboard");
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data || "Error al crear la cuenta");
+      setError(err.response?.data?.message || err.response?.data || "Error creating account");
     } finally {
       setIsLoading(false);
     }
@@ -131,7 +131,7 @@ export const RegisterPage = () => {
             <UserPlus className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">SafeZone</h1>
-          <p className="text-gray-600">Crea tu cuenta segura</p>
+          <p className="text-gray-600">Create your secure account</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-warm p-8 space-y-6">
@@ -144,32 +144,32 @@ export const RegisterPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Nombre"
-              placeholder="Juan"
+              label="First Name"
+              placeholder="John"
               value={formData.name}
               onChange={(value) => handleChange("name", value)}
               required
             />
 
             <Input
-              label="Apellido"
-              placeholder="Pérez"
+              label="Last Name"
+              placeholder="Doe"
               value={formData.lastName}
               onChange={(value) => handleChange("lastName", value)}
               required
             />
 
             <Input
-              label="Correo electrónico"
+              label="Email"
               type="email"
-              placeholder="tu@email.com"
+              placeholder="you@email.com"
               value={formData.email}
               onChange={(value) => handleChange("email", value)}
               required
             />
 
             <Input
-              label="Teléfono"
+              label="Phone"
               type="tel"
               placeholder="999 999 999"
               value={formData.phone}
@@ -178,7 +178,7 @@ export const RegisterPage = () => {
             />
 
             <Select
-              label="Región"
+              label="Region"
               options={regionOptions}
               value={formData.regionId}
               onChange={(value) => handleChange("regionId", value)}
@@ -186,7 +186,7 @@ export const RegisterPage = () => {
             />
 
             <Select
-              label="Tipo de usuario"
+              label="User Type"
               options={roleOptions}
               value={formData.role}
               onChange={(value) => handleChange("role", value)}
@@ -194,7 +194,7 @@ export const RegisterPage = () => {
             />
 
             <Input
-              label="Contraseña"
+              label="Password"
               type="password"
               placeholder="••••••••"
               value={formData.password}
@@ -203,7 +203,7 @@ export const RegisterPage = () => {
             />
 
             <Input
-              label="Confirmar contraseña"
+              label="Confirm Password"
               type="password"
               placeholder="••••••••"
               value={formData.confirmPassword}
@@ -218,23 +218,25 @@ export const RegisterPage = () => {
               isLoading={isLoading}
               className="w-full"
             >
-              Crear cuenta
+              Create account
             </Button>
           </form>
 
-          <p className="text-center text-sm text-gray-600">
-            ¿Ya tienes cuenta?{" "}
-            <button
-              onClick={() => navigate("/login")}
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              Inicia sesión
-            </button>
-          </p>
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              Already have an account?{" "}
+              <button
+                onClick={() => navigate("/login")}
+                className="text-primary hover:text-primary/80 font-medium transition-colors"
+              >
+                Log in
+              </button>
+            </p>
+          </div>
         </div>
 
         <p className="text-center text-xs text-gray-600 mt-6 max-w-xs mx-auto">
-          Al registrarte, aceptas nuestras políticas de privacidad y protección de datos
+          By registering, you accept our privacy and data protection policies
         </p>
       </div>
     </div>

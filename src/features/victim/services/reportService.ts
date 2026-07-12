@@ -47,7 +47,7 @@ const getMockData = () => {
     const stored = sessionStorage.getItem(STORAGE_KEY)
     if (stored) return JSON.parse(stored)
   } catch {
-    /* empty */
+    
   }
 
   return JSON.parse(JSON.stringify(mockData))
@@ -57,7 +57,7 @@ const saveMockData = (data: unknown) => {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   } catch {
-    /* empty */
+    
   }
 }
 
@@ -142,6 +142,7 @@ const mapBackendDenunciaToReport = (
       denuncia.updatedAt || denuncia.fechaDenuncia || denuncia.createdAt || new Date().toISOString(),
     psychologistId: denuncia.psychologistId,
     defenderId: denuncia.defenderId,
+    location: denuncia.direccion || denuncia.location || fallback?.location,
   }
 }
 
@@ -203,8 +204,8 @@ export const reportService = {
 
     const region = { id: '15', nombre: 'Lima' }
     const backendPayload = {
-      usuarioid: victimId,
-      victimaId: victimId,
+      usuarioid: victimId, 
+      titulo: reportData.title,
       tipoViolencia: reportData.type,
       descripcion: `${reportData.title}\n\n${reportData.description}`,
       nivelRiesgo: reportData.priority,
@@ -282,6 +283,25 @@ export const reportService = {
       return getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
     }
     return []
+  },
+
+  getAssignedCases: async (): Promise<Report[]> => {
+    if (config.USE_MOCK) {
+      await delay()
+      // En modo mock, filtramos usando el ID del usuario guardado en la sesión
+      const userStr = sessionStorage.getItem('user')
+      if (!userStr) return []
+      
+      const currentUser = JSON.parse(userStr)
+      
+      return getMockData().reports.filter((r: Report) => 
+        r.psychologistId === currentUser.id || r.defenderId === currentUser.id
+      )
+    }
+
+    // Llamada real al nuevo endpoint de Spring Boot
+    const { data } = await apiClient.get<BackendDenuncia[]>('/denuncias/mis-casos')
+    return data.map((item) => mapBackendDenunciaToReport(item))
   },
 
   createLegalUpdate: async (

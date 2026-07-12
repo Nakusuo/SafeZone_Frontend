@@ -21,7 +21,7 @@ export const LoginPage = () => {
     e.preventDefault()
     
     if (!formData.email || !formData.password) {
-      setError('Por favor completa todos los campos')
+      setError('Please complete all fields')
       return
     }
 
@@ -34,9 +34,9 @@ export const LoginPage = () => {
       console.log("¿Existe response.user?", response.user);
       
       if (!response.token || !response.user) {
-         throw new Error("El formato de respuesta del servidor no es el esperado.");
+         throw new Error("The server response format is not as expected.");
       }
-      // Guardar en AuthContext (que también persiste en sessionStorage)
+      
       login(response.token, response.user)
 
       const dashboardMap: Record<string, string> = {
@@ -47,7 +47,7 @@ export const LoginPage = () => {
       }
       navigate(dashboardMap[response.user.role] || '/dashboard/victim')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error al iniciar sesión'
+      const msg = err instanceof Error ? err.message : 'Error logging in'
       setError(msg)
     } finally {
       setIsLoading(false)
@@ -56,18 +56,18 @@ export const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      
       <div className="bg-teal h-14 flex items-center px-8">
         <h1 className="text-white text-xl font-bold">SafeZone</h1>
       </div>
 
-      {/* Main */}
+      
       <div className="flex items-center justify-center min-h-[calc(100vh-56px)] p-4">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8 space-y-6">
-          {/* Title */}
+          
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Bienvenido</h2>
-            <p className="text-sm text-gray-600">Inicie sesión para acceder a su refugio digital y recursos de seguridad.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome</h2>
+            <p className="text-sm text-gray-600">Log in to access your digital shelter and security resources.</p>
           </div>
 
           {error && (
@@ -82,7 +82,7 @@ export const LoginPage = () => {
               <label className="block text-sm font-medium text-gray-900 mb-2">Email</label>
               <Input
                 type="email"
-                placeholder="tu@email.com"
+                placeholder="you@email.com"
                 value={formData.email}
                 onChange={(value) => handleChange('email', value)}
                 required
@@ -93,7 +93,7 @@ export const LoginPage = () => {
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="block text-sm font-medium text-gray-900">Password</label>
-                <a href="#" className="text-xs text-primary hover:underline">¿Olvidó su contraseña?</a>
+                <a href="#" className="text-xs text-primary hover:underline">Forgot password?</a>
               </div>
               <Input
                 type="password"
@@ -110,13 +110,13 @@ export const LoginPage = () => {
               className="w-full bg-teal hover:bg-teal/90 text-white py-2.5 rounded-lg font-medium mt-6"
               isLoading={isLoading}
             >
-              Inicia Sesión →
+              Log In →
             </Button>
           </form>
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              ¿No tiene cuenta? <a href="/register" className="text-teal font-medium hover:underline">Regístrese</a>
+              Don't have an account? <a href="/register" className="text-teal font-medium hover:underline">Register</a>
             </p>
           </div>
         </div>
@@ -131,13 +131,12 @@ export const LoginPage = () => {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-teal">Tu seguridad es nuestra prioridad</p>
-            <p className="text-xs text-teal/70">Utilizamos cifrado de extremo a extremo para proteger</p>
-            <a href="#" className="text-xs text-teal font-medium hover:underline">los datos.</a>
+            <p className="text-sm font-medium text-teal">Your safety is our priority</p>
+            <p className="text-xs text-teal/70">We use end-to-end encryption to protect</p>
+            <a href="#" className="text-xs text-teal font-medium hover:underline">your data.</a>
           </div>
         </div>
       </div>
     </div>
   )
 }
-

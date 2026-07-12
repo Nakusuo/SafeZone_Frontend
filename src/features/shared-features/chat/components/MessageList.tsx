@@ -16,7 +16,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Scroll to bottom on new messages
+    
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
@@ -37,7 +37,7 @@ export const MessageList: React.FC<MessageListProps> = ({
 
       {messages.length === 0 && !isLoading && (
         <div className="flex items-center justify-center h-32 text-on-surface-variant">
-          <p>Sin mensajes aún. ¡Comienza la conversación!</p>
+          <p>No messages yet. Start the conversation!</p>
         </div>
       )}
 
@@ -63,7 +63,7 @@ export const MessageList: React.FC<MessageListProps> = ({
                 <span className="font-semibold">{message.senderName}</span>
                 <span className="mx-1">•</span>
                 <span>
-                  {new Date(message.createdAt).toLocaleTimeString('es-ES', {
+                  {new Date(message.createdAt).toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}

@@ -45,7 +45,7 @@ const getMockData = () => {
     const stored = sessionStorage.getItem(STORAGE_KEY)
     if (stored) return JSON.parse(stored)
   } catch {
-    /* empty */
+    
   }
 
   return JSON.parse(JSON.stringify(mockData))
@@ -55,7 +55,7 @@ const saveMockData = (data: unknown) => {
   try {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   } catch {
-    /* empty */
+    
   }
 }
 
@@ -187,7 +187,7 @@ export const authService = {
       try {
         await apiClient.post('/auth/logout')
       } catch {
-        /* ignorar */
+        
       }
     }
 

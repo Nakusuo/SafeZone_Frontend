@@ -1,14 +1,14 @@
 import axios, { AxiosInstance } from 'axios'
 import { config } from '../config'
 
-// Cliente axios base — apunta al backend Spring Boot
+
 const apiClient: AxiosInstance = axios.create({
   baseURL: config.API_URL,
   headers: { 'Content-Type': 'application/json' },
   timeout: 10000,
 })
 
-// Antes de cada petición, adjunta el JWT si existe
+
 apiClient.interceptors.request.use(
   (requestConfig) => {
     const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token')
@@ -20,7 +20,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Manejo global de errores HTTP
+
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {

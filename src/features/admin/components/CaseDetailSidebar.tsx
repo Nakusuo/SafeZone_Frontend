@@ -85,8 +85,8 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
       <div className="flex items-center gap-2 border-t border-slate-200 pt-6 text-sm text-slate-500">
         <Clock className="h-4 w-4 flex-shrink-0" />
         <span>
-          Reportado:{' '}
-          {new Date(caseData.submittedAt).toLocaleDateString('es-ES', {
+          Reported:{' '}
+          {new Date(caseData.submittedAt).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
@@ -95,7 +95,7 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
         </span>
       </div>
 
-      {/* Current Assignment */}
+      
       {caseData.assignedTo && (
         <div className="space-y-2 rounded-lg bg-slate-50 p-3">
           <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -114,7 +114,7 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
         </div>
       )}
 
-      {/* Notes */}
+      
       {caseData.notes && (
         <div className="space-y-2 border-t border-slate-200 pt-6">
           <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">

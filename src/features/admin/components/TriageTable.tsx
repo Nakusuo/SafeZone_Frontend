@@ -18,10 +18,10 @@ const priorityColors: Record<CasePriority, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  new: 'Nuevo',
-  assigned: 'Asignado',
-  'in-progress': 'En Curso',
-  closed: 'Cerrado',
+  new: 'New',
+  assigned: 'Assigned',
+  'in-progress': 'In Progress',
+  closed: 'Closed',
 };
 
 export const TriageTable: React.FC<TriageTableProps> = ({

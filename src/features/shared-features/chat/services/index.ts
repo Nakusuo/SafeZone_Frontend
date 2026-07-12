@@ -1,273 +1,325 @@
+/**
+ * RF-07 – Chat service conectado al backend real
+ *
+ * Endpoints consumidos:
+ *   GET    /api/denuncias/listar                → conversaciones del usuario
+ *   GET    /api/mensajes/{denunciaid}           → mensajes de una conversación
+ *   POST   /api/mensajes/{denunciaid}           → enviar mensaje
+ *   PATCH  /api/mensajes/{denunciaid}/leer      → marcar como leídos
+ *   GET    /api/mensajes/no-leidos/count        → badge de no leídos
+ */
+
 import apiClient from '@/core/api/apiClient';
 import type {
   ChatMessage,
   Conversation,
   CreateMessageDto,
   ConversationSettings,
+  ChatParticipant,
 } from '../types';
 
-// Mock Data
-const MOCK_MESSAGES: ChatMessage[] = [
-  {
-    id: 'msg-001',
-    conversationId: 'conv-001',
-    senderId: 'user-victim-001',
-    senderName: 'María González',
-    senderRole: 'victim',
-    content: '¿Cuándo podré hablar con la psicóloga?',
-    createdAt: new Date(Date.now() - 2 * 60 * 60000),
-    isRead: true,
-  },
-  {
-    id: 'msg-002',
-    conversationId: 'conv-001',
-    senderId: 'psy-001',
-    senderName: 'Dra. María García',
-    senderRole: 'psychologist',
-    content: 'Hola María, estoy disponible mañana a las 10:00 AM. ¿Te viene bien?',
-    createdAt: new Date(Date.now() - 90 * 60000),
-    isRead: true,
-  },
-  {
-    id: 'msg-003',
-    conversationId: 'conv-001',
-    senderId: 'def-001',
-    senderName: 'Lic. Ana Martínez',
-    senderRole: 'defender',
-    content: 'María, tengo buenas noticias sobre tu caso. He obtenido la orden de alejamiento.',
-    createdAt: new Date(Date.now() - 60 * 60000),
-    isRead: true,
-  },
-  {
-    id: 'msg-004',
-    conversationId: 'conv-001',
-    senderId: 'user-victim-001',
-    senderName: 'María González',
-    senderRole: 'victim',
-    content: 'Gracias Lic. Ana, eso me hace sentir más segura. ¿Qué sigue ahora?',
-    createdAt: new Date(Date.now() - 30 * 60000),
-    isRead: true,
-  },
-  {
-    id: 'msg-005',
-    conversationId: 'conv-001',
-    senderId: 'def-001',
-    senderName: 'Lic. Ana Martínez',
-    senderRole: 'defender',
-    content: 'Ahora procederemos con la audiencia de custodia. Te citaré cuando tenga la fecha confirmada.',
-    createdAt: new Date(Date.now() - 10 * 60000),
-    isRead: false,
-  },
-];
+// ── tipos del backend ─────────────────────────────────────────────────────────
 
-const MOCK_CONVERSATIONS: Conversation[] = [
-  {
-    id: 'conv-001',
-    caseId: 'CASE-001',
-    participants: [
-      { userId: 'user-victim-001', userName: 'María González', userRole: 'victim', joinedAt: new Date(Date.now() - 48 * 60 * 60000), status: 'available' },
-      { userId: 'psy-001', userName: 'Dra. María García', userRole: 'psychologist', joinedAt: new Date(Date.now() - 48 * 60 * 60000), status: 'available' },
-      { userId: 'def-001', userName: 'Lic. Ana Martínez', userRole: 'defender', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'offline' },
-    ],
-    lastMessage: MOCK_MESSAGES[4],
-    lastMessageAt: MOCK_MESSAGES[4].createdAt,
-    unreadCount: 1,
-    isArchived: false,
-    createdAt: new Date(Date.now() - 48 * 60 * 60000),
-  },
-  {
-    id: 'conv-002',
-    caseId: 'CASE-002',
-    participants: [
-      { userId: 'user-victim-002', userName: 'Ana Rodríguez', userRole: 'victim', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'available' },
-      { userId: 'psy-002', userName: 'Dr. José López', userRole: 'psychologist', joinedAt: new Date(Date.now() - 24 * 60 * 60000), status: 'available' },
-    ],
-    lastMessage: {
-      id: 'msg-006',
-      conversationId: 'conv-002',
-      senderId: 'psy-002',
-      senderName: 'Dr. José López',
-      senderRole: 'psychologist',
-      content: 'Ana, tenemos una buena estrategia para trabajar el control emocional. Veamos en la sesión.',
-      createdAt: new Date(Date.now() - 2 * 60 * 60000),
-      isRead: true,
-    },
-    lastMessageAt: new Date(Date.now() - 2 * 60 * 60000),
+interface BackendMensaje {
+  id: string;
+  denunciaid: string;
+  remitenteid: string;
+  remitenteNombre: string;
+  remitenteRol: string;
+  destinatarioid: string;
+  contenido: string;
+  leido: boolean;
+  fechaenvio: string;
+}
+
+interface BackendDenuncia {
+  id: string;
+  usuarioid: string;
+  victimaid?: string;
+  titulo: string;
+  descripcion: string;
+  tipoViolencia: string;
+  nivelRiesgo: string;
+  estado: string;
+  direccion: string;
+  fechaDenuncia: string;
+  psicologoId?: string;
+  defensorLegalId?: string;
+}
+
+// ── helpers ───────────────────────────────────────────────────────────────────
+
+function mapRol(backendRol: string): ChatMessage['senderRole'] {
+  const map: Record<string, ChatMessage['senderRole']> = {
+    VICTIM: 'victim',
+    PSYCHOLOGIST: 'psychologist',
+    DEFENDER: 'defender',
+    ADMIN: 'admin',
+  };
+  return map[backendRol?.toUpperCase()] ?? 'victim';
+}
+
+function getCurrentUserId(): string | null {
+  try {
+    const u = localStorage.getItem('user') || sessionStorage.getItem('user');
+    return u ? JSON.parse(u).id : null;
+  } catch {
+    return null;
+  }
+}
+
+function backendMensajeToMessage(m: BackendMensaje): ChatMessage {
+  return {
+    id: m.id,
+    conversationId: m.denunciaid,
+    senderId: m.remitenteid,
+    senderName: m.remitenteNombre,
+    senderRole: mapRol(m.remitenteRol),
+    content: m.contenido,
+    createdAt: new Date(m.fechaenvio),
+    isRead: m.leido,
+  };
+}
+
+function denunciaToConversation(
+  d: BackendDenuncia,
+  lastMessage?: ChatMessage
+): Conversation {
+  const participants: ChatParticipant[] = [];
+
+  if (d.victimaid || d.usuarioid) {
+    participants.push({
+      userId: d.victimaid || d.usuarioid,
+      userName: 'Víctima',
+      userRole: 'victim',
+      joinedAt: new Date(d.fechaDenuncia),
+      status: 'available',
+    });
+  }
+  if (d.psicologoId) {
+    participants.push({
+      userId: d.psicologoId,
+      userName: 'Psicólogo/a',
+      userRole: 'psychologist',
+      joinedAt: new Date(d.fechaDenuncia),
+      status: 'available',
+    });
+  }
+  if (d.defensorLegalId) {
+    participants.push({
+      userId: d.defensorLegalId,
+      userName: 'Defensor/a Legal',
+      userRole: 'defender',
+      joinedAt: new Date(d.fechaDenuncia),
+      status: 'available',
+    });
+  }
+
+  return {
+    id: d.id,
+    caseId: d.id,
+    participants,
+    lastMessage,
+    lastMessageAt: lastMessage?.createdAt,
     unreadCount: 0,
     isArchived: false,
-    createdAt: new Date(Date.now() - 24 * 60 * 60000),
-  },
-];
+    createdAt: new Date(d.fechaDenuncia),
+  };
+}
+
+// ── servicio ──────────────────────────────────────────────────────────────────
 
 export const chatService = {
-  // Get all conversations for current user
+
+  /**
+   * Lista las conversaciones disponibles para el usuario autenticado.
+   * Llama a /api/denuncias/listar (todos los roles permitidos por SecurityConfig).
+   */
   async getConversations(): Promise<Conversation[]> {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(MOCK_CONVERSATIONS);
-      }, 300);
-    });
+    const { data } = await apiClient.get<BackendDenuncia[]>('/denuncias/listar');
+    const userId = getCurrentUserId();
+
+    const conversations = await Promise.all(
+      data.map(async (d) => {
+        try {
+          const { data: mensajes } = await apiClient.get<BackendMensaje[]>(
+            `/mensajes/${d.id}`
+          );
+          const messages = mensajes.map(backendMensajeToMessage);
+          const lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined;
+          const conv = denunciaToConversation(d, lastMessage);
+
+          conv.unreadCount = messages.filter(
+            (m) => !m.isRead && m.senderId !== userId
+          ).length;
+
+          return conv;
+        } catch {
+          return denunciaToConversation(d);
+        }
+      })
+    );
+
+    return conversations;
   },
 
-  // Get specific conversation with message history
+  /**
+   * Carga todos los mensajes de una conversación (denuncia).
+   */
   async getConversation(
-    conversationId: string,
-    limit = 50,
-    offset = 0
-  ): Promise<{
-    conversation: Conversation;
-    messages: ChatMessage[];
-    total: number;
-  }> {
-    const conversation = MOCK_CONVERSATIONS.find(c => c.id === conversationId) || MOCK_CONVERSATIONS[0];
-    const messages = MOCK_MESSAGES.filter(m => m.conversationId === conversationId);
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({
-          conversation,
-          messages: messages.slice(offset, offset + limit),
-          total: messages.length,
-        });
-      }, 300);
-    });
-  },
+    conversationId: string
+  ): Promise<{ conversation: Conversation; messages: ChatMessage[]; total: number }> {
+    const { data: mensajes } = await apiClient.get<BackendMensaje[]>(
+      `/mensajes/${conversationId}`
+    );
 
-  // Get or create conversation for a case
-  async getOrCreateConversation(caseId: string): Promise<Conversation> {
-    const existing = MOCK_CONVERSATIONS.find(c => c.caseId === caseId);
-    if (existing) {
-      return new Promise(resolve => setTimeout(() => resolve(existing), 200));
+    const messages = mensajes.map(backendMensajeToMessage);
+    const lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined;
+
+    // Intentamos obtener los datos de la denuncia para construir la conversación
+    let conversation: Conversation;
+    try {
+      const { data: denuncias } = await apiClient.get<BackendDenuncia[]>('/denuncias/listar');
+      const denuncia = denuncias.find((d) => d.id === conversationId);
+      conversation = denuncia
+        ? denunciaToConversation(denuncia, lastMessage)
+        : {
+            id: conversationId,
+            caseId: conversationId,
+            participants: [],
+            lastMessage,
+            lastMessageAt: lastMessage?.createdAt,
+            unreadCount: 0,
+            isArchived: false,
+            createdAt: new Date(),
+          };
+    } catch {
+      conversation = {
+        id: conversationId,
+        caseId: conversationId,
+        participants: [],
+        lastMessage,
+        lastMessageAt: lastMessage?.createdAt,
+        unreadCount: 0,
+        isArchived: false,
+        createdAt: new Date(),
+      };
     }
-    const newConv: Conversation = {
-      id: `conv-${Date.now()}`,
-      caseId,
-      participants: [],
-      unreadCount: 0,
-      isArchived: false,
-      createdAt: new Date(),
-    };
-    return new Promise(resolve => setTimeout(() => resolve(newConv), 300));
+
+    return { conversation, messages, total: messages.length };
   },
 
-  // Send a message
+  /**
+   * Envía un mensaje. El backend resuelve el destinatario automáticamente
+   * si no se pasa destinatarioid.
+   */
   async sendMessage(data: CreateMessageDto): Promise<ChatMessage> {
-    const newMessage: ChatMessage = {
-      id: `msg-${Date.now()}`,
-      conversationId: data.conversationId,
-      senderId: 'current-user-id',
-      senderName: 'Current User',
-      senderRole: 'victim',
-      content: data.content,
-      createdAt: new Date(),
-      isRead: false,
-      attachments: data.attachments?.map(att => ({
-        id: `att-${Date.now()}`,
-        fileName: att.fileName,
-        fileSize: att.fileSize,
-        fileType: att.fileType,
-        fileUrl: `https://example.com/files/${att.fileName}`,
-      })),
+    const payload: Record<string, string> = {
+      contenido: data.content,
     };
-    MOCK_MESSAGES.push(newMessage);
-    return new Promise(resolve => setTimeout(() => resolve(newMessage), 300));
-  },
 
-  // Edit message
-  async editMessage(messageId: string, content: string): Promise<ChatMessage> {
-    const message = MOCK_MESSAGES.find(m => m.id === messageId);
-    if (message) {
-      message.content = content;
-      message.editedAt = new Date();
+    // Solo incluir destinatarioid si viene explícito
+    if ((data as any).destinatarioid) {
+      payload.destinatarioid = (data as any).destinatarioid;
     }
-    return new Promise(resolve => setTimeout(() => resolve(message!), 200));
+
+    const { data: mensaje } = await apiClient.post<BackendMensaje>(
+      `/mensajes/${data.conversationId}`,
+      payload
+    );
+
+    return backendMensajeToMessage(mensaje);
   },
 
-  // Delete message
-  async deleteMessage(messageId: string): Promise<void> {
-    const index = MOCK_MESSAGES.findIndex(m => m.id === messageId);
-    if (index > -1) MOCK_MESSAGES.splice(index, 1);
-    return new Promise(resolve => setTimeout(resolve, 200));
-  },
-
-  // Mark message as read
-  async markAsRead(messageId: string): Promise<void> {
-    const message = MOCK_MESSAGES.find(m => m.id === messageId);
-    if (message) message.isRead = true;
-    return new Promise(resolve => setTimeout(resolve, 100));
-  },
-
-  // Mark all messages in conversation as read
+  /**
+   * Marca todos los mensajes de una conversación como leídos.
+   */
   async markConversationAsRead(conversationId: string): Promise<void> {
-    MOCK_MESSAGES.filter(m => m.conversationId === conversationId).forEach(m => m.isRead = true);
-    const conv = MOCK_CONVERSATIONS.find(c => c.id === conversationId);
-    if (conv) conv.unreadCount = 0;
-    return new Promise(resolve => setTimeout(resolve, 200));
+    await apiClient.patch(`/mensajes/${conversationId}/leer`);
   },
 
-  // Get unread message count
+  /**
+   * Cuenta los mensajes no leídos del usuario (para el badge del FAB).
+   */
   async getUnreadCount(): Promise<{ total: number; byConversation: Record<string, number> }> {
-    const byConversation: Record<string, number> = {};
-    let total = 0;
-    MOCK_MESSAGES.filter(m => !m.isRead).forEach(m => {
-      total++;
-      byConversation[m.conversationId] = (byConversation[m.conversationId] || 0) + 1;
-    });
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve({ total, byConversation });
-      }, 200);
-    });
+    const { data } = await apiClient.get<{ total: number }>(
+      '/mensajes/no-leidos/count'
+    );
+    return { total: data.total, byConversation: {} };
   },
 
-  // Update conversation settings
-  async updateConversationSettings(
-    conversationId: string,
-    settings: Partial<ConversationSettings>
-  ): Promise<Conversation> {
-    const conversation = MOCK_CONVERSATIONS.find(c => c.id === conversationId);
-    if (conversation && settings.archived) {
-      conversation.isArchived = settings.archived;
-    }
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve(conversation!);
-      }, 200);
-    });
-  },
+  // ── polling para tiempo real ──────────────────────────────────────────────
 
-  // Archive conversation
-  async archiveConversation(conversationId: string): Promise<void> {
-    const conversation = MOCK_CONVERSATIONS.find(c => c.id === conversationId);
-    if (conversation) conversation.isArchived = true;
-    return new Promise(resolve => setTimeout(resolve, 200));
-  },
-
-  // Subscribe to real-time messages (WebSocket)
   subscribeToMessages(
     conversationId: string,
     onMessage: (message: ChatMessage) => void,
-    onError?: (error: Error) => void
+    _onError?: (error: Error) => void
   ): () => void {
-    let isSubscribed = true;
+    let lastMessageId: string | null = null;
+    let active = true;
 
-    const cleanup = () => {
-      isSubscribed = false;
+    const poll = async () => {
+      if (!active) return;
+      try {
+        const { data } = await apiClient.get<BackendMensaje[]>(
+          `/mensajes/${conversationId}`
+        );
+        const messages = data.map(backendMensajeToMessage);
+        const newest = messages.length > 0 ? messages[messages.length - 1] : undefined;
+
+        if (newest && newest.id !== lastMessageId) {
+          if (lastMessageId !== null) {
+            // Emitir solo los mensajes que llegaron después de la carga inicial
+            const idx = messages.findIndex((m) => m.id === lastMessageId);
+            const newOnes = idx >= 0 ? messages.slice(idx + 1) : [];
+            newOnes.forEach((m) => onMessage(m));
+          }
+          lastMessageId = newest.id;
+        }
+      } catch {
+        // silencioso
+      }
+      if (active) setTimeout(poll, 8000);
     };
 
-    return cleanup;
+    setTimeout(poll, 8000);
+    return () => { active = false; };
   },
 
-  // Subscribe to participant status changes
+  // ── stubs ─────────────────────────────────────────────────────────────────
+
+  async getOrCreateConversation(caseId: string): Promise<Conversation> {
+    const convs = await chatService.getConversations();
+    const existing = convs.find((c) => c.caseId === caseId);
+    if (existing) return existing;
+    throw new Error('Conversación no encontrada para el caso: ' + caseId);
+  },
+
+  async markAsRead(_messageId: string): Promise<void> {},
+
+  async editMessage(_messageId: string, _content: string): Promise<ChatMessage> {
+    throw new Error('No soportado');
+  },
+
+  async deleteMessage(_messageId: string): Promise<void> {
+    throw new Error('No soportado');
+  },
+
+  async updateConversationSettings(
+    _conversationId: string,
+    _settings: Partial<ConversationSettings>
+  ): Promise<Conversation> {
+    throw new Error('No soportado');
+  },
+
+  async archiveConversation(_conversationId: string): Promise<void> {
+    throw new Error('No soportado');
+  },
+
   subscribeToStatusUpdates(
-    conversationId: string,
-    onStatusChange: (participant: any) => void
+    _conversationId: string,
+    _onStatusChange: (participant: any) => void
   ): () => void {
-    let isSubscribed = true;
-
-    const cleanup = () => {
-      isSubscribed = false;
-    };
-
-    return cleanup;
+    return () => {};
   },
 };

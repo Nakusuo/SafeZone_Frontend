@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Button, Input, TextArea, Select, Alert } from '@/shared/components'
-import { FileText, ArrowLeft } from 'lucide-react'
+import { Card, Button, Input, TextArea, Select, Alert } from '@/components'
+import { FileText, ArrowLeft, MapPin } from 'lucide-react'
 import { reportService } from '@/features/victim/services/reportService'
+import { getCurrentPosition } from '@/features/victim/services/emergencyService'
 
 export const CreateReportPage = () => {
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingLocation, setIsLoadingLocation] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
   const [formData, setFormData] = useState({
@@ -22,25 +24,38 @@ export const CreateReportPage = () => {
     setError('')
   }
 
+  const handleGetLocation = async () => {
+    setIsLoadingLocation(true)
+    setError('')
+    try {
+      const loc = await getCurrentPosition()
+      handleChange('location', `${loc.latitude.toFixed(6)}, ${loc.longitude.toFixed(6)}`)
+    } catch (err: any) {
+      setError(err.message || 'Error getting location')
+    } finally {
+      setIsLoadingLocation(false)
+    }
+  }
+
   const validateForm = () => {
     if (!formData.title.trim()) {
-      setError('El título es requerido')
+      setError('Title is required')
       return false
     }
     if (!formData.description.trim()) {
-      setError('La descripción es requerida')
+      setError('Description is required')
       return false
     }
     if (!formData.type) {
-      setError('Debes seleccionar el tipo de incidente')
+      setError('You must select an incident type')
       return false
     }
     if (formData.description.length < 20) {
-      setError('La descripción debe tener al menos 20 caracteres')
+      setError('Description must be at least 20 characters long')
       return false
     }
     if (!formData.location.trim()) {
-      setError('La ubicación o dirección es requerida')
+      setError('Location or address is required')
       return false
     }
     return true
@@ -55,7 +70,7 @@ export const CreateReportPage = () => {
     const user = userData ? JSON.parse(userData) : null
 
     if (!user || user.role !== 'VICTIM') {
-      setError('Solo las víctimas pueden crear denuncias')
+      setError('Only victims can create reports')
       return
     }
 
@@ -73,12 +88,12 @@ export const CreateReportPage = () => {
       setSuccess(true)
       setFormData({ title: '', description: '', type: '', priority: 'MEDIUM', location: '' })
       
-      // Redirigir después de 2 segundos
+      
       setTimeout(() => {
         navigate('/dashboard/victim')
       }, 2000)
     } catch (err: any) {
-      setError(err.message || 'Error al crear la denuncia')
+      setError(err.message || 'Error creating the report')
     } finally {
       setIsLoading(false)
     }
@@ -86,34 +101,34 @@ export const CreateReportPage = () => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8">
         <button
           onClick={() => navigate('/dashboard/victim')}
           className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Volver al dashboard
+          Back to dashboard
         </button>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Registrar Nueva Denuncia</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Register New Report</h1>
         <p className="text-gray-600">
-          Tu información está protegida y encriptada. Solo los profesionales asignados podrán verla.
+          Your information is protected and encrypted. Only assigned professionals will be able to view it.
         </p>
       </div>
 
-      {/* Alertas */}
+      
       <div className="mb-6 space-y-3">
         {success && (
           <Alert
             type="success"
-            title="¡Denuncia registrada exitosamente!"
-            message="Tu denuncia ha sido enviada. Serás redirigido en unos momentos..."
+            title="Report registered successfully!"
+            message="Your report has been sent. You will be redirected shortly..."
           />
         )}
         {error && (
           <Alert
             type="danger"
-            title="Error al enviar"
+            title="Error sending report"
             message={error}
             dismissible
             onClose={() => setError('')}
@@ -121,20 +136,20 @@ export const CreateReportPage = () => {
         )}
       </div>
 
-      {/* Formulario */}
+      
       <form onSubmit={handleSubmit} className="space-y-6">
-        <Card title="Información General" className="space-y-4">
+        <Card title="General Information" className="space-y-4">
           <Input
-            label="Título de la denuncia"
-            placeholder="Describe brevemente lo ocurrido"
+            label="Report Title"
+            placeholder="Briefly describe what happened"
             value={formData.title}
             onChange={(value) => handleChange('title', value)}
             required
           />
 
           <TextArea
-            label="Descripción detallada"
-            placeholder="Proporciona todos los detalles relevantes. Sé lo más específico posible sin incluir información personal sensible."
+            label="Detailed Description"
+            placeholder="Provide all relevant details. Be as specific as possible without including sensitive personal information."
             value={formData.description}
             onChange={(value) => handleChange('description', value)}
             maxLength={2000}
@@ -142,36 +157,50 @@ export const CreateReportPage = () => {
             required
           />
 
-          <Input
-            label="Ubicación del incidente"
-            placeholder="Ciudad, barrio o zona (opcional)"
-            value={formData.location}
-            onChange={(value) => handleChange('location', value)}
-          />
+          <div className="flex gap-2 items-end">
+            <div className="flex-1">
+              <Input
+                label="Incident Location"
+                placeholder="City, neighborhood or area (optional)"
+                value={formData.location}
+                onChange={(value) => handleChange('location', value)}
+              />
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="mb-4 whitespace-nowrap"
+              onClick={handleGetLocation}
+              isLoading={isLoadingLocation}
+            >
+              <MapPin className="w-4 h-4 inline mr-2" />
+              Get Location
+            </Button>
+          </div>
         </Card>
 
-        <Card title="Clasificación del Incidente" className="space-y-4">
+        <Card title="Incident Classification" className="space-y-4">
           <Select
-            label="Tipo de incidente"
+            label="Incident Type"
             value={formData.type}
             onChange={(value) => handleChange('type', value)}
             options={[
-              { value: '', label: 'Selecciona un tipo...' },
-              { value: 'PHYSICAL_VIOLENCE', label: 'Violencia Física' },
-              { value: 'PSYCHOLOGICAL_ABUSE', label: 'Abuso Psicológico' },
-              { value: 'OTHER', label: 'Otro' },
+              { value: '', label: 'Select a type...' },
+              { value: 'PHYSICAL_VIOLENCE', label: 'Physical Violence' },
+              { value: 'PSYCHOLOGICAL_ABUSE', label: 'Psychological Abuse' },
+              { value: 'OTHER', label: 'Other' },
             ]}
             required
           />
 
           <Select
-            label="Nivel de urgencia"
+            label="Urgency Level"
             value={formData.priority}
             onChange={(value) => handleChange('priority', value)}
             options={[
-              { value: 'LOW', label: 'Baja (puede esperar)' },
-              { value: 'MEDIUM', label: 'Media (moderada urgencia)' },
-              { value: 'HIGH', label: 'Alta (requiere atención inmediata)' },
+              { value: 'LOW', label: 'Low (can wait)' },
+              { value: 'MEDIUM', label: 'Medium (moderate urgency)' },
+              { value: 'HIGH', label: 'High (requires immediate attention)' },
             ]}
             required
           />
@@ -180,22 +209,23 @@ export const CreateReportPage = () => {
         <Card type="info" className="flex gap-3">
           <FileText className="w-5 h-5 text-primary flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-gray-900 mb-1">Privacidad y Confidencialidad</p>
+            <p className="text-sm font-medium text-gray-900 mb-1">Privacy and Confidentiality</p>
             <p className="text-sm text-gray-700">
-              Tu denuncia es completamente confidencial. Solo será compartida con los profesionales necesarios para tu caso.
+              Your report is completely confidential. It will only be shared with the necessary professionals for your case.
             </p>
           </div>
         </Card>
 
-        {/* Botones */}
+        
         <div className="flex gap-3 justify-end pt-4">
           <Button
+            type="button"
             variant="outline"
             size="lg"
             onClick={() => navigate('/dashboard/victim')}
             disabled={isLoading}
           >
-            Cancelar
+            Cancel
           </Button>
           <Button
             type="submit"
@@ -204,7 +234,7 @@ export const CreateReportPage = () => {
             isLoading={isLoading}
           >
             <FileText className="w-4 h-4 inline mr-2" />
-            Enviar Denuncia
+            Submit Report
           </Button>
         </div>
       </form>

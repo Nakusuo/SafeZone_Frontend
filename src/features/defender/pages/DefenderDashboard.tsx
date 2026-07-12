@@ -4,14 +4,16 @@ import { reportService } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'
 import { useAuth } from '@/core/auth/AuthContext'
 import { EmergencyAlertsPanel } from '@/features/shared-features/emergency/EmergencyAlertsPanel'
+import { ChatButton } from '@/features/shared-features/chat/components/ChatButton'
 
 export const DefenderDashboard = () => {
   const { user: userData } = useAuth()
   const [reports, setReports] = useState<Report[]>([])
 
   useEffect(() => {
-    reportService.getAllReports()
-      .then(all => setReports(all.filter(r => r.defenderId === userData?.id)))
+    // AQUÍ EL CAMBIO: Llamamos directamente a getAssignedCases()
+    reportService.getAssignedCases()
+      .then(setReports)
       .catch(console.error)
   }, [userData?.id])
 
@@ -22,70 +24,70 @@ export const DefenderDashboard = () => {
   return (
     <div className="w-full px-8 py-8 pb-32">
 
-      {/* ── Welcome ─────────────────────────────────────────── */}
+      {/* Hero */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
-        <h2 className="text-3xl font-bold mb-2">Bienvenido, {userData?.name || 'Defensor/a Legal'}</h2>
-        <p className="text-teal-light">Panel de gestión legal. Supervise sus procesos activos y audiencias programadas.</p>
+        <h2 className="text-3xl font-bold mb-2">Welcome, {userData?.name || 'Legal Defender'}</h2>
+        <p className="text-teal-light">Legal management panel. Supervise your active cases and scheduled hearings.</p>
         <div className="flex gap-4 mt-6">
           <button className="bg-white hover:bg-gray-100 text-teal px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2">
             <Briefcase className="w-4 h-4" />
-            Registrar Audiencia
+            Register Hearing
           </button>
           <button className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-white/40">
             <AlertCircle className="w-4 h-4" />
-            Actualización Legal
+            Legal Update
           </button>
         </div>
       </div>
 
-      {/* ── RF-03: Alertas de emergencia activas ────────────── */}
+      {/* Emergency alerts */}
       <EmergencyAlertsPanel />
 
-      {/* ── Stats ───────────────────────────────────────────── */}
+      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-teal-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-blue-500 text-white rounded flex items-center justify-center">
               <Briefcase className="w-4 h-4" />
             </div>
-            <span className="text-blue-700 font-medium text-xs">CASOS EN PROCESO</span>
+            <span className="text-blue-700 font-medium text-xs">CASES IN PROCESS</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{activeCount}</div>
-          <p className="text-gray-700 text-sm">+1 esta semana</p>
+          <p className="text-gray-700 text-sm">+1 this week</p>
         </div>
         <div className="bg-danger-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-red-500 text-white rounded flex items-center justify-center text-sm font-bold">⏱</div>
-            <span className="text-red-700 font-medium text-xs">AUDIENCIAS PRÓXIMAS</span>
+            <span className="text-red-700 font-medium text-xs">UPCOMING HEARINGS</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{upcomingCount}</div>
-          <p className="text-gray-700 text-sm">Próximas 48h</p>
+          <p className="text-gray-700 text-sm">Next 48h</p>
         </div>
         <div className="bg-success-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center">
               <CheckCircle className="w-4 h-4" />
             </div>
-            <span className="text-green-700 font-medium text-xs">CASOS CERRADOS</span>
+            <span className="text-green-700 font-medium text-xs">CLOSED CASES</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{closedCount}</div>
-          <p className="text-gray-700 text-sm">Este trimestre</p>
+          <p className="text-gray-700 text-sm">This quarter</p>
         </div>
       </div>
 
-      {/* ── Upcoming hearings ───────────────────────────────── */}
+      {/* Upcoming hearings */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-gray-900">Audiencias Próximas</h3>
-          <a href="#" className="text-teal text-sm hover:underline">Ver calendario completo</a>
+          <h3 className="text-lg font-bold text-gray-900">Upcoming Hearings</h3>
+          <a href="#" className="text-teal text-sm hover:underline">View full calendar</a>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Caso</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Fecha y Hora</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Tribunal / Sala</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Case</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Date and Time</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Court / Room</th>
               </tr>
             </thead>
             <tbody>
@@ -97,53 +99,56 @@ export const DefenderDashboard = () => {
                       <span className="font-medium text-gray-900">{report.title?.substring(0, 30)}</span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-gray-600">15 Oct. 10:30 AM</td>
-                  <td className="py-3 px-4 text-gray-600">Tribunal Superior 4</td>
+                  <td className="py-3 px-4 text-gray-600">Oct 15, 10:30 AM</td>
+                  <td className="py-3 px-4 text-gray-600">Superior Court 4</td>
                 </tr>
               ))}
             </tbody>
           </table>
           {reports.length === 0 && (
             <div className="text-center py-8 text-gray-600">
-              <p className="text-sm">No hay audiencias próximas</p>
+              <p className="text-sm">No upcoming hearings</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* ── Recent notes ────────────────────────────────────── */}
+      {/* Notes */}
       <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Notas Recientes</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Notes</h3>
         <div className="space-y-3">
           <div className="border-l-4 border-yellow-500 pl-4 py-2 bg-yellow-50/50">
-            <p className="text-xs text-yellow-700 font-medium">RECORDATORIO</p>
-            <p className="text-sm text-gray-800 mt-1">Revisar precedentes jurisprudenciales en casos similares para audiencia del viernes.</p>
+            <p className="text-xs text-yellow-700 font-medium">REMINDER</p>
+            <p className="text-sm text-gray-800 mt-1">Review jurisprudence precedents in similar cases for Friday's hearing.</p>
           </div>
           <div className="border-l-4 border-blue-500 pl-4 py-2 bg-blue-50/50">
-            <p className="text-xs text-blue-700 font-medium">ESTADO</p>
-            <p className="text-sm text-gray-800 mt-1">Actualización de jurisprudencia en derechos humanos cargada.</p>
+            <p className="text-xs text-blue-700 font-medium">STATUS</p>
+            <p className="text-sm text-gray-800 mt-1">Human rights jurisprudence update loaded.</p>
           </div>
         </div>
       </div>
 
-      {/* ── Recursos ────────────────────────────────────────── */}
+      {/* Resources */}
       <div className="mt-12">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Recursos de Apoyo Legal</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">Legal Support Resources</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white rounded-lg p-4 border-l-4 border-teal hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Base de Jurisprudencia</h4>
-            <p className="text-sm text-gray-600">Acceso a sentencias y precedentes relevantes</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Jurisprudence Database</h4>
+            <p className="text-sm text-gray-600">Access to relevant rulings and precedents</p>
           </div>
           <div className="bg-white rounded-lg p-4 border-l-4 border-secondary hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Formularios Judiciales</h4>
-            <p className="text-sm text-gray-600">Plantillas y documentos requeridos</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Judicial Forms</h4>
+            <p className="text-sm text-gray-600">Required templates and documents</p>
           </div>
           <div className="bg-white rounded-lg p-4 border-l-4 border-accent hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Asesor Legal 24/7</h4>
-            <p className="text-sm text-gray-600">Consultoría en casos complejos</p>
+            <h4 className="font-semibold text-gray-900 mb-2">24/7 Legal Advisor</h4>
+            <p className="text-sm text-gray-600">Consultation for complex cases</p>
           </div>
         </div>
       </div>
+
+      {/* Floating Chat Button (RF-07) */}
+      <ChatButton />
     </div>
   )
 }

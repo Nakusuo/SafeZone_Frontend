@@ -29,13 +29,13 @@ export const Modal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
+      
       <div 
         className="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
       />
       
-      {/* Modal */}
+      
       <div 
         className={`relative bg-white rounded-2xl shadow-2xl border border-slate-200 ${sizeClasses[size]} w-full mx-4 max-h-[90vh] overflow-auto pointer-events-auto`}
         onClick={(e) => e.stopPropagation()}
@@ -51,12 +51,12 @@ export const Modal = ({
           </button>
         </div>
 
-        {/* Content */}
+        
         <div className="p-6">
           {children}
         </div>
 
-        {/* Footer */}
+        
         {footer && (
           <div className="border-t border-slate-200 p-6 bg-slate-50 rounded-b-2xl">
             {footer}

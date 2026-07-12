@@ -2,7 +2,7 @@ import apiClient from '@/core/api/apiClient'
 import { config } from '@/core/config'
 import { TriageCase, TriageAssignment, TriageMetrics, AdminUser } from '@/shared/types'
 
-// Datos de prueba para modo mock
+
 const MOCK_CASES: TriageCase[] = [
   {
     id: 'CASE-001', reportId: 'RPT-2026-001',
@@ -88,7 +88,6 @@ const unwrapApiResponse = <T>(response: any): T => {
 }
 
 export const triageService = {
-  // Casos pendientes de asignar — Spring: GET /api/admin/cases/pending
   getPendingCases: async (): Promise<TriageCase[]> => {
     if (config.USE_MOCK) { await delay(); return [...MOCK_CASES] }
     const { data } = await apiClient.get<any[]>('/denuncias/listar')
@@ -192,7 +191,7 @@ export const triageService = {
     } as TriageCase;
   },
 
-  // Cambiar estado de un caso — Spring: PATCH /api/admin/cases/{id}/status
+  
   updateCaseStatus: async (caseId: string, status: string, notes?: string): Promise<TriageCase> => {
     if (config.USE_MOCK) {
       await delay(200)
@@ -204,7 +203,7 @@ export const triageService = {
     return data
   },
 
-  // Métricas del dashboard admin — Spring: GET /api/admin/metrics
+  
   getMetrics: async (): Promise<TriageMetrics> => {
     if (config.USE_MOCK) {
       await delay(200)
@@ -268,7 +267,7 @@ export const adminProfessionalService = {
   },
 }
 
-// CRUD de usuarios administrativos — Spring: /api/admin/users
+
 export const adminUserService = {
   getAdmins: async (): Promise<AdminUser[]> => {
     if (config.USE_MOCK) {

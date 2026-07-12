@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { X, AlertTriangle } from 'lucide-react';
-import type { TriageAssignment, CasePriority } from '../types';
+import React, { useState } from "react";
+import { X, AlertTriangle } from "lucide-react";
+import type { TriageAssignment, CasePriority } from "../types";
 
 interface AssignmentModalProps {
   isOpen: boolean;
   caseId: string;
   currentPriority: CasePriority;
-  psychologists: Array<{ id: string; name: string; caseCount: number }>;
-  defenders: Array<{ id: string; name: string; caseCount: number }>;
+  psychologists: Array<{ id: string; nombre: string; apellido: string }>;
+  defenders: Array<{ id: string; nombre: string; apellido: string }>;
   onAssign: (assignment: TriageAssignment) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
@@ -33,7 +33,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
 
   const handleConfirm = async () => {
     if (!selectedPsychologist && !selectedDefender) {
-      alert('Selecciona al menos un profesional');
+      alert("Selecciona al menos un profesional");
       return;
     }
     const payload = {
@@ -75,13 +75,13 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
           </button>
         </div>
 
-        {/* Priority Assignment */}
+        
         <div className="mb-6 space-y-3">
           <label className="block text-sm font-semibold text-slate-700">
             Prioridad
           </label>
           <div className="grid grid-cols-2 gap-2">
-            {(['critical', 'high', 'medium', 'low'] as CasePriority[]).map(
+            {(["critical", "high", "medium", "low"] as CasePriority[]).map(
               (p) => (
                 <button
                   key={p}
@@ -94,12 +94,12 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
                 >
                   {p.charAt(0).toUpperCase() + p.slice(1)}
                 </button>
-              )
+              ),
             )}
           </div>
         </div>
 
-        {/* Psychologist Selection */}
+        
         <div className="mb-6 space-y-3">
           <label className="block text-sm font-semibold text-slate-700">
             Psicólogo
@@ -122,13 +122,13 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
           </select>
         </div>
 
-        {/* Defender Selection */}
+        
         <div className="mb-6 space-y-3">
           <label className="block text-sm font-semibold text-slate-700">
             Defensor Legal
           </label>
           <select
-            value={selectedDefender || ''}
+            value={selectedDefender || ""}
             onChange={(e) => setSelectedDefender(e.target.value || undefined)}
             disabled={isLoading || !defenders?.length}
             className="w-full rounded-lg bg-[#374151] text-white border border-slate-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
@@ -152,21 +152,21 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
           </div>
         )}
 
-        {/* Actions */}
+        
         <div className="flex gap-3">
           <button
             onClick={onCancel}
             disabled={isLoading}
             className="flex-1 rounded-lg border border-slate-300 px-4 py-2 font-semibold text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
           >
-            Cancelar
+            Cancel
           </button>
           <button
             onClick={handleConfirm}
             disabled={isLoading || (!selectedPsychologist && !selectedDefender)}
             className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
           >
-            {isLoading ? 'Asignando...' : 'Confirmar'}
+            {isLoading ? "Asignando..." : "Confirmar"}
           </button>
         </div>
       </div>

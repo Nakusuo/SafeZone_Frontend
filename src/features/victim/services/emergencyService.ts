@@ -2,8 +2,8 @@ import { config } from '@/core/config'
 import apiClient from '@/core/api/apiClient'
 import { EmergencyAlert, GeoLocation } from '@/shared/types'
 
-// Alertas se guardan en sessionStorage en modo mock,
-// y van a /api/emergency/alerts cuando USE_MOCK=false
+
+
 
 const MOCK_KEY = 'safezone_emergency_alerts'
 
@@ -15,13 +15,13 @@ const getMockAlerts = (): EmergencyAlert[] => {
 }
 
 const saveMockAlerts = (alerts: EmergencyAlert[]) => {
-  try { sessionStorage.setItem(MOCK_KEY, JSON.stringify(alerts)) } catch { /* empty */ }
+  try { sessionStorage.setItem(MOCK_KEY, JSON.stringify(alerts)) } catch {  }
 }
 
 const delay = (ms = config.MOCK_DELAY) => new Promise(r => setTimeout(r, ms))
 
 export const emergencyService = {
-  // Víctima activa el botón de pánico con su ubicación
+  
   sendPanicAlert: async (params: {
     victimId: string
     victimName: string
@@ -43,7 +43,7 @@ export const emergencyService = {
       saveMockAlerts(alerts)
       return alert
     }
-    // Transformar al formato esperado por el backend (español)
+    
     const backendPayload = {
       victimaId: params.victimId,
       victimaNombre: params.victimName,
@@ -58,7 +58,7 @@ export const emergencyService = {
     return data
   },
 
-  // Profesionales ven solo las alertas activas
+  
   getActiveAlerts: async (): Promise<EmergencyAlert[]> => {
     if (config.USE_MOCK) {
       await delay(300)
@@ -79,13 +79,13 @@ export const emergencyService = {
     return data
   },
 
-  // Marcar que un profesional ya está atendiendo la alerta
+  
   attendAlert: async (alertId: string, professionalId: string, professionalName: string): Promise<EmergencyAlert> => {
     if (config.USE_MOCK) {
       await delay(200)
       const alerts = getMockAlerts()
       const alert = alerts.find(a => a.id === alertId)
-      if (!alert) throw new Error('Alerta no encontrada')
+      if (!alert) throw new Error('Alert not found')
       alert.status = 'ATTENDED'
       alert.attendedBy = professionalId
       alert.attendedByName = professionalName
@@ -105,7 +105,7 @@ export const emergencyService = {
       await delay(200)
       const alerts = getMockAlerts()
       const alert = alerts.find(a => a.id === alertId)
-      if (!alert) throw new Error('Alerta no encontrada')
+      if (!alert) throw new Error('Alert not found')
       alert.status = 'RESOLVED'
       alert.resolvedAt = new Date().toISOString()
       saveMockAlerts(alerts)
@@ -116,11 +116,11 @@ export const emergencyService = {
   },
 }
 
-// Pide las coordenadas al navegador — requiere HTTPS en producción
+
 export const getCurrentPosition = (): Promise<GeoLocation> =>
   new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
-      reject(new Error('Tu navegador no soporta geolocalización'))
+      reject(new Error('Your browser does not support geolocation'))
       return
     }
     navigator.geolocation.getCurrentPosition(
@@ -137,6 +137,6 @@ export const getCurrentPosition = (): Promise<GeoLocation> =>
     )
   })
 
-// Link directo a Google Maps con las coordenadas
+
 export const buildMapsUrl = (lat: number, lng: number) =>
   `https://www.google.com/maps?q=${lat},${lng}`

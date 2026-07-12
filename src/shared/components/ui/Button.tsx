@@ -50,7 +50,7 @@ export const Button = ({
       {isLoading ? (
         <span className="flex items-center gap-2">
           <span className="animate-spin">⏳</span>
-          Cargando...
+          Loading...
         </span>
       ) : (
         children

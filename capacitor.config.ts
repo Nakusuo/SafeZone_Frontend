@@ -1,12 +1,9 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.SafeZone.app',
-  appName: 'safezone-frontend',
-  webDir: 'dist',
-  server: {
-    androidScheme: 'https'
-  }
+  appId: 'com.safezone.app',
+  appName: 'SafeZone',
+  webDir: 'dist'
 };
 
 export default config;
