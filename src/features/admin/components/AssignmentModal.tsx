@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { X, AlertTriangle } from 'lucide-react';
-import type { TriageAssignment, CasePriority } from '../types';
+import React, { useState } from "react";
+import { X, AlertTriangle } from "lucide-react";
+import type { TriageAssignment, CasePriority } from "../types";
 
 interface AssignmentModalProps {
   isOpen: boolean;
   caseId: string;
   currentPriority: CasePriority;
-  psychologists: Array<{ id: string; name: string; caseCount: number }>;
-  defenders: Array<{ id: string; name: string; caseCount: number }>;
+  psychologists: Array<{ id: string; nombre: string; apellido: string }>;
+  defenders: Array<{ id: string; nombre: string; apellido: string }>;
   onAssign: (assignment: TriageAssignment) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
@@ -26,12 +26,14 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
   const [selectedPsychologist, setSelectedPsychologist] = useState<
     string | undefined
   >();
-  const [selectedDefender, setSelectedDefender] = useState<string | undefined>();
+  const [selectedDefender, setSelectedDefender] = useState<
+    string | undefined
+  >();
   const [priority, setPriority] = useState<CasePriority>(currentPriority);
 
   const handleConfirm = async () => {
     if (!selectedPsychologist && !selectedDefender) {
-      alert('Select at least one professional');
+      alert("Selecciona al menos un profesional");
       return;
     }
 
@@ -41,7 +43,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
       defenderLegalId: selectedDefender,
       priority,
       assignedAt: new Date().toISOString(),
-      assignedBy: 'current-user-id', 
+      assignedBy: "current-user-id", // TODO: Obtener del contexto
     });
 
     onCancel();
@@ -69,20 +71,20 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             Priority
           </label>
           <div className="grid grid-cols-2 gap-2">
-            {(['critical', 'high', 'medium', 'low'] as CasePriority[]).map(
+            {(["critical", "high", "medium", "low"] as CasePriority[]).map(
               (p) => (
                 <button
                   key={p}
                   onClick={() => setPriority(p)}
                   className={`rounded-lg px-3 py-2 text-sm font-semibold transition-all ${
                     priority === p
-                      ? 'bg-primary text-on-primary'
-                      : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
+                      ? "bg-primary text-on-primary"
+                      : "bg-surface-container-low text-on-surface-variant hover:bg-surface-container"
                   }`}
                 >
                   {p.charAt(0).toUpperCase() + p.slice(1)}
                 </button>
-              )
+              ),
             )}
           </div>
         </div>
@@ -93,14 +95,17 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             Psychologist
           </label>
           <select
-            value={selectedPsychologist || ''}
-            onChange={(e) => setSelectedPsychologist(e.target.value || undefined)}
+            value={selectedPsychologist || ""}
+            onChange={(e) =>
+              setSelectedPsychologist(e.target.value || undefined)
+            }
             className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary"
           >
             <option value="">-- Unassigned --</option>
             {psychologists.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} ({p.caseCount} cases)
+                {/* Usamos nombre y apellido */}
+                {p.nombre} {p.apellido}
               </option>
             ))}
           </select>
@@ -112,21 +117,22 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             Legal Defender
           </label>
           <select
-            value={selectedDefender || ''}
+            value={selectedDefender || ""}
             onChange={(e) => setSelectedDefender(e.target.value || undefined)}
             className="w-full rounded-lg border-none bg-surface-container-low px-3 py-2 text-on-surface focus:ring-2 focus:ring-primary"
           >
             <option value="">-- Unassigned --</option>
             {defenders.map((d) => (
               <option key={d.id} value={d.id}>
-                {d.name} ({d.caseCount} cases)
+                {/* Usamos nombre y apellido */}
+                {d.nombre} {d.apellido}
               </option>
             ))}
           </select>
         </div>
 
-        
-        {priority === 'critical' && (
+        {/* Warning */}
+        {priority === "critical" && (
           <div className="mb-6 flex gap-3 rounded-lg bg-red-100/50 p-3 text-sm text-red-700">
             <AlertTriangle className="h-5 w-5 flex-shrink-0" />
             <p>This is a critical case. It will be notified immediately.</p>
@@ -147,7 +153,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             disabled={isLoading || (!selectedPsychologist && !selectedDefender)}
             className="flex-1 rounded-lg bg-primary px-4 py-2 font-semibold text-on-primary transition-colors hover:bg-primary-container disabled:opacity-50"
           >
-            {isLoading ? 'Assigning...' : 'Confirm'}
+            {isLoading ? "Asignando..." : "Confirmar"}
           </button>
         </div>
       </div>

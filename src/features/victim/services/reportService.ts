@@ -153,7 +153,7 @@ export const reportService = {
       return getMockData().reports.filter((r: Report) => r.victimId === victimId)
     }
 
-    const { data } = await apiClient.get<BackendDenuncia[]>(`/denuncias/${victimId}`)
+    const { data } = await apiClient.get<BackendDenuncia[]>(`/denuncias/listar?victimId=${victimId}`)
     return data.map((item) => mapBackendDenunciaToReport(item))
   },
 
@@ -204,8 +204,8 @@ export const reportService = {
 
     const region = { id: '15', nombre: 'Lima' }
     const backendPayload = {
-      usuarioid: victimId,
-      victimaId: victimId,
+      usuarioid: victimId, 
+      titulo: reportData.title,
       tipoViolencia: reportData.type,
       descripcion: `${reportData.title}\n\n${reportData.description}`,
       nivelRiesgo: reportData.priority,
@@ -283,6 +283,25 @@ export const reportService = {
       return getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
     }
     return []
+  },
+
+  getAssignedCases: async (): Promise<Report[]> => {
+    if (config.USE_MOCK) {
+      await delay()
+      // En modo mock, filtramos usando el ID del usuario guardado en la sesión
+      const userStr = sessionStorage.getItem('user')
+      if (!userStr) return []
+      
+      const currentUser = JSON.parse(userStr)
+      
+      return getMockData().reports.filter((r: Report) => 
+        r.psychologistId === currentUser.id || r.defenderId === currentUser.id
+      )
+    }
+
+    // Llamada real al nuevo endpoint de Spring Boot
+    const { data } = await apiClient.get<BackendDenuncia[]>('/denuncias/mis-casos')
+    return data.map((item) => mapBackendDenunciaToReport(item))
   },
 
   createLegalUpdate: async (
