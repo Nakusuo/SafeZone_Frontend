@@ -11,25 +11,25 @@ const priorityConfig = {
     bg: 'bg-red-100',
     text: 'text-red-800',
     icon: '🚨',
-    label: 'CRÍTICO',
+    label: 'CRITICAL',
   },
   high: {
     bg: 'bg-orange-100',
     text: 'text-orange-800',
     icon: '⚠️',
-    label: 'ALTO',
+    label: 'HIGH',
   },
   medium: {
     bg: 'bg-yellow-100',
     text: 'text-yellow-800',
     icon: '📌',
-    label: 'MEDIO',
+    label: 'MEDIUM',
   },
   low: {
     bg: 'bg-blue-100',
     text: 'text-blue-800',
     icon: 'ℹ️',
-    label: 'BAJO',
+    label: 'LOW',
   },
 };
 

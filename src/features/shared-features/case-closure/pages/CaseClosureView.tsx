@@ -25,7 +25,7 @@ export const CaseClosureView: React.FC = () => {
         const data = await caseClosureService.getClosureSummary(caseId);
         setClosure(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error al cargar cierre');
+        setError(err instanceof Error ? err.message : 'Error loading closure');
       } finally {
         setIsLoading(false);
       }
@@ -43,7 +43,7 @@ export const CaseClosureView: React.FC = () => {
       );
       setClosure(updated);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al enviar resumen');
+      setError(err instanceof Error ? err.message : 'Error sending summary');
     }
   };
 
@@ -56,7 +56,7 @@ export const CaseClosureView: React.FC = () => {
       );
       setClosure(updated);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al confirmar');
+      setError(err instanceof Error ? err.message : 'Error confirming');
     }
   };
 
@@ -64,7 +64,7 @@ export const CaseClosureView: React.FC = () => {
     return (
       <div className="flex items-center justify-center gap-2 py-12 text-on-surface-variant">
         <Loader className="h-5 w-5 animate-spin" />
-        <span>Cargando información del cierre...</span>
+        <span>Loading closure information...</span>
       </div>
     );
   }
@@ -72,24 +72,24 @@ export const CaseClosureView: React.FC = () => {
   if (!closure) {
     return (
       <div className="rounded-2xl bg-error/10 p-6 text-error">
-        <p>No se encontró información de cierre para este caso.</p>
+        <p>No closure information was found for this case.</p>
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      
       <div className="rounded-2xl bg-surface-container-highest p-6">
         <h1 className="text-2xl font-bold text-on-surface">
-          Cierre de Caso: {closure.victimName}
+          Case Closure: {closure.victimName}
         </h1>
         <p className="mt-2 text-on-surface-variant">
-          ID del Caso: {caseId} | Estado: {closure.status}
+          Case ID: {caseId} | Status: {closure.status}
         </p>
       </div>
 
-      {/* Error Display */}
+      
       {error && (
         <div className="flex items-center gap-3 rounded-lg bg-error/10 p-4 text-error">
           <AlertTriangle className="h-5 w-5 flex-shrink-0" />
@@ -97,22 +97,22 @@ export const CaseClosureView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Layout */}
+      
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Progress Sidebar */}
+        
         <div className="lg:col-span-1">
           <ClosureProgress closure={closure} />
         </div>
 
-        {/* Forms Column */}
+        
         <div className="space-y-6 lg:col-span-2">
-          {/* Psychologist Form */}
+          
           <PsychologistSummaryForm
             closure={closure}
             onSubmit={handlePsychologistSubmit}
           />
 
-          {/* Victim Confirmation - Show only after psychologist approval */}
+          
           {closure.psychologistApprovedAt && (
             <VictimConfirmationForm
               closure={closure}
@@ -122,14 +122,14 @@ export const CaseClosureView: React.FC = () => {
         </div>
       </div>
 
-      {/* Case Completed State */}
+      
       {closure.closedAt && (
         <div className="rounded-2xl bg-green-50 border-2 border-green-200 p-6 text-center">
           <p className="text-2xl mb-2">✅</p>
-          <h2 className="font-bold text-green-900">Caso Cerrado Exitosamente</h2>
+          <h2 className="font-bold text-green-900">Case Successfully Closed</h2>
           <p className="mt-2 text-green-800">
-            El caso se cerró el{' '}
-            {new Date(closure.closedAt).toLocaleDateString('es-ES')}
+            The case was closed on{' '}
+            {new Date(closure.closedAt).toLocaleDateString('en-US')}
           </p>
         </div>
       )}

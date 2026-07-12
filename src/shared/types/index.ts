@@ -1,12 +1,12 @@
-// ============================================================
-// Tipos globales de SafeZone — fuente única de verdad
-// Estos tipos deben coincidir con los DTOs del backend Spring
-// ============================================================
 
-// ── Roles ──────────────────────────────────────────────────────
+
+
+
+
+
 export type UserRole = 'VICTIM' | 'PSYCHOLOGIST' | 'DEFENDER' | 'ADMIN'
 
-// ── Usuario ────────────────────────────────────────────────────
+
 export interface User {
   id: string
   name: string
@@ -15,14 +15,14 @@ export interface User {
   createdAt: string
 }
 
-// ── Autenticación ──────────────────────────────────────────────
+
 export interface AuthResponse {
   token: string
   user: User
 }
 
-// ── Respuesta genérica de la API ───────────────────────────────
-// Wrapper que Spring Boot puede devolver opcionalmente
+
+
 export interface ApiResponse<T> {
   success: boolean
   data?: T
@@ -30,7 +30,7 @@ export interface ApiResponse<T> {
   error?: string
 }
 
-// ── Reportes / Denuncias ────────────────────────────────────────
+
 export type ReportType = 'PHYSICAL_VIOLENCE' | 'PSYCHOLOGICAL_ABUSE' | 'SEXUAL_VIOLENCE' | 'ECONOMIC_ABUSE' | 'OTHER'
 export type ReportStatus = 'PENDING' | 'UNDER_EVALUATION' | 'IN_FOLLOW_UP' | 'RESOLVED' | 'CLOSED'
 export type ReportPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
@@ -47,9 +47,10 @@ export interface Report {
   updatedAt: string
   psychologistId?: string
   defenderId?: string
+  location?: string
 }
 
-// ── Evaluaciones psicológicas ──────────────────────────────────
+
 export interface Evaluation {
   id: string
   reportId: string
@@ -60,7 +61,7 @@ export interface Evaluation {
   recommendations: string[]
 }
 
-// ── Actualizaciones legales ─────────────────────────────────────
+
 export interface LegalUpdate {
   id: string
   reportId: string
@@ -71,7 +72,7 @@ export interface LegalUpdate {
   notes: string
 }
 
-// ── Triaje (Admin) ──────────────────────────────────────────────
+
 export type CaseStatus = 'new' | 'assigned' | 'in-progress' | 'closed'
 export type CasePriority = 'low' | 'medium' | 'high' | 'critical'
 export type CaseType = 'physical' | 'psychological' | 'sexual' | 'legal' | 'other'
@@ -129,11 +130,11 @@ export interface AssignmentHistory {
   reason?: string
 }
 
-// ── Botón de Pánico / Alerta de Emergencia (RF-03) ─────────────
+
 export interface GeoLocation {
   latitude: number
   longitude: number
-  accuracy?: number       // metros
+  accuracy?: number       
   altitude?: number
   timestamp: string
 }
@@ -145,15 +146,15 @@ export interface EmergencyAlert {
   victimId: string
   victimName: string
   victimEmail: string
-  /** Coordenadas GPS capturadas automáticamente */
+  
   location?: GeoLocation
-  /** Dirección ingresada manualmente por la víctima */
+  
   manualAddress?: string
-  /** Mensaje opcional que agrega la víctima al activar el botón */
+  
   message?: string
   status: EmergencyStatus
   createdAt: string
-  /** ID del profesional que atendió la alerta */
+  
   attendedBy?: string
   attendedByName?: string
   attendedAt?: string

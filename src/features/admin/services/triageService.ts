@@ -2,7 +2,7 @@ import apiClient from '@/core/api/apiClient'
 import { config } from '@/core/config'
 import { TriageCase, TriageAssignment, TriageMetrics, AdminUser } from '@/shared/types'
 
-// Datos de prueba para modo mock
+
 const MOCK_CASES: TriageCase[] = [
   {
     id: 'CASE-001', reportId: 'RPT-2026-001',
@@ -50,58 +50,56 @@ const MOCK_CASES: TriageCase[] = [
 const delay = (ms = config.MOCK_DELAY) => new Promise((r) => setTimeout(r, ms))
 
 export const triageService = {
-  // Casos pendientes de asignar — Spring: GET /api/admin/cases/pending
   getPendingCases: async (): Promise<TriageCase[]> => {
     if (config.USE_MOCK) { await delay(); return [...MOCK_CASES] }
     const { data } = await apiClient.get<any[]>('/denuncias/listar')
 
-return data.map((d) => ({
-  id: d.id,
-  reportId: d.id,
+    return data.map((d) => ({
+      id: d.id,
+      reportId: d.id,
 
-  victimName: d.usuario?.nombre || 'Víctima',
-  victimEmail: d.usuario?.email || 'Sin correo',
+      victimName: d.usuario?.nombre || 'Víctima',
+      victimEmail: d.usuario?.email || 'Sin correo',
 
-  incidentType:
-    d.tipoViolencia === 'PHYSICAL_VIOLENCE'
-      ? 'physical'
-      : d.tipoViolencia === 'PSYCHOLOGICAL_ABUSE'
-      ? 'psychological'
-      : d.tipoViolencia === 'SEXUAL_VIOLENCE'
-      ? 'sexual'
-      : 'other',
+      incidentType:
+        d.tipoViolencia === 'PHYSICAL_VIOLENCE'
+          ? 'physical'
+          : d.tipoViolencia === 'PSYCHOLOGICAL_ABUSE'
+            ? 'psychological'
+            : d.tipoViolencia === 'SEXUAL_VIOLENCE'
+              ? 'sexual'
+              : 'other',
 
-  priority:
-    d.nivelRiesgo === 'HIGH'
-      ? 'critical'
-      : d.nivelRiesgo === 'MEDIUM'
-      ? 'high'
-      : 'medium',
+      priority:
+        d.nivelRiesgo === 'HIGH'
+          ? 'critical'
+          : d.nivelRiesgo === 'MEDIUM'
+            ? 'high'
+            : 'medium',
 
-  status:
-    d.estado === 'PENDIENTE'
-      ? 'new'
-      : d.estado === 'ASIGNADO'
-      ? 'assigned'
-      : 'in-progress',
+      status:
+        d.estado === 'PENDIENTE'
+          ? 'new'
+          : d.estado === 'ASIGNADO'
+            ? 'assigned'
+            : 'in-progress',
 
-  description: d.descripcion,
-  location: d.direccion,
-  submittedAt: d.fechaDenuncia,
+      description: d.descripcion,
+      location: d.direccion,
+      submittedAt: d.fechaDenuncia,
 
-  assignedTo: null,
-  notes: ''
-}))
+      assignedTo: null,
+      notes: ''
+    }))
   },
 
-  // Detalle de un caso — Spring: GET /api/admin/cases/{id}
   getCaseDetail: async (caseId: string): Promise<TriageCase> => {
     if (config.USE_MOCK) { await delay(200); return MOCK_CASES.find(c => c.id === caseId) ?? MOCK_CASES[0] }
     const { data } = await apiClient.get<TriageCase>(`/admin/cases/${caseId}`)
     return data
   },
 
-  // Asignar psicólogo y defensor a un caso — Spring: POST /api/admin/cases/{id}/assign
+  
   assignCase: async (assignment: TriageAssignment): Promise<TriageCase> => {
     if (config.USE_MOCK) {
       await delay()
@@ -110,17 +108,17 @@ return data.map((d) => ({
       return c ?? MOCK_CASES[0]
     }
     const { data } = await apiClient.patch<TriageCase>(
-  `/denuncias/${assignment.caseId}/asignar`,
-  {
-    psicologoId: assignment.psychologistId,
-    defensorLegalId: assignment.defenderLegalId,
-    asignadoPorId: assignment.assignedBy,
-    prioridad: assignment.priority,
-  }  )
+      `/denuncias/${assignment.caseId}/asignar`,
+      {
+        psicologoId: assignment.psychologistId,
+        defensorLegalId: assignment.defenderLegalId,
+        asignadoPorId: assignment.assignedBy,
+        prioridad: assignment.priority,
+      })
     return data
   },
 
-  // Cambiar estado de un caso — Spring: PATCH /api/admin/cases/{id}/status
+  
   updateCaseStatus: async (caseId: string, status: string, notes?: string): Promise<TriageCase> => {
     if (config.USE_MOCK) {
       await delay(200)
@@ -132,7 +130,7 @@ return data.map((d) => ({
     return data
   },
 
-  // Métricas del dashboard admin — Spring: GET /api/admin/metrics
+  
   getMetrics: async (): Promise<TriageMetrics> => {
     if (config.USE_MOCK) {
       await delay(200)
@@ -167,7 +165,7 @@ return data.map((d) => ({
   },
 }
 
-// Profesionales disponibles para asignar — Spring: GET /api/admin/professionals
+
 export const adminProfessionalService = {
   getAvailablePsychologists: async () => {
     // Corregido al endpoint real del controlador
@@ -182,7 +180,7 @@ export const adminProfessionalService = {
   },
 }
 
-// CRUD de usuarios administrativos — Spring: /api/admin/users
+
 export const adminUserService = {
   getAdmins: async (): Promise<AdminUser[]> => {
     if (config.USE_MOCK) {

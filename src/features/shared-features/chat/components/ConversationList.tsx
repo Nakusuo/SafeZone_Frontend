@@ -36,7 +36,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
     return (
       <div className="flex flex-col items-center justify-center gap-2 rounded-lg bg-surface-container-lowest py-8 text-on-surface-variant">
         <MessageCircle className="h-8 w-8" />
-        <p className="text-sm">Sin conversaciones</p>
+        <p className="text-sm">No conversations</p>
       </div>
     );
   }
@@ -56,7 +56,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-on-surface">
-                Caso ID: {conversation.caseId}
+                Case ID: {conversation.caseId}
               </div>
               {conversation.lastMessage && (
                 <p className="mt-1 text-xs text-on-surface-variant truncate">
@@ -67,7 +67,7 @@ export const ConversationList: React.FC<ConversationListProps> = ({
               {conversation.lastMessageAt && (
                 <p className="mt-1 text-xs text-on-surface-variant">
                   {new Date(conversation.lastMessageAt).toLocaleDateString(
-                    'es-ES'
+                    'en-US'
                   )}
                 </p>
               )}

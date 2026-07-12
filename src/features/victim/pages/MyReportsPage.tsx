@@ -23,7 +23,7 @@ export const MyReportsPage = () => {
         const myReports = await reportService.getVictimReports(userData.id)
         setReports(myReports)
       } catch (error) {
-        console.error('Error cargando denuncias:', error)
+        console.error('Error loading reports:', error)
       } finally {
         setIsLoading(false)
       }
@@ -34,7 +34,7 @@ export const MyReportsPage = () => {
     }
   }, [userData?.id])
 
-  // Filtrar denuncias
+  
   useEffect(() => {
     let filtered = reports
 
@@ -68,10 +68,10 @@ export const MyReportsPage = () => {
 
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
-      PENDING: 'Pendiente',
-      UNDER_EVALUATION: 'En evaluación',
-      IN_FOLLOW_UP: 'En seguimiento',
-      RESOLVED: 'Resuelto',
+      PENDING: 'Pending',
+      UNDER_EVALUATION: 'Under Evaluation',
+      IN_FOLLOW_UP: 'In Follow-up',
+      RESOLVED: 'Resolved',
     }
     return labels[status] || status
   }
@@ -79,24 +79,24 @@ export const MyReportsPage = () => {
   const tableColumns = [
     {
       key: 'title' as const,
-      label: 'Título',
+      label: 'Title',
       width: '35%',
     },
     {
       key: 'type' as const,
-      label: 'Tipo',
+      label: 'Type',
       render: (value: string) => {
         const labels: Record<string, string> = {
-          PHYSICAL_VIOLENCE: 'Violencia Física',
-          PSYCHOLOGICAL_ABUSE: 'Abuso Psicológico',
-          OTHER: 'Otro',
+          PHYSICAL_VIOLENCE: 'Physical Violence',
+          PSYCHOLOGICAL_ABUSE: 'Psychological Abuse',
+          OTHER: 'Other',
         }
         return labels[value] || value
       },
     },
     {
       key: 'status' as const,
-      label: 'Estado',
+      label: 'Status',
       render: (value: string) => (
         <span className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(value)}`}>
           {getStatusLabel(value)}
@@ -105,7 +105,7 @@ export const MyReportsPage = () => {
     },
     {
       key: 'priority' as const,
-      label: 'Prioridad',
+      label: 'Priority',
       render: (value: string) => {
         const colors: Record<string, string> = {
           LOW: 'text-blue-600',
@@ -113,27 +113,27 @@ export const MyReportsPage = () => {
           HIGH: 'text-accent',
         }
         const labels: Record<string, string> = {
-          LOW: 'Baja',
-          MEDIUM: 'Media',
-          HIGH: 'Alta',
+          LOW: 'Low',
+          MEDIUM: 'Medium',
+          HIGH: 'High',
         }
         return <span className={`font-medium ${colors[value]}`}>{labels[value]}</span>
       },
     },
     {
       key: 'createdAt' as const,
-      label: 'Fecha',
-      render: (value: string) => new Date(value).toLocaleDateString('es-ES'),
+      label: 'Date',
+      render: (value: string) => new Date(value).toLocaleDateString('en-US'),
     },
   ]
 
   return (
     <div className="p-8 max-w-7xl mx-auto">
-      {/* Header */}
+      
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Mis Denuncias</h1>
-          <p className="text-gray-600">Gestiona todas tus denuncias y solicitudes de apoyo</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Reports</h1>
+          <p className="text-gray-600">Manage all your reports and support requests</p>
         </div>
         <Button
           variant="primary"
@@ -141,51 +141,51 @@ export const MyReportsPage = () => {
           onClick={() => navigate('/victim/create-report')}
         >
           <Plus className="w-4 h-4 mr-2" />
-          Nueva Denuncia
+          New Report
         </Button>
       </div>
 
-      {/* Filtros */}
-      <Card title="Filtros de Búsqueda" className="mb-6">
+      
+      <Card title="Search Filters" className="mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Input
-            label="Buscar denuncia"
-            placeholder="Buscar por título o descripción..."
+            label="Search report"
+            placeholder="Search by title or description..."
             value={searchTerm}
             onChange={setSearchTerm}
             className="flex-1"
           />
 
           <Select
-            label="Estado"
+            label="Status"
             value={statusFilter}
             onChange={setStatusFilter}
             options={[
-              { value: '', label: 'Todos los estados' },
-              { value: 'PENDING', label: 'Pendiente' },
-              { value: 'UNDER_EVALUATION', label: 'En evaluación' },
-              { value: 'IN_FOLLOW_UP', label: 'En seguimiento' },
-              { value: 'RESOLVED', label: 'Resuelto' },
+              { value: '', label: 'All statuses' },
+              { value: 'PENDING', label: 'Pending' },
+              { value: 'UNDER_EVALUATION', label: 'Under Evaluation' },
+              { value: 'IN_FOLLOW_UP', label: 'In Follow-up' },
+              { value: 'RESOLVED', label: 'Resolved' },
             ]}
           />
 
           <Select
-            label="Prioridad"
+            label="Priority"
             value={priorityFilter}
             onChange={setPriorityFilter}
             options={[
-              { value: '', label: 'Todas las prioridades' },
-              { value: 'LOW', label: 'Baja' },
-              { value: 'MEDIUM', label: 'Media' },
-              { value: 'HIGH', label: 'Alta' },
+              { value: '', label: 'All priorities' },
+              { value: 'LOW', label: 'Low' },
+              { value: 'MEDIUM', label: 'Medium' },
+              { value: 'HIGH', label: 'High' },
             ]}
           />
         </div>
       </Card>
 
-      {/* Tabla */}
+      
       {filteredReports.length > 0 ? (
-        <Card title={`${filteredReports.length} denuncia${filteredReports.length !== 1 ? 's' : ''}`} className="mb-6">
+        <Card title={`${filteredReports.length} report${filteredReports.length !== 1 ? 's' : ''}`} className="mb-6">
           <DataTable
             columns={tableColumns}
             data={filteredReports}
@@ -199,8 +199,8 @@ export const MyReportsPage = () => {
           <div className="text-center py-8">
             <p className="text-gray-700 mb-4">
               {searchTerm || statusFilter || priorityFilter
-                ? 'No hay denuncias que coincidan con tus filtros'
-                : 'Aún no has registrado denuncias'}
+                ? 'No reports match your filters'
+                : 'You have not registered any reports yet'}
             </p>
             {!searchTerm && !statusFilter && !priorityFilter && (
               <Button
@@ -208,31 +208,31 @@ export const MyReportsPage = () => {
                 onClick={() => navigate('/victim/create-report')}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Crear tu primera denuncia
+                Create your first report
               </Button>
             )}
           </div>
         </Card>
       )}
 
-      {/* Estadísticas */}
+      
       {reports.length > 0 && (
-        <Card title="Resumen Estadístico" className="mb-6">
+        <Card title="Statistical Summary" className="mb-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 mb-1">Total</p>
               <p className="text-2xl font-bold text-primary">{reports.length}</p>
             </div>
             <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Pendientes</p>
+              <p className="text-sm text-gray-600 mb-1">Pending</p>
               <p className="text-2xl font-bold text-yellow-600">{reports.filter(r => r.status === 'PENDING').length}</p>
             </div>
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">En Evaluación</p>
+              <p className="text-sm text-gray-600 mb-1">Under Evaluation</p>
               <p className="text-2xl font-bold text-blue-600">{reports.filter(r => r.status === 'UNDER_EVALUATION').length}</p>
             </div>
             <div className="text-center p-4 bg-emerald-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Resueltos</p>
+              <p className="text-sm text-gray-600 mb-1">Resolved</p>
               <p className="text-2xl font-bold text-emerald-600">{reports.filter(r => r.status === 'RESOLVED').length}</p>
             </div>
           </div>

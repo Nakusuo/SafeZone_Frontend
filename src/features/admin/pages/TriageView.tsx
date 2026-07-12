@@ -105,17 +105,17 @@ export const TriageView: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Header */}
+      
       <div className="rounded-2xl bg-surface-container-highest p-6">
         <h1 className="text-2xl font-bold text-on-surface">
-          Centro de Triaje y Asignación
+          Triage and Assignment Center
         </h1>
         <p className="mt-2 text-on-surface-variant">
-          Casos pendientes de revisión y asignación
+          Cases pending review and assignment
         </p>
       </div>
 
-      {/* Error Display */}
+      
       {error && (
         <div className="flex items-center gap-3 rounded-lg bg-error/10 p-4 text-error">
           <AlertTriangle className="h-5 w-5 flex-shrink-0" />
@@ -123,15 +123,15 @@ export const TriageView: React.FC = () => {
         </div>
       )}
 
-      {/* Main Content Grid */}
+      
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Left: Case Table */}
+        
         <div className="lg:col-span-2">
           <div className="rounded-2xl bg-surface-container-lowest p-4">
             {isLoadingCases ? (
               <div className="flex items-center justify-center gap-2 py-12 text-on-surface-variant">
                 <Loader className="h-5 w-5 animate-spin" />
-                <span>Cargando casos...</span>
+                <span>Loading cases...</span>
               </div>
             ) : cases.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
@@ -151,7 +151,7 @@ export const TriageView: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Case Details & Actions */}
+        
         <div className="flex flex-col gap-4">
           <CaseDetailSidebar
             caseData={selectedCase ?? null}
@@ -164,18 +164,18 @@ export const TriageView: React.FC = () => {
               onClick={() => setIsModalOpen(true)}
               className="rounded-lg bg-primary px-4 py-3 font-semibold text-on-primary hover:bg-primary/90 transition-colors"
             >
-              Asignar Caso
+              Assign Case
             </button>
           )}
           {selectedCase && selectedCase.status !== "new" && (
             <button className="rounded-lg bg-surface-container px-4 py-3 font-semibold text-on-surface-variant cursor-not-allowed opacity-50">
-              Ya Asignado
+              Already Assigned
             </button>
           )}
         </div>
       </div>
 
-      {/* Assignment Modal */}
+      
       {selectedCase && (
         <AssignmentModal
           isOpen={isModalOpen}

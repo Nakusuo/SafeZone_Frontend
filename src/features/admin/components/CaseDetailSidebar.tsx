@@ -23,14 +23,14 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
   if (!caseData) {
     return (
       <div className="rounded-2xl bg-surface-container-lowest p-6 text-center text-on-surface-variant">
-        Selecciona un caso para ver detalles
+        Select a case to view details
       </div>
     );
   }
 
   return (
     <div className="space-y-6 rounded-2xl bg-surface-container-lowest p-6">
-      {/* Header */}
+      
       <div>
         <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
           {caseData.reportId}
@@ -40,10 +40,10 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
         </h3>
       </div>
 
-      {/* Contact Info */}
+      
       <div className="space-y-3 border-t border-outline-variant/20 pt-6">
         <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-          Contacto
+          Contact
         </p>
         <div className="flex items-center gap-2 text-sm text-on-surface">
           <Mail className="h-4 w-4 text-on-surface-variant" />
@@ -62,31 +62,31 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
         )}
       </div>
 
-      {/* Case Details */}
+      
       <div className="space-y-3 border-t border-outline-variant/20 pt-6">
         <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-          Detalles del Incidente
+          Incident Details
         </p>
         <div>
-          <p className="text-xs text-on-surface-variant">Tipo</p>
+          <p className="text-xs text-on-surface-variant">Type</p>
           <p className="font-semibold text-on-surface capitalize">
             {caseData.incidentType}
           </p>
         </div>
         <div>
-          <p className="text-xs text-on-surface-variant">Descripción</p>
+          <p className="text-xs text-on-surface-variant">Description</p>
           <p className="mt-1 text-sm leading-relaxed text-on-surface">
             {caseData.description}
           </p>
         </div>
       </div>
 
-      {/* Timing */}
+      
       <div className="flex items-center gap-2 border-t border-outline-variant/20 pt-6 text-sm text-on-surface-variant">
         <Clock className="h-4 w-4" />
         <span>
-          Reportado:{' '}
-          {new Date(caseData.submittedAt).toLocaleDateString('es-ES', {
+          Reported:{' '}
+          {new Date(caseData.submittedAt).toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
@@ -95,30 +95,30 @@ export const CaseDetailSidebar: React.FC<CaseDetailSidebarProps> = ({
         </span>
       </div>
 
-      {/* Current Assignment */}
+      
       {caseData.assignedTo && (
         <div className="space-y-2 rounded-lg bg-surface-container p-3">
           <p className="text-xs font-bold text-secondary uppercase tracking-wider">
-            Asignado a
+            Assigned to
           </p>
           {caseData.assignedTo.psychologist && (
             <p className="text-sm text-on-surface">
-              📋 Psicólogo: {caseData.assignedTo.psychologist}
+              📋 Psychologist: {caseData.assignedTo.psychologist}
             </p>
           )}
           {caseData.assignedTo.legalDefender && (
             <p className="text-sm text-on-surface">
-              ⚖️ Defensor: {caseData.assignedTo.legalDefender}
+              ⚖️ Defender: {caseData.assignedTo.legalDefender}
             </p>
           )}
         </div>
       )}
 
-      {/* Notes */}
+      
       {caseData.notes && (
         <div className="space-y-2 border-t border-outline-variant/20 pt-6">
           <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-            Notas Internas
+            Internal Notes
           </p>
           <p className="text-sm text-on-surface">{caseData.notes}</p>
         </div>

@@ -137,7 +137,7 @@ export const Select = ({
   error,
   required,
   disabled,
-  placeholder = 'Selecciona una opción',
+  placeholder = 'Select an option',
 }: SelectProps) => {
   return (
     <div className="mb-4">

@@ -9,36 +9,36 @@ import { triageService } from '../services/triageService'
 import { TriageMetrics } from '@/shared/types'
 import { EmergencyAlertsPanel } from '@/features/shared-features/emergency/EmergencyAlertsPanel'
 
-// ============================================================
-// Admin Dashboard — Panel principal del administrador
-// Muestra métricas de triaje y accesos rápidos a gestión
-// ============================================================
+
+
+
+
 
 const QUICK_ACTIONS = [
   {
-    label: 'Triaje de Casos',
-    description: 'Revisar y asignar denuncias pendientes',
+    label: 'Case Triage',
+    description: 'Review and assign pending reports',
     path: '/admin/triage',
     icon: ClipboardList,
     color: 'bg-rose-500',
   },
   {
-    label: 'Gestión de Usuarios',
-    description: 'Administrar administradores y gestores',
+    label: 'User Management',
+    description: 'Manage administrators and managers',
     path: '/admin/users',
     icon: Users,
     color: 'bg-blue-500',
   },
   {
-    label: 'Casos Críticos',
-    description: 'Casos de prioridad alta sin atender',
+    label: 'Critical Cases',
+    description: 'Unattended high-priority cases',
     path: '/admin/triage?filter=critical',
     icon: AlertTriangle,
     color: 'bg-amber-500',
   },
   {
-    label: 'Casos Resueltos',
-    description: 'Historial de casos cerrados',
+    label: 'Resolved Cases',
+    description: 'History of closed cases',
     path: '/admin/triage?filter=closed',
     icon: CheckCircle2,
     color: 'bg-emerald-500',
@@ -59,44 +59,44 @@ export const AdminDashboard = () => {
 
   return (
     <div className="p-6 space-y-8">
-      {/* ── Encabezado ── */}
+      
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
-          Panel de Administración
+          Administration Panel
         </h1>
         <p className="text-gray-500 mt-1">
-          Bienvenido, <span className="font-medium text-gray-700">{user?.name}</span>. Aquí tienes el resumen del sistema.
+          Welcome, <span className="font-medium text-gray-700">{user?.name}</span>. Here is the system summary.
         </p>
       </div>
 
-      {/* ── RF-03: Alertas de emergencia ── */}
+      
       <EmergencyAlertsPanel />
 
-      {/* ── Métricas ── */}
+      
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          label="Casos Pendientes"
+          label="Pending Cases"
           value={loading ? '—' : String(metrics?.totalPending ?? 0)}
           icon={Clock}
           color="text-amber-600 bg-amber-50"
           loading={loading}
         />
         <MetricCard
-          label="Casos Asignados"
+          label="Assigned Cases"
           value={loading ? '—' : String(metrics?.totalAssigned ?? 0)}
           icon={TrendingUp}
           color="text-blue-600 bg-blue-50"
           loading={loading}
         />
         <MetricCard
-          label="Casos Críticos"
+          label="Critical Cases"
           value={loading ? '—' : String(metrics?.criticalCases ?? 0)}
           icon={AlertTriangle}
           color="text-rose-600 bg-rose-50"
           loading={loading}
         />
         <MetricCard
-          label="Total en Sistema"
+          label="Total in System"
           value={loading ? '—' : String((metrics?.totalPending ?? 0) + (metrics?.totalAssigned ?? 0))}
           icon={Shield}
           color="text-emerald-600 bg-emerald-50"
@@ -104,9 +104,9 @@ export const AdminDashboard = () => {
         />
       </div>
 
-      {/* ── Acciones rápidas ── */}
+      
       <div>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Acciones Rápidas</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {QUICK_ACTIONS.map((action) => {
             const Icon = action.icon
@@ -132,10 +132,10 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* ── Casos por tipo ── */}
+      
       {metrics && (
         <div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Casos por Tipo</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Cases by Type</h2>
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <div className="space-y-3">
               {Object.entries(metrics.casesByType).map(([type, count]) => (
@@ -149,7 +149,7 @@ export const AdminDashboard = () => {
   )
 }
 
-// ── Sub-componentes ────────────────────────────────────────────
+
 
 interface MetricCardProps {
   label: string
@@ -172,11 +172,11 @@ const MetricCard = ({ label, value, icon: Icon, color, loading }: MetricCardProp
 )
 
 const TYPE_LABELS: Record<string, string> = {
-  physical: 'Violencia Física',
-  psychological: 'Abuso Psicológico',
-  sexual: 'Violencia Sexual',
-  legal: 'Conflicto Legal',
-  other: 'Otros',
+  physical: 'Physical Violence',
+  psychological: 'Psychological Abuse',
+  sexual: 'Sexual Violence',
+  legal: 'Legal Conflict',
+  other: 'Others',
 }
 
 const TYPE_COLORS: Record<string, string> = {

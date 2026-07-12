@@ -1,65 +1,65 @@
 import apiClient from '@/core/api/apiClient';
 import type { Notification, NotificationPreference, NotificationPayload } from '../types';
 
-// Mock Data
+
 const MOCK_NOTIFICATIONS: Notification[] = [
   {
     id: 'notif-001',
     userId: 'user-1',
     type: 'case-assigned',
-    title: 'Tu caso ha sido asignado',
-    message: 'El caso #RPT-2026-001 ha sido asignado a Dra. María García (psicología) y Lic. Ana Martínez (legal)',
+    title: 'Your case has been assigned',
+    message: 'Case #RPT-2026-001 has been assigned to Dr. Maria Garcia (psychology) and Atty. Ana Martinez (legal)',
     relatedCaseId: 'CASE-001',
     isRead: false,
     createdAt: new Date(Date.now() - 2 * 60 * 60000),
-    action: { label: 'Ver caso', url: '/casos/CASE-001' },
+    action: { label: 'View case', url: '/cases/CASE-001' },
   },
   {
     id: 'notif-002',
     userId: 'user-1',
     type: 'session-scheduled',
-    title: 'Sesión psicológica programada',
-    message: 'Tu sesión con Dra. María García está programada para mañana a las 10:00 AM',
+    title: 'Psychological session scheduled',
+    message: 'Your session with Dr. Maria Garcia is scheduled for tomorrow at 10:00 AM',
     relatedCaseId: 'CASE-001',
     isRead: false,
     createdAt: new Date(Date.now() - 5 * 60 * 60000),
-    action: { label: 'Ver sesión', url: '/calendar' },
+    action: { label: 'View session', url: '/calendar' },
   },
   {
     id: 'notif-003',
     userId: 'user-1',
     type: 'document-uploaded',
-    title: 'Nuevo documento en tu caso',
-    message: 'Se ha subido un documento importante: "Evaluación Psicológica Inicial.pdf"',
+    title: 'New document in your case',
+    message: 'An important document has been uploaded: "Initial Psychological Evaluation.pdf"',
     relatedCaseId: 'CASE-001',
     isRead: true,
     createdAt: new Date(Date.now() - 12 * 60 * 60000),
-    action: { label: 'Descargar', url: '/documents/CASE-001' },
+    action: { label: 'Download', url: '/documents/CASE-001' },
   },
   {
     id: 'notif-004',
     userId: 'user-1',
     type: 'hearing-scheduled',
-    title: 'Audiencia legal programada',
-    message: 'Tu audiencia legal está programada para el 15 de abril de 2026 a las 2:00 PM',
+    title: 'Legal hearing scheduled',
+    message: 'Your legal hearing is scheduled for April 15, 2026 at 2:00 PM',
     relatedCaseId: 'CASE-001',
     isRead: true,
     createdAt: new Date(Date.now() - 24 * 60 * 60000),
-    action: { label: 'Ver detalles', url: '/hearings/CASE-001' },
+    action: { label: 'View details', url: '/hearings/CASE-001' },
   },
   {
     id: 'notif-005',
     userId: 'user-1',
     type: 'system-alert',
-    title: 'Actualización del sistema',
-    message: 'Se ha completado el mantenimiento del sistema. Todas las funcionalidades están disponibles.',
+    title: 'System update',
+    message: 'System maintenance has been completed. All features are now available.',
     isRead: true,
     createdAt: new Date(Date.now() - 48 * 60 * 60000),
   },
 ];
 
 export const notificationService = {
-  // Fetch all notifications for user
+  
   async getNotifications(limit = 50): Promise<Notification[]> {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -68,7 +68,7 @@ export const notificationService = {
     });
   },
 
-  // Fetch unread notifications only
+  
   async getUnreadNotifications(): Promise<Notification[]> {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -77,33 +77,33 @@ export const notificationService = {
     });
   },
 
-  // Mark single notification as read
+  
   async markAsRead(notificationId: string): Promise<void> {
     const notif = MOCK_NOTIFICATIONS.find(n => n.id === notificationId);
     if (notif) notif.isRead = true;
     return new Promise(resolve => setTimeout(resolve, 100));
   },
 
-  // Mark all notifications as read
+  
   async markAllAsRead(): Promise<void> {
     MOCK_NOTIFICATIONS.forEach(n => n.isRead = true);
     return new Promise(resolve => setTimeout(resolve, 200));
   },
 
-  // Delete single notification
+  
   async deleteNotification(notificationId: string): Promise<void> {
     const index = MOCK_NOTIFICATIONS.findIndex(n => n.id === notificationId);
     if (index > -1) MOCK_NOTIFICATIONS.splice(index, 1);
     return new Promise(resolve => setTimeout(resolve, 100));
   },
 
-  // Clear all notifications
+  
   async clearAllNotifications(): Promise<void> {
     MOCK_NOTIFICATIONS.length = 0;
     return new Promise(resolve => setTimeout(resolve, 200));
   },
 
-  // Get notification preferences
+  
   async getPreferences(): Promise<NotificationPreference> {
     const prefs: NotificationPreference = {
       userId: 'user-1',
@@ -121,7 +121,7 @@ export const notificationService = {
     return new Promise(resolve => setTimeout(() => resolve(prefs), 200));
   },
 
-  // Update notification preferences
+  
   async updatePreferences(
     preferences: Partial<NotificationPreference>
   ): Promise<NotificationPreference> {
@@ -141,7 +141,7 @@ export const notificationService = {
     return new Promise(resolve => setTimeout(() => resolve(updated), 200));
   },
 
-  // Get notification statistics
+  
   async getStats(): Promise<{ totalUnread: number; byType: Record<string, number> }> {
     const byType: Record<string, number> = {};
     MOCK_NOTIFICATIONS.filter(n => !n.isRead).forEach(n => {
@@ -157,7 +157,7 @@ export const notificationService = {
     });
   },
 
-  // Subscribe to real-time notifications (WebSocket)
+  
   subscribeToNotifications(
     onNotification: (notification: Notification) => void,
     onError?: (error: Error) => void
@@ -171,7 +171,7 @@ export const notificationService = {
     return cleanup;
   },
 
-  // Send test notification
+  
   async sendTestNotification(
     payload: NotificationPayload
   ): Promise<Notification> {

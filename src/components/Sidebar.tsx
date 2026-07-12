@@ -5,7 +5,8 @@ import {
   Users, 
   Settings, 
   HelpCircle,
-  ChevronRight 
+  ChevronRight,
+  Calendar as CalendarIcon
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -19,22 +20,27 @@ const getNavigationItems = (role?: string) => {
       path: `/dashboard/${role?.toLowerCase() || 'victim'}`,
       icon: LayoutDashboard,
     },
+    {
+      label: 'Calendar',
+      path: '/calendar',
+      icon: CalendarIcon,
+    },
   ]
 
-  // Items adicionales según el rol (si se agregan páginas en el futuro)
+  
   const roleSpecificItems: Record<string, any[]> = {
     VICTIM: [
-      { label: 'Mis Denuncias', path: '/victim/my-reports', icon: FileText },
-      { label: 'Ayuda', path: '/victim/help', icon: HelpCircle },
-      { label: 'Contraseña', path: '/victim/password', icon: Settings, disabled: true },
+      { label: 'My Reports', path: '/victim/my-reports', icon: FileText },
+      { label: 'Help', path: '/victim/help', icon: HelpCircle },
+      { label: 'Password', path: '/victim/password', icon: Settings, disabled: true },
     ],
     PSYCHOLOGIST: [
-      { label: 'Mis Casos', path: '/psychologist/cases', icon: FileText },
-      { label: 'Nueva Sesión', path: '/psychologist/session-form', icon: FileText, disabled: true },
+      { label: 'My Cases', path: '/psychologist/cases', icon: FileText },
+      { label: 'New Session', path: '/psychologist/session-form', icon: FileText, disabled: true },
     ],
     DEFENDER: [
-      { label: 'Mis Casos', path: '/defender/cases', icon: FileText },
-      { label: 'Actualizar Legal', path: '/defender/legal-update', icon: FileText, disabled: true },
+      { label: 'My Cases', path: '/defender/cases', icon: FileText },
+      { label: 'Legal Update', path: '/defender/legal-update', icon: FileText, disabled: true },
     ],
   }
 
@@ -44,7 +50,7 @@ const getNavigationItems = (role?: string) => {
 export const Sidebar = ({ isOpen = true }: SidebarProps) => {
   const location = useLocation()
   
-  // Obtener rol del usuario
+  
   const userData = sessionStorage.getItem('user')
   const user = userData ? JSON.parse(userData) : null
   const navigationItems = getNavigationItems(user?.role)
@@ -104,7 +110,7 @@ export const Sidebar = ({ isOpen = true }: SidebarProps) => {
         <div className="p-4 border-t border-white/10 bg-white/5 backdrop-blur-sm">
           <div className="text-xs text-white/80 space-y-1">
             <p className="font-semibold">SafeZone</p>
-            <p className="text-white/60">Protección integral</p>
+            <p className="text-white/60">Comprehensive Protection</p>
           </div>
         </div>
       )}

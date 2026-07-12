@@ -21,7 +21,7 @@ export function DataTable<T extends { id: string }>({
   columns,
   data,
   isLoading = false,
-  emptyMessage = 'No hay datos disponibles',
+  emptyMessage = 'No data available',
   onRowClick,
   rowClassName = '',
 }: DataTableProps<T>) {
@@ -44,7 +44,7 @@ export function DataTable<T extends { id: string }>({
           <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
           <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
         </div>
-        <p className="text-gray-500 mt-3 text-sm">Cargando datos...</p>
+        <p className="text-gray-500 mt-3 text-sm">Loading data...</p>
       </div>
     )
   }

@@ -7,11 +7,11 @@ import { EmergencyAlert } from '@/shared/types'
 const timeAgo = (dateStr: string) => {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'hace un momento'
-  if (mins < 60) return `hace ${mins} min`
+  if (mins < 1) return 'a moment ago'
+  if (mins < 60) return `${mins} min ago`
   const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `hace ${hrs} h`
-  return `hace ${Math.floor(hrs / 24)} días`
+  if (hrs < 24) return `${hrs} h ago`
+  return `${Math.floor(hrs / 24)} days ago`
 }
 
 export const EmergencyAlertsPanel = () => {
@@ -25,7 +25,7 @@ export const EmergencyAlertsPanel = () => {
       const data = await emergencyService.getActiveAlerts()
       setAlerts(data)
     } catch (err) {
-      console.error('Error cargando alertas:', err)
+      console.error('Error loading alerts:', err)
     } finally {
       setLoading(false)
     }
@@ -44,7 +44,7 @@ export const EmergencyAlertsPanel = () => {
       await emergencyService.attendAlert(alertId, user.id, user.name)
       setAlerts(prev => prev.filter(a => a.id !== alertId))
     } catch (err) {
-      console.error('Error atendiendo alerta:', err)
+      console.error('Error attending alert:', err)
     } finally {
       setAttending(null)
     }
@@ -59,7 +59,7 @@ export const EmergencyAlertsPanel = () => {
     )
   }
 
-  // Si no hay alertas activas no mostramos nada
+  
   if (alerts.length === 0) return null
 
   return (
@@ -68,10 +68,10 @@ export const EmergencyAlertsPanel = () => {
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-red-500 rounded-full animate-ping" />
           <h3 className="font-bold text-red-700 text-sm uppercase tracking-wide">
-            Alertas de Emergencia Activas ({alerts.length})
+            Active Emergency Alerts ({alerts.length})
           </h3>
         </div>
-        <button onClick={load} className="text-gray-400 hover:text-gray-600 transition-colors" title="Actualizar">
+        <button onClick={load} className="text-gray-400 hover:text-gray-600 transition-colors" title="Refresh">
           <RefreshCw className="w-4 h-4" />
         </button>
       </div>
@@ -118,12 +118,12 @@ const AlertCard = ({ alert, onAttend, attending }: AlertCardProps) => {
         </div>
       </div>
 
-      {/* Coordenadas GPS */}
+      
       {hasGps && (
         <div className="flex items-start gap-2 mb-2 p-2.5 bg-green-50 rounded-lg">
           <Navigation className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
-            <p className="text-green-700 text-xs font-semibold">Ubicación GPS</p>
+            <p className="text-green-700 text-xs font-semibold">GPS Location</p>
             <p className="text-green-600 text-xs font-mono mt-0.5">
               {alert.location!.latitude.toFixed(6)}, {alert.location!.longitude.toFixed(6)}
             </p>
@@ -139,18 +139,18 @@ const AlertCard = ({ alert, onAttend, attending }: AlertCardProps) => {
               className="flex items-center gap-1 text-xs text-green-700 hover:text-green-900 font-medium transition-colors flex-shrink-0"
             >
               <ExternalLink className="w-3.5 h-3.5" />
-              Mapa
+              Map
             </a>
           )}
         </div>
       )}
 
-      {/* Dirección escrita por la víctima */}
+      
       {alert.manualAddress && (
         <div className="flex items-start gap-2 mb-2 p-2.5 bg-blue-50 rounded-lg">
           <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-blue-700 text-xs font-semibold">Dirección indicada</p>
+            <p className="text-blue-700 text-xs font-semibold">Indicated Address</p>
             <p className="text-blue-600 text-xs mt-0.5">{alert.manualAddress}</p>
           </div>
         </div>
@@ -158,7 +158,7 @@ const AlertCard = ({ alert, onAttend, attending }: AlertCardProps) => {
 
       {alert.message && (
         <div className="mb-3 p-2.5 bg-gray-50 rounded-lg">
-          <p className="text-gray-500 text-xs font-semibold mb-0.5">Mensaje de la víctima</p>
+          <p className="text-gray-500 text-xs font-semibold mb-0.5">Victim Message</p>
           <p className="text-gray-700 text-sm italic">"{alert.message}"</p>
         </div>
       )}
@@ -166,7 +166,7 @@ const AlertCard = ({ alert, onAttend, attending }: AlertCardProps) => {
       {!hasGps && !alert.manualAddress && (
         <div className="flex items-center gap-2 mb-3 p-2.5 bg-yellow-50 rounded-lg">
           <MapPin className="w-4 h-4 text-yellow-600" />
-          <p className="text-yellow-700 text-xs">Ubicación no disponible</p>
+          <p className="text-yellow-700 text-xs">Location not available</p>
         </div>
       )}
 
@@ -176,9 +176,9 @@ const AlertCard = ({ alert, onAttend, attending }: AlertCardProps) => {
         className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white rounded-lg font-semibold text-sm transition-colors"
       >
         {attending ? (
-          <><RefreshCw className="w-4 h-4 animate-spin" /> Atendiendo...</>
+          <><RefreshCw className="w-4 h-4 animate-spin" /> Attending...</>
         ) : (
-          <><CheckCircle2 className="w-4 h-4" /> Marcar como Atendida</>
+          <><CheckCircle2 className="w-4 h-4" /> Mark as Attended</>
         )}
       </button>
     </div>
