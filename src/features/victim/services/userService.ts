@@ -33,7 +33,9 @@ export const userService = {
     return data
   },
 
-  
+  /**
+   * Spring: GET /api/usuarios/psyphocolyst
+   */
   getPsychologists: async (): Promise<User[]> => {
     if (config.USE_MOCK) {
       await delay()
@@ -41,8 +43,18 @@ export const userService = {
         .filter((u: any) => u.role === 'PSYCHOLOGIST')
         .map((u: any) => ({ id: u.id, name: u.name, email: u.email, role: u.role, createdAt: u.createdAt }))
     }
-    const { data } = await apiClient.get<User[]>('/users', { params: { role: 'PSYCHOLOGIST' } })
-    return data
+
+    const response = await apiClient.get<any>('/usuarios/psyphocolyst')
+    const payload = response.data?.data ?? response.data ?? response
+    const users = Array.isArray(payload) ? payload : payload ? [payload] : []
+
+    return users.map((u: any) => ({
+      id: String(u.id ?? u.usuarioid ?? ''),
+      name: u.nombre ? `${u.nombre} ${u.apellido ?? ''}`.trim() : u.nombreCompleto ?? u.name ?? '',
+      email: u.email ?? '',
+      role: (u.role || u.rol || 'PSYCHOLOGIST') as any,
+      createdAt: u.createdAt ?? u.creadoEn ?? '',
+    }))
   },
 
   

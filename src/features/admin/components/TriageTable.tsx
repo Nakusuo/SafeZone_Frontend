@@ -5,6 +5,7 @@ import type { TriageCase, CasePriority } from '../types';
 interface TriageTableProps {
   cases: TriageCase[];
   onSelectCase: (caseId: string) => void;
+  onOpenAssign?: (caseId: string) => void;
   selectedCaseId?: string;
   isLoading?: boolean;
 }
@@ -26,13 +27,14 @@ const statusLabels: Record<string, string> = {
 export const TriageTable: React.FC<TriageTableProps> = ({
   cases,
   onSelectCase,
+  onOpenAssign,
   selectedCaseId,
   isLoading,
 }) => {
   if (isLoading) {
     return (
-      <div className="w-full p-8 text-center text-on-surface-variant">
-        Loading cases...
+      <div className="w-full p-8 text-center text-slate-500">
+        Cargando casos...
       </div>
     );
   }
@@ -40,8 +42,8 @@ export const TriageTable: React.FC<TriageTableProps> = ({
   if (cases.length === 0) {
     return (
       <div className="w-full p-8 text-center">
-        <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-on-surface-variant" />
-        <p className="text-on-surface-variant">No pending cases</p>
+        <AlertTriangle className="mx-auto mb-4 h-12 w-12 text-slate-400" />
+        <p className="text-slate-500">No hay casos pendientes</p>
       </div>
     );
   }
@@ -50,27 +52,27 @@ export const TriageTable: React.FC<TriageTableProps> = ({
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-outline-variant">
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
+          <tr className="border-b border-slate-200">
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
               ID
             </th>
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Victim
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
+              Víctima
             </th>
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Type
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
+              Tipo
             </th>
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Priority
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
+              Prioridad
             </th>
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Status
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
+              Estado
             </th>
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Ago
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
+              Hace
             </th>
-            <th className="px-4 py-3 text-left font-semibold text-on-surface">
-              Actions
+            <th className="px-4 py-3 text-left font-semibold text-slate-900">
+              Acciones
             </th>
           </tr>
         </thead>
@@ -89,21 +91,21 @@ export const TriageTable: React.FC<TriageTableProps> = ({
               <tr
                 key={caseItem.id}
                 onClick={() => onSelectCase(caseItem.id)}
-                className={`border-b border-outline-variant/30 cursor-pointer transition-colors ${
+                className={`border-b border-slate-200/30 cursor-pointer transition-colors ${
                   selectedCaseId === caseItem.id
-                    ? 'bg-primary-fixed/20'
-                    : 'hover:bg-surface-container-low'
+                    ? 'bg-blue-50'
+                    : 'hover:bg-slate-50'
                 }`}
               >
-                <td className="px-4 py-3 font-mono text-xs text-primary">
+                <td className="px-4 py-3 font-mono text-xs text-slate-900">
                   {caseItem.reportId}
                 </td>
                 <td className="px-4 py-3">
                   <div>
-                    <p className="font-medium text-on-surface">
+                    <p className="font-medium text-slate-900">
                       {caseItem.victimName}
                     </p>
-                    <p className="text-xs text-on-surface-variant">
+                    <p className="text-xs text-slate-500">
                       {caseItem.victimEmail}
                     </p>
                   </div>
@@ -123,17 +125,23 @@ export const TriageTable: React.FC<TriageTableProps> = ({
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  <span className="text-xs font-medium text-on-surface">
+                  <span className="text-xs font-medium text-slate-700">
                     {statusLabels[caseItem.status]}
                   </span>
                 </td>
-                <td className="px-4 py-3 flex items-center gap-1 text-xs text-on-surface-variant">
+                <td className="px-4 py-3 flex items-center gap-1 text-xs text-slate-500">
                   <Clock className="h-3 w-3" />
                   {timeDisplay}
                 </td>
                 <td className="px-4 py-3">
-                  <button className="rounded px-3 py-1 text-xs font-semibold text-primary hover:bg-primary-fixed transition-colors">
-                    Assign
+                  <button
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onOpenAssign?.(caseItem.id);
+                    }}
+                    className="rounded px-3 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors"
+                  >
+                    Asignar
                   </button>
                 </td>
               </tr>

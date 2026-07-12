@@ -4,8 +4,13 @@ import { AuthResponse, User, UserRole } from '@/shared/types'
 import mockData from '@/data/mockData.json'
 
 type BackendUserDto = {
-  id: string
-  name: string
+  id?: string
+  usuarioid?: string
+  usuarioId?: string
+  userId?: string
+  name?: string
+  nombre?: string
+  apellido?: string
   lastName?: string
   email: string
   role: UserRole
@@ -54,13 +59,25 @@ const saveMockData = (data: unknown) => {
   }
 }
 
-const mapBackendUser = (user: BackendUserDto | User): User => ({
-  id: user.id,
-  name: 'lastName' in user && user.lastName ? `${user.name} ${user.lastName}` : user.name,
-  email: user.email,
-  role: user.role,
-  createdAt: 'createdAt' in user && user.createdAt ? user.createdAt : new Date().toISOString(),
-})
+const mapBackendUser = (user: BackendUserDto | User): User => {
+  const record = user as BackendUserDto
+  const resolvedId = record.id || record.usuarioid || record.usuarioId || record.userId || ''
+  const resolvedName =
+    record.name ||
+    [record.nombre, record.apellido, record.lastName]
+      .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+      .join(' ')
+      .trim() ||
+    ''
+
+  return {
+    id: resolvedId,
+    name: resolvedName,
+    email: record.email,
+    role: record.role,
+    createdAt: record.createdAt || new Date().toISOString(),
+  }
+}
 
 const normalizeAuthResponse = (
   response: BackendAuthResponse | AuthResponse
@@ -176,5 +193,7 @@ export const authService = {
 
     sessionStorage.removeItem('token')
     sessionStorage.removeItem('user')
+    localStorage.removeItem('token')
+    localStorage.removeItem('user')
   },
 }

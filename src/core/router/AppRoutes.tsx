@@ -35,11 +35,7 @@ import { TriageView }     from '@/features/admin/pages/TriageView'
 import { NotificationCenter } from '@/features/shared-features/notifications/pages'
 import { CaseClosureView }    from '@/features/shared-features/case-closure/pages'
 import { ChatView }           from '@/features/shared-features/chat/pages'
-import { CaseLogPage }        from '@/features/shared-features/case-log/pages/CaseLogPage'
-import { CalendarView }       from '@/features/shared-features/calendar/pages/CalendarView'
-
-
-
+import { AgendaPage }         from '@/features/shared-features/pages/AgendaPage'
 
 
 type Role = 'VICTIM' | 'PSYCHOLOGIST' | 'DEFENDER' | 'ADMIN'
@@ -65,6 +61,7 @@ const AppRoutes = () => (
 
     
     <Route path="/dashboard/victim"        element={<Protected element={<VictimDashboard />}  role="VICTIM" />} />
+    <Route path="/dashboard/victim/agenda" element={<Protected element={<AgendaPage />}       role="VICTIM" />} />
     <Route path="/victim/create-report"    element={<Protected element={<CreateReportPage />} role="VICTIM" />} />
     <Route path="/victim/report/:reportId" element={<Protected element={<ReportDetailPage />} role="VICTIM" />} />
     <Route path="/victim/profile"          element={<Protected element={<ProfilePage />}      role="VICTIM" />} />
@@ -74,16 +71,19 @@ const AppRoutes = () => (
 
     
     <Route path="/dashboard/psychologist"    element={<Protected element={<PsychologistDashboard />} role="PSYCHOLOGIST" />} />
+    <Route path="/dashboard/psychologist/agenda" element={<Protected element={<AgendaPage />} role="PSYCHOLOGIST" />} />
     <Route path="/psychologist/cases"        element={<Protected element={<PsychologistCasesPage />} role="PSYCHOLOGIST" />} />
     <Route path="/psychologist/session-form" element={<Protected element={<SessionFormPage />}       role="PSYCHOLOGIST" />} />
 
     
     <Route path="/dashboard/defender"  element={<Protected element={<DefenderDashboard />} role="DEFENDER" />} />
+    <Route path="/dashboard/defender/agenda" element={<Protected element={<AgendaPage />} role="DEFENDER" />} />
     <Route path="/defender/cases"      element={<Protected element={<DefenderCasesPage />} role="DEFENDER" />} />
     <Route path="/defender/legal-update" element={<Protected element={<LegalUpdatePage />} role="DEFENDER" />} />
 
     
     <Route path="/dashboard/admin" element={<Protected element={<AdminDashboard />} role="ADMIN" />} />
+    <Route path="/dashboard/admin/agenda" element={<Protected element={<AgendaPage />} role="ADMIN" />} />
     <Route path="/admin/triage"    element={<Protected element={<TriageView />}     role="ADMIN" />} />
     <Route path="/admin/users"     element={<Protected element={<AdminDashboard />} role="ADMIN" />} />
 
@@ -93,7 +93,7 @@ const AppRoutes = () => (
     <Route path="/cases/:caseId/log" element={<Protected element={<CaseLogPage />}      role={['PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
     <Route path="/chat"                 element={<Protected element={<ChatView />}           role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
     <Route path="/chat/:conversationId" element={<Protected element={<ChatView />}           role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
-    <Route path="/calendar"           element={<Protected element={<CalendarView />}       role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
+    <Route path="/agenda"               element={<Protected element={<AgendaPage />}         role={['VICTIM','PSYCHOLOGIST','DEFENDER','ADMIN']} />} />
 
 
     

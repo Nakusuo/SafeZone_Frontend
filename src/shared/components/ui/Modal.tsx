@@ -37,15 +37,15 @@ export const Modal = ({
       
       
       <div 
-        className={`relative bg-white rounded-2xl shadow-2xl ${sizeClasses[size]} w-full mx-4 max-h-[90vh] overflow-auto pointer-events-auto`}
+        className={`relative bg-white rounded-2xl shadow-2xl border border-slate-200 ${sizeClasses[size]} w-full mx-4 max-h-[90vh] overflow-auto pointer-events-auto`}
         onClick={(e) => e.stopPropagation()}
       >
-        
-        <div className="sticky top-0 flex items-center justify-between p-6 border-b border-gray-200 bg-white rounded-t-2xl">
-          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+        {/* Header */}
+        <div className="sticky top-0 flex items-center justify-between p-6 border-b border-slate-200 bg-white rounded-t-2xl">
+          <h2 className="text-xl font-bold text-slate-900">{title}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <X className="w-5 h-5 text-gray-600" />
           </button>
@@ -58,7 +58,7 @@ export const Modal = ({
 
         
         {footer && (
-          <div className="border-t border-gray-200 p-6 bg-gray-50 rounded-b-2xl">
+          <div className="border-t border-slate-200 p-6 bg-slate-50 rounded-b-2xl">
             {footer}
           </div>
         )}

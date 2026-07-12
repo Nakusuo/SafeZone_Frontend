@@ -11,7 +11,7 @@ const apiClient: AxiosInstance = axios.create({
 
 apiClient.interceptors.request.use(
   (requestConfig) => {
-    const token = sessionStorage.getItem('token')
+    const token = window.localStorage.getItem('token') || window.sessionStorage.getItem('token')
     if (token) {
       requestConfig.headers['Authorization'] = `Bearer ${token}`
     }
@@ -25,9 +25,11 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      
-      sessionStorage.removeItem('token')
-      sessionStorage.removeItem('user')
+      // Token expirado — limpiamos y mandamos al login
+      window.localStorage.removeItem('token')
+      window.localStorage.removeItem('user')
+      window.sessionStorage.removeItem('token')
+      window.sessionStorage.removeItem('user')
       window.location.href = '/login'
     }
     if (error.response?.status === 403) {
