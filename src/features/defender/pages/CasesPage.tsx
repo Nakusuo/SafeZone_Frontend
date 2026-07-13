@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Briefcase, Eye, Clock, AlertCircle, CheckCircle } from "lucide-react";
 import { reportService } from "@/features/victim/services/reportService";
 import { Report } from "@/shared/types";
@@ -7,6 +8,7 @@ export const DefenderCasesPage = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "active" | "closed">("all");
+  const navigate = useNavigate();
 
   const user = sessionStorage.getItem("user");
   const userData = user ? JSON.parse(user) : null;

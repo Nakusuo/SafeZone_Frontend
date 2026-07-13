@@ -116,7 +116,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             </option>
             {(psychologists || []).map((p) => (
               <option key={p.id} value={p.id} className="bg-[#374151] text-white">
-                {p.name} ({p.caseCount} casos)
+                {p.nombre} {p.apellido} ({(p as any ).caseCount ?? 0} casos)
               </option>
             ))}
           </select>
@@ -138,7 +138,7 @@ export const AssignmentModal: React.FC<AssignmentModalProps> = ({
             </option>
             {(defenders || []).map((d) => (
               <option key={d.id} value={d.id} className="bg-[#374151] text-white">
-                {d.name} ({d.caseCount} casos)
+                {d.nombre} {d.apellido} ({(d as any).caseCount ?? 0} casos)
               </option>
             ))}
           </select>

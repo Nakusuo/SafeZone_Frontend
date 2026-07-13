@@ -243,7 +243,7 @@ const formatAgendaDate = (value?: string | null) => {
 
   const handleOpenManageModal = (event: AgendaEvent) => {
     setSelectedEvent(event)
-    setManageState(event.estado === 'PENDIENTE' ? 'ACEPTADA' : event.estado)
+    setManageState((event.estado === 'PENDIENTE' ? 'ACEPTADA' : event.estado) as AgendaEventStatus)
     setManageLink(event.linkReunion ?? '')
     setIsManageModalOpen(true)
   }

@@ -42,6 +42,17 @@ type CreateReportInput = Omit<Report, 'id' | 'victimId' | 'createdAt' | 'updated
   location?: string
 }
 
+type BackendSeguimiento = {
+  id: string
+  denunciaid?: string
+  profesionalid?: string
+  tipo?: string
+  notas?: string
+  estadoanterior?: string
+  estadonuevo?: string
+  fechaActualizacion?: string
+}
+
 const getMockData = () => {
   try {
     const stored = sessionStorage.getItem(STORAGE_KEY)
@@ -116,6 +127,11 @@ const mapStatus = (estado?: string): Report['status'] => {
     default:
       return 'PENDING'
   }
+}
+
+const fetchSeguimientos = async (reportId: string): Promise<BackendSeguimiento[]> => {
+  const { data } = await apiClient.get<BackendSeguimiento[]>(`/seguimientos/denuncia/${reportId}`)
+  return data ?? []
 }
 
 const mapBackendDenunciaToReport = (
@@ -252,7 +268,17 @@ export const reportService = {
       await delay()
       return getMockData().evaluations.filter((e: Evaluation) => e.reportId === reportId)
     }
-    return []
+
+    const seguimientos = await fetchSeguimientos(reportId)
+    return seguimientos.map((s) => ({
+      id: s.id,
+      reportId,
+      psychologistId: s.profesionalid || '',
+      date: s.fechaActualizacion || new Date().toISOString(),
+      diagnosis: s.notas || s.tipo || 'Evaluación registrada',
+      notes: s.tipo || '',
+      recommendations: [],
+    }))
   },
 
   createEvaluation: async (
@@ -282,7 +308,60 @@ export const reportService = {
       await delay()
       return getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
     }
-    return []
+
+    const seguimientos = await fetchSeguimientos(reportId)
+    return seguimientos.map((s) => ({
+      id: s.id,
+      reportId,
+      defenderId: s.profesionalid || '',
+      date: s.fechaActualizacion || new Date().toISOString(),
+      status: s.estadonuevo || s.tipo || 'Actualización',
+      notes: s.notas || '',
+      nextHearing: undefined,
+    }))
+  },
+
+  getCaseTimeline: async (reportId: string): Promise<import('@/components/Timeline').TimelineEvent[]> => {
+    if (config.USE_MOCK) {
+      await delay()
+      const evaluations = getMockData().evaluations.filter((e: Evaluation) => e.reportId === reportId)
+      const legalUpdates = getMockData().legalUpdates.filter((l: LegalUpdate) => l.reportId === reportId)
+
+      const events: import('@/components/Timeline').TimelineEvent[] = [
+        ...evaluations.map((e: Evaluation) => ({
+          id: e.id,
+          title: 'Evaluación Psicológica',
+          description: e.diagnosis,
+          date: e.date,
+          status: 'completed' as const,
+        })),
+        ...legalUpdates.map((l: LegalUpdate) => ({
+          id: l.id,
+          title: 'Actualización Legal',
+          description: l.notes,
+          date: l.date,
+          status: 'completed' as const,
+        })),
+      ]
+
+      return events.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+      )
+    }
+
+    const seguimientos = await fetchSeguimientos(reportId)
+    return seguimientos.map((s) => ({
+      id: s.id,
+      title: s.tipo || 'Seguimiento de caso',
+      description: [
+        s.notas,
+        s.estadonuevo ? `Estado: ${s.estadonuevo}` : undefined,
+      ]
+        .filter(Boolean)
+        .join(' — ') || undefined,
+      date: s.fechaActualizacion || new Date().toISOString(),
+      status: 'completed' as const,
+    }))
   },
 
   getAssignedCases: async (): Promise<Report[]> => {

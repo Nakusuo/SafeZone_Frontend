@@ -66,7 +66,7 @@ export const VictimDashboard = () => {
             <span className="text-green-700 font-medium text-xs">EN PROGRESO</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{activeCount}</div>
-          <p className="text-gray-700 text-sm">Total Reports</p>
+          <p className="text-gray-700 text-sm">Total de Denuncias</p>
         </div>
         <div className="bg-warning-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
@@ -106,7 +106,7 @@ export const VictimDashboard = () => {
 
       {/* Recent reports table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Reportes Recientes</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">Denuncias Recientes</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

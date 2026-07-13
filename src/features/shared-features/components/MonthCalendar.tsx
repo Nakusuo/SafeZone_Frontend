@@ -17,7 +17,7 @@ const typeStyles: Record<AgendaEventType, string> = {
   PLAZO_LEGAL: 'bg-amber-500/90 text-white',
 }
 
-const statusStyles: Record<AgendaEventStatus, string> = {
+const statusStyles: Record<string, string> = {
   PENDIENTE: 'opacity-100',
   EN_PROCESO: 'opacity-90',
   COMPLETADO: 'opacity-60 line-through',
@@ -110,8 +110,8 @@ export const MonthCalendar = ({ currentDate, events, onSelectDate, onSelectEvent
                       clickEvent.stopPropagation()
                       onSelectEvent(event)
                     }}
-                    className={`block w-full rounded-md px-2 py-1 text-left text-[11px] font-medium shadow-sm ${typeStyles[event.tipo] ?? 'bg-slate-500/90 text-white'} ${statusStyles[event.estado]}`}
-                  >
+                     >
+                     className={`block w-full rounded-md px-2 py-1 text-left text-[11px] font-medium shadow-sm ${typeStyles[event.tipo as keyof typeof typeStyles] ?? 'bg-slate-500/90 text-white'} ${statusStyles[event.estado as keyof typeof statusStyles] ?? ''}`}
                     <div className="truncate">{event.titulo}</div>
                     <div className="mt-0.5 truncate text-[10px] opacity-90">
                       {toBackendDateTime(parseCalendarDate(event.fechaInicio) ?? new Date()).slice(11, 16)}

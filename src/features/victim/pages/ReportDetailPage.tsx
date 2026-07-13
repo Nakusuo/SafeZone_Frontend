@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Card, Button, Timeline, Alert } from '@/shared/components'
+import type { TimelineEvent } from '@/components/Timeline'
 import { ArrowLeft, Download, MessageCircle, Users } from 'lucide-react'
 import { reportService } from '@/features/victim/services/reportService'
 import { Report, Evaluation, LegalUpdate } from '@/shared/types'
@@ -14,6 +15,8 @@ export const ReportDetailPage = () => {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([])
   const [psychologist, setPsychologist] = useState<any>(null)
   const [defender, setDefender] = useState<any>(null)
+  const [timeline, setTimeline] = useState<TimelineEvent[]>([])
+  const [timelineError, setTimelineError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -28,6 +31,14 @@ export const ReportDetailPage = () => {
           
           const evals = await reportService.getEvaluations(reportId)
           setEvaluations(evals)
+
+          
+          try {
+            const events = await reportService.getCaseTimeline(reportId)
+            setTimeline(events)
+          } catch {
+            setTimelineError(true)
+          }
 
           
           if (reportData.psychologistId) {
@@ -68,41 +79,42 @@ export const ReportDetailPage = () => {
     return colors[priority] || 'bg-gray-100 text-gray-700'
   }
 
-  const timelineEvents = [
+  const timelineEvents: TimelineEvent[] = [
     {
-      id: '1',
+      id: 'registered',
       title: 'Report Registered',
       description: 'Your report has been received and registered in the system',
       date: report?.createdAt || new Date(),
       status: 'completed' as const,
     },
     {
-      id: '2',
+      id: 'assignment',
       title: 'Professional Assignment',
       description: psychologist ? `Assigned to ${psychologist.name}` : 'Pending assignment',
       date: new Date(),
       status: report?.status !== 'PENDING' ? ('completed' as const) : ('pending' as const),
     },
     {
-      id: '3',
+      id: 'evaluation',
       title: 'Psychological Evaluation',
       description: evaluations.length > 0 ? 'Evaluation completed' : 'Pending evaluation',
       date: new Date(),
       status: evaluations.length > 0 ? ('completed' as const) : (report?.status === 'UNDER_EVALUATION' ? ('current' as const) : ('pending' as const)),
     },
     {
-      id: '4',
+      id: 'closure',
       title: 'Follow-up and Closure',
       description: 'Case monitoring and resolution',
       date: new Date(),
       status: report?.status === 'RESOLVED' ? ('completed' as const) : (report?.status === 'IN_FOLLOW_UP' ? ('current' as const) : ('pending' as const)),
     },
+    ...timeline,
   ]
 
   if (isLoading) {
     return (
       <div className="p-8 text-center">
-        <p className="text-gray-600">Loading information...</p>
+        <p className="text-gray-600">Cargando Informacion...</p>
       </div>
     )
   }
@@ -113,7 +125,7 @@ export const ReportDetailPage = () => {
         <Alert
           type="danger"
           title="Error"
-          message="Could not load the report"
+          message="No se pudo cargar la denuncia"
         />
       </div>
     )
@@ -156,7 +168,22 @@ export const ReportDetailPage = () => {
 
       
       <Card title="Case Progress" className="mb-6">
-        <Timeline events={timelineEvents} />
+        {timelineError ? (
+          <Alert
+            type="danger"
+            title="No se pudo cargar el seguimiento"
+            message="Ocurrió un error al obtener el historial del caso. Inténtalo de nuevo más tarde."
+          />
+        ) : (
+          <>
+            <Timeline events={timelineEvents} />
+            {timeline.length === 0 && (
+              <p className="mt-4 text-sm text-gray-500">
+                Aún no hay seguimientos registrados para este caso.
+              </p>
+            )}
+          </>
+        )}
       </Card>
 
       

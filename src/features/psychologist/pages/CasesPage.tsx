@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FileText, Eye, Clock, AlertCircle } from 'lucide-react'
 import { reportService } from '@/features/victim/services/reportService'
 import { Report } from '@/shared/types'

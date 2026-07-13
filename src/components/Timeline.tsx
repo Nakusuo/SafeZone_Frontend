@@ -3,7 +3,7 @@ import { CheckCircle, Circle, AlertCircle } from 'lucide-react'
 
 type TimelineStatus = 'completed' | 'current' | 'pending' | 'error'
 
-interface TimelineEvent {
+export interface TimelineEvent {
   id: string
   title: string
   description?: string
