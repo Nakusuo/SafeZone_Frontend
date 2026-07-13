@@ -110,9 +110,9 @@ export const CreateReportPage = () => {
           <ArrowLeft className="w-4 h-4" />
           Back to dashboard
         </button>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Register New Report</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Registrar Nuevo Reporte</h1>
         <p className="text-gray-600">
-          Your information is protected and encrypted. Only assigned professionals will be able to view it.
+          Tu información está protegida y encriptada. Solo los profesionales asignados podrán verla.
         </p>
       </div>
 
@@ -209,9 +209,9 @@ export const CreateReportPage = () => {
         <Card type="info" className="flex gap-3">
           <FileText className="w-5 h-5 text-primary flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-gray-900 mb-1">Privacy and Confidentiality</p>
+            <p className="text-sm font-medium text-gray-900 mb-1">Privacidad y Confidencialidad</p>
             <p className="text-sm text-gray-700">
-              Your report is completely confidential. It will only be shared with the necessary professionals for your case.
+              Tu reporte es completamente confidencial. Solo se compartirá con los profesionales necesarios para tu caso.
             </p>
           </div>
         </Card>
@@ -225,7 +225,7 @@ export const CreateReportPage = () => {
             onClick={() => navigate('/dashboard/victim')}
             disabled={isLoading}
           >
-            Cancel
+            Cancelar
           </Button>
           <Button
             type="submit"
@@ -234,7 +234,7 @@ export const CreateReportPage = () => {
             isLoading={isLoading}
           >
             <FileText className="w-4 h-4 inline mr-2" />
-            Submit Report
+            Enviar Reporte
           </Button>
         </div>
       </form>

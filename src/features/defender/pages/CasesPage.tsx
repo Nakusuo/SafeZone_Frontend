@@ -79,23 +79,23 @@ export const DefenderCasesPage = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-white rounded-lg p-4 border-l-4 border-teal">
-          <p className="text-gray-600 text-sm">Total cases</p>
+          <p className="text-gray-600 text-sm">Casos totales</p>
           <p className="text-3xl font-bold text-gray-900">{reports.length}</p>
         </div>
         <div className="bg-white rounded-lg p-4 border-l-4 border-orange-500">
-          <p className="text-gray-600 text-sm">In legal process</p>
+          <p className="text-gray-600 text-sm">En proceso legal</p>
           <p className="text-3xl font-bold text-gray-900">
             {reports.filter((r) => r.status === "IN_FOLLOW_UP").length}
           </p>
         </div>
         <div className="bg-white rounded-lg p-4 border-l-4 border-red-500">
-          <p className="text-gray-600 text-sm">Urgent</p>
+          <p className="text-gray-600 text-sm">Urgente</p>
           <p className="text-3xl font-bold text-gray-900">
             {reports.filter((r) => r.priority === "HIGH").length}
           </p>
         </div>
         <div className="bg-white rounded-lg p-4 border-l-4 border-secondary">
-          <p className="text-gray-600 text-sm">Closed</p>
+          <p className="text-gray-600 text-sm">Cerrado</p>
           <p className="text-3xl font-bold text-gray-900">
             {reports.filter((r) => r.status === "RESOLVED").length}
           </p>
@@ -112,7 +112,7 @@ export const DefenderCasesPage = () => {
               : "bg-gray-200 text-gray-800 hover:bg-gray-300"
           }`}
         >
-          All
+          Todos
         </button>
         <button
           onClick={() => setFilter("active")}
@@ -122,7 +122,7 @@ export const DefenderCasesPage = () => {
               : "bg-gray-200 text-gray-800 hover:bg-gray-300"
           }`}
         >
-          Active
+          Activos
         </button>
         <button
           onClick={() => setFilter("closed")}
@@ -132,7 +132,7 @@ export const DefenderCasesPage = () => {
               : "bg-gray-200 text-gray-800 hover:bg-gray-300"
           }`}
         >
-          Closed
+          Cerrados
         </button>
       </div>
 
@@ -140,12 +140,12 @@ export const DefenderCasesPage = () => {
       <div className="space-y-4">
         {isLoading ? (
           <div className="text-center py-8 text-gray-600">
-            <p>Loading cases...</p>
+            <p>Cargando casos...</p>
           </div>
         ) : filteredReports.length === 0 ? (
           <div className="text-center py-12 text-gray-600">
             <Briefcase className="w-12 h-12 mx-auto mb-4 opacity-30" />
-            <p className="text-lg">No cases to display</p>
+            <p className="text-lg">No hay casos para mostrar</p>
           </div>
         ) : (
           filteredReports.map((report) => (
@@ -216,7 +216,7 @@ export const DefenderCasesPage = () => {
 
                 <button onClick={() => navigate(`/cases/${report.id}/log`)} className="bg-teal hover:bg-teal/90 text-white px-4 py-2 rounded-lg flex items-center gap-2">
                   <Eye className="w-4 h-4" />
-                  View Details
+                  Ver Detalles
                 </button>
               </div>
             </div>

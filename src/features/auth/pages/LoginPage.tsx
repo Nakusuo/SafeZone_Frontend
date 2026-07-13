@@ -66,8 +66,8 @@ export const LoginPage = () => {
         <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8 space-y-6">
           
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome</h2>
-            <p className="text-sm text-gray-600">Log in to access your digital shelter and security resources.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Bienvenido</h2>
+            <p className="text-sm text-gray-600">Inicia sesión para acceder a tu refugio digital y recursos de seguridad.</p>
           </div>
 
           {error && (
@@ -92,8 +92,8 @@ export const LoginPage = () => {
 
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-gray-900">Password</label>
-                <a href="#" className="text-xs text-primary hover:underline">Forgot password?</a>
+                <label className="block text-sm font-medium text-gray-900">Contraseña</label>
+                <a href="#" className="text-xs text-primary hover:underline">¿Olvidaste tu contraseña?</a>
               </div>
               <Input
                 type="password"
@@ -110,13 +110,13 @@ export const LoginPage = () => {
               className="w-full bg-teal hover:bg-teal/90 text-white py-2.5 rounded-lg font-medium mt-6"
               isLoading={isLoading}
             >
-              Log In →
+              Iniciar sesión →
             </Button>
           </form>
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account? <a href="/register" className="text-teal font-medium hover:underline">Register</a>
+              ¿No tienes una cuenta? <a href="/register" className="text-teal font-medium hover:underline">Registrarse</a>
             </p>
           </div>
         </div>
@@ -131,9 +131,9 @@ export const LoginPage = () => {
             </div>
           </div>
           <div>
-            <p className="text-sm font-medium text-teal">Your safety is our priority</p>
-            <p className="text-xs text-teal/70">We use end-to-end encryption to protect</p>
-            <a href="#" className="text-xs text-teal font-medium hover:underline">your data.</a>
+            <p className="text-sm font-medium text-teal">Tu seguridad es nuestra prioridad</p>
+            <p className="text-xs text-teal/70">Utilizamos encriptación de extremo a extremo para proteger</p>
+            <a href="#" className="text-xs text-teal font-medium hover:underline">tus datos.</a>
           </div>
         </div>
       </div>

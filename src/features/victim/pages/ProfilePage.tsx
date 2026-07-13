@@ -58,7 +58,7 @@ export const ProfilePage = () => {
   if (!user) {
     return (
       <div className="p-8 text-center">
-        <p className="text-gray-600">Loading profile...</p>
+        <p className="text-gray-600">Cargando perfil...</p>
       </div>
     )
   }
@@ -72,10 +72,10 @@ export const ProfilePage = () => {
           className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back
+          Volver
         </button>
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Mi Perfil</h1>
           {!isEditing && (
             <Button
               variant="outline"
@@ -103,15 +103,15 @@ export const ProfilePage = () => {
 
       
       {isEditing ? (
-        <Card title="Edit Information" className="mb-6">
+        <Card title="Editar Información" className="mb-6">
           <div className="space-y-4">
             <Input
-              label="Full name"
+              label="Nombre completo"
               value={formData?.name}
               onChange={(value) => handleChange('name', value)}
             />
             <Input
-              label="Email address"
+              label="Correo electrónico"
               type="email"
               value={formData?.email}
               onChange={(value) => handleChange('email', value)}
@@ -128,6 +128,7 @@ export const ProfilePage = () => {
                   }}
                   disabled={isSaving}
                 >
+                  Cancelar  
                   <X className="w-4 h-4 mr-2" />
                   Cancel
                 </Button>
@@ -137,19 +138,19 @@ export const ProfilePage = () => {
                   isLoading={isSaving}
                 >
                   <Save className="w-4 h-4 mr-2" />
-                  Save changes
+                  Guardar cambios
                 </Button>
               </div>
             </div>
           </div>
         </Card>
       ) : (
-        <Card title="Personal Information" className="mb-6">
+        <Card title="Información Personal" className="mb-6">
           <div className="space-y-4">
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <User className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-600">Name</p>
+                <p className="text-sm text-gray-600">Nombre</p>
                 <p className="font-semibold text-gray-900">{user.name}</p>
               </div>
             </div>
@@ -157,7 +158,7 @@ export const ProfilePage = () => {
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <Mail className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-600">Email Address</p>
+                <p className="text-sm text-gray-600">Correo electrónico</p>
                 <p className="font-semibold text-gray-900">{user.email}</p>
               </div>
             </div>
@@ -165,7 +166,7 @@ export const ProfilePage = () => {
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
               <Shield className="w-5 h-5 text-gray-600" />
               <div>
-                <p className="text-sm text-gray-600">Role</p>
+                <p className="text-sm text-gray-600">Rol</p>
                 <p className="font-semibold text-gray-900">{getRoleLabel(user.role)}</p>
               </div>
             </div>
@@ -174,7 +175,7 @@ export const ProfilePage = () => {
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                 <Calendar className="w-5 h-5 text-gray-600" />
                 <div>
-                  <p className="text-sm text-gray-600">Registration Date</p>
+                  <p className="text-sm text-gray-600">Fecha de registro</p>
                   <p className="font-semibold text-gray-900">
                     {new Date(user.createdAt).toLocaleDateString('en-US', {
                       year: 'numeric',
@@ -190,27 +191,27 @@ export const ProfilePage = () => {
       )}
 
       
-      <Card title="Security" className="mb-6">
+      <Card title="Seguridad" className="mb-6">
         <div className="space-y-3">
           <Alert
             type="info"
-            message="Your password is encrypted and protected. We never share it with third parties."
+            message="Tu contraseña está encriptada y protegida. Nunca la compartimos con terceros."
           />
           <Button variant="outline" className="w-full" onClick={() => navigate('/victim/password')}>
-            Change password
+            Cambiar contraseña
           </Button>
         </div>
       </Card>
 
       
-      <Card title="Privacy and Data">
+      <Card title="Privacidad y Datos">
         <div className="space-y-3">
           <Alert
             type="info"
-            message="All your data is encrypted and only assigned professionals can access it."
+            message="Todos tus datos están encriptados y solo los profesionales asignados pueden acceder a ellos."
           />
           <Button variant="outline" className="w-full">
-            View privacy policy
+            Ver política de privacidad
           </Button>
         </div>
       </Card>

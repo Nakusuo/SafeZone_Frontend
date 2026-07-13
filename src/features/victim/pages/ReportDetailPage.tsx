@@ -128,7 +128,7 @@ export const ReportDetailPage = () => {
           className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium mb-4 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back
+          Volver
         </button>
         <div className="flex items-start justify-between">
           <div>
@@ -144,7 +144,7 @@ export const ReportDetailPage = () => {
           </div>
           <Button variant="outline" size="md">
             <Download className="w-4 h-4 mr-2" />
-            Download PDF
+            Descargar PDF
           </Button>
         </div>
       </div>
@@ -170,7 +170,7 @@ export const ReportDetailPage = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">{psychologist.name}</h4>
-                  <p className="text-sm text-gray-600">Psychologist</p>
+                  <p className="text-sm text-gray-600">Psicólogo</p>
                 </div>
               </div>
             )}
@@ -181,7 +181,7 @@ export const ReportDetailPage = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900">{defender.name}</h4>
-                  <p className="text-sm text-gray-600">Legal Defender</p>
+                  <p className="text-sm text-gray-600">Defensor Legal</p>
                 </div>
               </div>
             )}
@@ -191,21 +191,21 @@ export const ReportDetailPage = () => {
 
       
       {evaluations.length > 0 && (
-        <Card title="Psychological Evaluations" className="mb-6">
+        <Card title="Evaluaciones Psicológicas" className="mb-6">
           <div className="space-y-4">
             {evaluations.map((evaluation) => (
               <div key={evaluation.id} className="border border-gray-200 rounded-xl p-4">
                 <div className="flex items-start justify-between mb-2">
-                  <h4 className="font-semibold text-gray-900">Evaluation</h4>
+                  <h4 className="font-semibold text-gray-900">Evaluación</h4>
                   <span className="text-xs text-gray-500">
                     {new Date(evaluation.date).toLocaleDateString('en-US')}
                   </span>
                 </div>
                 <p className="text-sm text-gray-700 mb-2">
-                  <strong>Diagnosis:</strong> {evaluation.diagnosis}
+                  <strong>Diagnóstico:</strong> {evaluation.diagnosis}
                 </p>
                 <p className="text-sm text-gray-700">
-                  <strong>Recommendations:</strong> {evaluation.recommendations.join(', ')}
+                  <strong>Recomendaciones:</strong> {evaluation.recommendations.join(', ')}
                 </p>
               </div>
             ))}
@@ -214,10 +214,10 @@ export const ReportDetailPage = () => {
       )}
 
       
-      <Card title="Communication Center" className="mb-6">
+      <Card title="Centro de Comunicación" className="mb-6">
         <Button variant="primary" className="w-full flex items-center justify-center gap-2" onClick={() => navigate('/chat')}>
           <MessageCircle className="w-4 h-4" />
-          Send message to team
+          Enviar mensaje al equipo
         </Button>
       </Card>
 

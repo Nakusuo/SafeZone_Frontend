@@ -131,7 +131,7 @@ export const RegisterPage = () => {
             <UserPlus className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">SafeZone</h1>
-          <p className="text-gray-600">Create your secure account</p>
+          <p className="text-gray-600">Crea tu cuenta segura</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-warm p-8 space-y-6">
@@ -218,25 +218,25 @@ export const RegisterPage = () => {
               isLoading={isLoading}
               className="w-full"
             >
-              Create account
+              Crear cuenta →
             </Button>
           </form>
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{" "}
+              ¿Ya tienes una cuenta?{" "}
               <button
                 onClick={() => navigate("/login")}
                 className="text-primary hover:text-primary/80 font-medium transition-colors"
               >
-                Log in
+                Iniciar sesión
               </button>
             </p>
           </div>
         </div>
 
         <p className="text-center text-xs text-gray-600 mt-6 max-w-xs mx-auto">
-          By registering, you accept our privacy and data protection policies
+          Al registrarte, aceptas nuestras políticas de privacidad y protección de datos
         </p>
       </div>
     </div>

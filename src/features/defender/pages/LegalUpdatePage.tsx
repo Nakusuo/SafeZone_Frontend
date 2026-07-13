@@ -72,21 +72,21 @@ export const LegalUpdatePage = () => {
       
       <div className="flex items-center gap-2 mb-8 text-sm">
         <button onClick={() => navigate(-1)} className="text-teal hover:underline flex items-center gap-1">
-          <ChevronLeft className="w-4 h-4" /> Back
+          <ChevronLeft className="w-4 h-4" /> Atrás
         </button>
         <span className="text-gray-400">/</span>
-        <span className="text-gray-600">My Cases</span>
+        <span className="text-gray-600">Mis Casos</span>
         <span className="text-gray-400">/</span>
         <span className="text-gray-600">María García</span>
         <span className="text-gray-400">/</span>
-        <span className="text-gray-900 font-medium">Update Legal Status</span>
+        <span className="text-gray-900 font-medium">Actualizar Estado Legal</span>
       </div>
 
       
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Update Legal Status: Patient M. García (REP-2026-00123)</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Actualizar Estado Legal: Paciente M. García (REP-2026-00123)</h1>
         <p className="text-gray-600">
-          Record critical updates, hearing outcomes, and procedural changes to maintain the integrity of the protection file.
+          Registre actualizaciones críticas, resultados de audiencias y cambios procesales para mantener la integridad del expediente de protección.
         </p>
       </div>
 
@@ -104,10 +104,10 @@ export const LegalUpdatePage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Date and Time of the Update/Hearing</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Fecha y Hora de la Actualización/Audiencia</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
                   <input
                     type="date"
                     value={formData.date}
@@ -117,7 +117,7 @@ export const LegalUpdatePage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hora</label>
                   <input
                     type="time"
                     value={formData.time}
@@ -131,27 +131,27 @@ export const LegalUpdatePage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Update Type</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Tipo de Actualización</h3>
               <select
                 value={formData.updateType}
                 onChange={(e) => handleChange('updateType', e.target.value)}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal"
               >
-                <option value="hearing">Hearing</option>
-                <option value="submission">Legal Submission</option>
-                <option value="order">Protection Order</option>
-                <option value="investigation">Investigation Update</option>
+                <option value="hearing">Audiencia</option>
+                <option value="submission">Presentación Legal</option>
+                <option value="order">Orden de Protección</option>
+                <option value="investigation">Actualización de Investigación</option>
               </select>
             </div>
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Competent Court / Entity</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Juzgado / Entidad Competente</h3>
               <input
                 type="text"
                 value={formData.court}
                 onChange={(e) => handleChange('court', e.target.value)}
-                placeholder="e.g. Superior Court of Justice, District 4"
+                placeholder="p.ej. Tribunal Superior de Justicia, Distrito 4"
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal"
                 required
               />
@@ -159,11 +159,11 @@ export const LegalUpdatePage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Outcome / Summary</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Resultado / Resumen</h3>
               <textarea
                 value={formData.outcome}
                 onChange={(e) => handleChange('outcome', e.target.value)}
-                placeholder="Detailed description of procedures or progress made..."
+                placeholder="Descripción detallada de los procedimientos o avances realizados..."
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal h-32 resize-none"
                 required
               />
@@ -171,11 +171,11 @@ export const LegalUpdatePage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Next Legal Steps</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Próximos Pasos Legales</h3>
               <textarea
                 value={formData.legalSteps}
                 onChange={(e) => handleChange('legalSteps', e.target.value)}
-                placeholder="Identify immediate required actions..."
+                placeholder="Identifique las acciones inmediatas requeridas..."
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal h-32 resize-none"
               />
             </div>
@@ -189,11 +189,11 @@ export const LegalUpdatePage = () => {
                   onChange={(e) => handleChange('confidential', e.target.checked)}
                   className="w-4 h-4"
                 />
-                <span className="font-medium text-red-900">Confidentiality Note</span>
+                <span className="font-medium text-red-900">Nota de Confidencialidad</span>
               </label>
               <p className="text-xs text-red-800 mt-2">
-                All information entered here is confidential and subject to attorney-client privilege. 
-                Ensure that all details are appropriate for official legal records.
+                Toda la información ingresada aquí es confidencial y está sujeta al privilegio abogado-cliente. 
+                Asegúrese de que todos los detalles sean apropiados para los registros legales oficiales.
               </p>
             </div>
 
@@ -204,14 +204,14 @@ export const LegalUpdatePage = () => {
                 onClick={() => navigate(-1)}
                 className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 type="submit"
                 className="flex-1 bg-teal hover:bg-teal/90 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2"
               >
                 <Save className="w-5 h-5" />
-                Save Update
+                Guardar Actualización
               </button>
             </div>
           </form>
@@ -221,24 +221,24 @@ export const LegalUpdatePage = () => {
         <div className="lg:col-span-1 space-y-6">
           
           <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-4">Case Summary</h3>
+            <h3 className="font-bold text-gray-900 mb-4">Resumen del Caso</h3>
             <div className="space-y-3">
               <div>
-                <p className="text-xs text-gray-500 font-medium">INCIDENT TYPE</p>
-                <p className="text-sm text-gray-900">Report of Workplace Harassment</p>
+                <p className="text-xs text-gray-500 font-medium">TIPO DE INCIDENTE</p>
+                <p className="text-sm text-gray-900">Informe de Acoso Laboral</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-medium">STATUS</p>
+                <p className="text-xs text-gray-500 font-medium">ESTADO</p>
                 <p className="text-sm">
                   <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-xs font-medium">
-                    Intervention in Progress
+                    Intervención en Progreso
                   </span>
                 </p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 font-medium">ORIGINAL DESCRIPTION</p>
+                <p className="text-xs text-gray-500 font-medium">DESCRIPCIÓN ORIGINAL</p>
                 <p className="text-sm text-gray-600">
-                  Systemic patterns of verbal abuse reported within the clinical department. Patient seeks formal protection and reassignment.
+                  Se reportan patrones sistémicos de abuso verbal dentro del departamento clínico. El paciente busca protección formal y reasignación.
                 </p>
               </div>
             </div>
@@ -246,15 +246,15 @@ export const LegalUpdatePage = () => {
 
           
           <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-4">Timeline</h3>
+            <h3 className="font-bold text-gray-900 mb-4">Cronología</h3>
             <div className="space-y-4">
               <div className="border-l-2 border-teal pl-4">
                 <p className="text-xs text-gray-500">May 12, 2026</p>
-                <p className="text-sm font-medium text-gray-900">First report submitted</p>
+                <p className="text-sm font-medium text-gray-900">Primer informe presentado</p>
               </div>
               <div className="border-l-2 border-gray-300 pl-4">
                 <p className="text-xs text-gray-500">May 15, 2026</p>
-                <p className="text-sm font-medium text-gray-900">Protection order draft</p>
+                <p className="text-sm font-medium text-gray-900">Borrador de orden de protección</p>
               </div>
             </div>
           </div>
@@ -264,9 +264,9 @@ export const LegalUpdatePage = () => {
             <div className="flex gap-3">
               <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-bold text-blue-900 mb-2">Legal Reminder</h4>
+                <h4 className="font-bold text-blue-900 mb-2">Recordatorio Legal</h4>
                 <p className="text-xs text-blue-800">
-                  Ensure that all documentation complies with procedural requirements and local legal regulations for admissibility.
+                  Asegúrese de que toda la documentación cumpla con los requisitos procesales y las regulaciones legales locales para su admisibilidad.
                 </p>
               </div>
             </div>

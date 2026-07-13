@@ -66,20 +66,20 @@ export const SessionFormPage = () => {
       
       <div className="flex items-center gap-2 mb-8 text-sm">
         <button onClick={() => navigate(-1)} className="text-teal hover:underline flex items-center gap-1">
-          <ChevronLeft className="w-4 h-4" /> Back
+          <ChevronLeft className="w-4 h-4" /> Atrás
         </button>
         <span className="text-gray-400">/</span>
-        <span className="text-gray-600">My Cases</span>
+        <span className="text-gray-600">Mis Casos</span>
         <span className="text-gray-400">/</span>
         <span className="text-gray-600">María García</span>
         <span className="text-gray-400">/</span>
-        <span className="text-gray-900 font-medium">New Session</span>
+        <span className="text-gray-900 font-medium">Nueva Sesión</span>
       </div>
 
       
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Session Registration - Patient: M. García (REP-2026-00123)</h1>
-        <p className="text-gray-600">Document psychological evaluation and case follow-up</p>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Registro de Sesión - Paciente: M. García (REP-2026-00123)</h1>
+        <p className="text-gray-600">Documentar evaluación psicológica y seguimiento del caso</p>
       </div>
 
       
@@ -97,10 +97,10 @@ export const SessionFormPage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Session Date and Time</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Fecha y Hora de la Sesión</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Fecha</label>
                   <input
                     type="date"
                     value={formData.date}
@@ -110,7 +110,7 @@ export const SessionFormPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Hora</label>
                   <input
                     type="time"
                     value={formData.time}
@@ -124,28 +124,28 @@ export const SessionFormPage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Session Type</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Tipo de Sesión</h3>
               <select
                 value={formData.sessionType}
                 onChange={(e) => handleChange('sessionType', e.target.value)}
                 className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal"
               >
-                <option value="follow-up">Follow-up</option>
-                <option value="initial">Initial Evaluation</option>
-                <option value="crisis">Crisis Intervention</option>
-                <option value="family">Family Session</option>
+                <option value="follow-up">Seguimiento</option>
+                <option value="initial">Evaluación Inicial</option>
+                <option value="crisis">Intervención en Crisis</option>
+                <option value="family">Sesión Familiar</option>
               </select>
             </div>
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Observed Emotional State</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Estado Emocional Observado</h3>
               <div className="flex gap-3 flex-wrap">
                 {[
-                  { value: 'calm', label: 'Calm' },
-                  { value: 'anxious', label: 'Anxious' },
-                  { value: 'withdrawn', label: 'Withdrawn' },
-                  { value: 'reactive', label: 'Reactive' }
+                  { value: 'calm', label: 'Tranquilo' },
+                  { value: 'anxious', label: 'Ansioso' },
+                  { value: 'withdrawn', label: 'Retraído' },
+                  { value: 'reactive', label: 'Reactivo' }
                 ].map(mood => (
                   <button
                     key={mood.value}
@@ -165,11 +165,11 @@ export const SessionFormPage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Detailed Clinical Notes</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Notas Clínicas Detalladas</h3>
               <textarea
                 value={formData.notes}
                 onChange={(e) => handleChange('notes', e.target.value)}
-                placeholder="Describe clinical observations, patient narrative, and key moments..."
+                placeholder="Describe observaciones clínicas, narrativa del paciente y momentos clave..."
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal h-32 resize-none"
                 required
               />
@@ -177,11 +177,11 @@ export const SessionFormPage = () => {
 
             
             <div className="bg-white rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Recommendations / Action Plan</h3>
+              <h3 className="font-bold text-gray-900 mb-4">Recomendaciones / Plan de Acción</h3>
               <textarea
                 value={formData.recommendations}
                 onChange={(e) => handleChange('recommendations', e.target.value)}
-                placeholder="Homework, next steps, or therapeutic objectives..."
+                placeholder="Deberes, próximos pasos, o objetivos terapéuticos..."
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal h-32 resize-none"
               />
             </div>
@@ -195,9 +195,9 @@ export const SessionFormPage = () => {
                   onChange={(e) => handleChange('sensitive', e.target.checked)}
                   className="w-4 h-4"
                 />
-                <span className="font-medium text-red-900">Mark as Confidential / Private</span>
+                <span className="font-medium text-red-900">Marcar como Confidencial / Privado</span>
               </label>
-              <p className="text-xs text-red-800 mt-2">Only clinical staff and the assigned psychologist will have access.</p>
+              <p className="text-xs text-red-800 mt-2">Solo el personal clínico y el psicólogo asignado tendrán acceso.</p>
             </div>
 
             
@@ -207,14 +207,14 @@ export const SessionFormPage = () => {
                 onClick={() => navigate(-1)}
                 className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 type="submit"
                 className="flex-1 bg-teal hover:bg-teal/90 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2"
               >
                 <Save className="w-5 h-5" />
-                Save to Case Log
+                Guardar en el Registro de Casos
               </button>
             </div>
           </form>
@@ -224,27 +224,27 @@ export const SessionFormPage = () => {
         <div className="lg:col-span-1 space-y-6">
           
           <div className="bg-white rounded-lg p-6 shadow-sm">
-            <h3 className="font-bold text-gray-900 mb-4">Patient History</h3>
+            <h3 className="font-bold text-gray-900 mb-4">Historial del Paciente</h3>
             <div className="space-y-3">
               <div>
-                <p className="text-xs text-teal font-medium">SESSION 12 - OCT 14</p>
-                <p className="text-sm text-gray-700">Stable Follow-up</p>
+                <p className="text-xs text-teal font-medium">SESIÓN 12 - 14 OCT</p>
+                <p className="text-sm text-gray-700">Seguimiento Estable</p>
               </div>
               <div>
-                <p className="text-xs text-blue-600 font-medium">SESSION 11 - OCT 7</p>
-                <p className="text-sm text-gray-700">Evaluation Review</p>
+                <p className="text-xs text-blue-600 font-medium">SESIÓN 11 - 7 OCT</p>
+                <p className="text-sm text-gray-700">Revisión de Evaluación</p>
               </div>
               <div>
-                <p className="text-xs text-purple-600 font-medium">SESSION 10 - SEP 30</p>
-                <p className="text-sm text-gray-700">Routine Check</p>
+                <p className="text-xs text-purple-600 font-medium">SESIÓN 10 - 30 SEP</p>
+                <p className="text-sm text-gray-700">Chequeo de Rutina</p>
               </div>
-              <button className="text-teal text-sm font-medium hover:underline">View complete clinical file →</button>
+              <button className="text-teal text-sm font-medium hover:underline">Ver expediente clínico completo →</button>
             </div>
           </div>
 
           
           <div className="bg-teal-900 text-white rounded-lg p-6">
-            <h3 className="font-bold mb-4">EMERGENCY CONTACT</h3>
+            <h3 className="font-bold mb-4">CONTACTO DE EMERGENCIA</h3>
             <div className="space-y-2">
               <p className="font-medium">Elena García (Mother)</p>
               <p className="text-sm">+1 (555) 012-3456</p>

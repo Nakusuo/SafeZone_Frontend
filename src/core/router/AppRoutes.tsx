@@ -35,6 +35,7 @@ import { TriageView }     from '@/features/admin/pages/TriageView'
 import { NotificationCenter } from '@/features/shared-features/notifications/pages'
 import { CaseClosureView }    from '@/features/shared-features/case-closure/pages'
 import { ChatView }           from '@/features/shared-features/chat/pages'
+import { CaseLogPage }        from '@/features/shared-features/case-log/pages/CaseLogPage'
 import { AgendaPage }         from '@/features/shared-features/pages/AgendaPage'
 
 

@@ -78,10 +78,10 @@ export const PasswordPage = () => {
   }
 
   const passwordChecks = [
-    { label: 'Minimum 12 characters for improved strength', valid: formData.new.length >= 12 },
-    { label: 'Use a combination of uppercase, lowercase, and numbers', valid: /[a-z]/.test(formData.new) && /[A-Z]/.test(formData.new) && /\d/.test(formData.new) },
-    { label: 'Include at least one special character (e.g., @, #, $, !)', valid: /[^a-zA-Z\d]/.test(formData.new) },
-    { label: 'Avoid using personal information like birthdates', valid: true },
+    { label: 'Mínimo 12 caracteres para mayor seguridad', valid: formData.new.length >= 12 },
+    { label: 'Usa una combinación de mayúsculas, minúsculas y números', valid: /[a-z]/.test(formData.new) && /[A-Z]/.test(formData.new) && /\d/.test(formData.new) },
+    { label: 'Incluye al menos un carácter especial (p. ej., @, #, $, !)', valid: /[^a-zA-Z\d]/.test(formData.new) },
+    { label: 'Evita usar información personal como fechas de nacimiento', valid: true },
   ]
 
   return (
@@ -90,11 +90,11 @@ export const PasswordPage = () => {
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-4">
           <Shield className="w-8 h-8 text-teal" />
-          <h1 className="text-3xl font-bold text-gray-900">Change Password</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Cambiar Contraseña</h1>
         </div>
         <p className="text-gray-600">
-          Your security is our priority. Updating your password regularly helps protect your 
-          digital sanctuary from unauthorized access.
+          Tu seguridad es nuestra prioridad. Actualizar tu contraseña regularmente ayuda a proteger tu 
+          santuario digital contra accesos no autorizados.
         </p>
       </div>
 
@@ -112,7 +112,7 @@ export const PasswordPage = () => {
 
             
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Contraseña Actual</label>
               <div className="relative">
                 <input
                   type={showPasswords.current ? 'text' : 'password'}
@@ -133,7 +133,7 @@ export const PasswordPage = () => {
 
             
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nueva Contraseña</label>
               <div className="relative">
                 <input
                   type={showPasswords.new ? 'text' : 'password'}
@@ -165,10 +165,10 @@ export const PasswordPage = () => {
                     />
                   </div>
                   <p className="text-xs text-gray-600 mt-1">
-                    {passwordStrength === 1 && 'Weak'}
-                    {passwordStrength === 2 && 'Fair'}
-                    {passwordStrength === 3 && 'Strong'}
-                    {passwordStrength === 4 && 'Very strong'}
+                    {passwordStrength === 1 && 'Débil'}
+                    {passwordStrength === 2 && 'Aceptable'}
+                    {passwordStrength === 3 && 'Fuerte'}
+                    {passwordStrength === 4 && 'Muy fuerte'}
                   </p>
                 </div>
               )}
@@ -176,7 +176,7 @@ export const PasswordPage = () => {
 
             
             <div className="mb-8">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Confirmar Nueva Contraseña</label>
               <div className="relative">
                 <input
                   type={showPasswords.confirm ? 'text' : 'password'}
@@ -202,20 +202,20 @@ export const PasswordPage = () => {
                 onClick={() => navigate(-1)}
                 className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 type="submit"
                 className="flex-1 bg-teal hover:bg-teal/90 text-white px-4 py-2 rounded-lg font-bold"
               >
-                Update Password
+                Actualizar Contraseña
               </button>
             </div>
 
             
             <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-xs text-blue-800">
-                <strong>Forgot your password?</strong> You can request a recovery link to your contact email if you do not remember your current password.
+                <strong>¿Olvidaste tu contraseña?</strong> Puedes solicitar un enlace de recuperación a tu correo electrónico de contacto si no recuerdas tu contraseña actual.
               </p>
             </div>
           </form>
@@ -224,7 +224,7 @@ export const PasswordPage = () => {
         
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-gradient-to-br from-teal to-teal/80 text-white rounded-lg p-8">
-            <h2 className="text-2xl font-bold mb-4">Security Tips</h2>
+            <h2 className="text-2xl font-bold mb-4">Consejos de Seguridad</h2>
             <ul className="space-y-3">
               {passwordChecks.map((check, idx) => (
                 <li key={idx} className="flex items-start gap-3">
@@ -237,12 +237,12 @@ export const PasswordPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-teal">
-              <h3 className="font-bold text-gray-900 mb-2">Regular Updates</h3>
-              <p className="text-sm text-gray-600">Change your password every 3-6 months for improved security</p>
+              <h3 className="font-bold text-gray-900 mb-2">Actualizaciones Regulares</h3>
+              <p className="text-sm text-gray-600">Cambia tu contraseña cada 3-6 meses para mejorar la seguridad</p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow-sm border-l-4 border-teal">
-              <h3 className="font-bold text-gray-900 mb-2">Never Share</h3>
-              <p className="text-sm text-gray-600">SafeZone will never request your password by email or phone</p>
+              <h3 className="font-bold text-gray-900 mb-2">Nunca Compartas</h3>
+              <p className="text-sm text-gray-600">SafeZone nunca solicitará tu contraseña por correo electrónico o teléfono</p>
             </div>
           </div>
         </div>

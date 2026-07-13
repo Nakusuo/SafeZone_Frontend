@@ -132,8 +132,8 @@ export const MyReportsPage = () => {
       
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Reports</h1>
-          <p className="text-gray-600">Manage all your reports and support requests</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Mis Reportes</h1>
+          <p className="text-gray-600">Gestiona todos tus reportes y solicitudes de apoyo</p>
         </div>
         <Button
           variant="primary"
@@ -141,7 +141,7 @@ export const MyReportsPage = () => {
           onClick={() => navigate('/victim/create-report')}
         >
           <Plus className="w-4 h-4 mr-2" />
-          New Report
+          Nuevo Reporte
         </Button>
       </div>
 
@@ -161,11 +161,11 @@ export const MyReportsPage = () => {
             value={statusFilter}
             onChange={setStatusFilter}
             options={[
-              { value: '', label: 'All statuses' },
-              { value: 'PENDING', label: 'Pending' },
-              { value: 'UNDER_EVALUATION', label: 'Under Evaluation' },
-              { value: 'IN_FOLLOW_UP', label: 'In Follow-up' },
-              { value: 'RESOLVED', label: 'Resolved' },
+              { value: '', label: 'Todos los estados' },
+              { value: 'PENDING', label: 'Pendiente' },
+              { value: 'UNDER_EVALUATION', label: 'En Evaluación' },
+              { value: 'IN_FOLLOW_UP', label: 'En Seguimiento' },
+              { value: 'RESOLVED', label: 'Resuelto' },
             ]}
           />
 
@@ -174,10 +174,10 @@ export const MyReportsPage = () => {
             value={priorityFilter}
             onChange={setPriorityFilter}
             options={[
-              { value: '', label: 'All priorities' },
-              { value: 'LOW', label: 'Low' },
-              { value: 'MEDIUM', label: 'Medium' },
-              { value: 'HIGH', label: 'High' },
+              { value: '', label: 'Todas las prioridades' },
+              { value: 'LOW', label: 'Baja' },
+              { value: 'MEDIUM', label: 'Media' },
+              { value: 'HIGH', label: 'Alta' },
             ]}
           />
         </div>
@@ -208,7 +208,7 @@ export const MyReportsPage = () => {
                 onClick={() => navigate('/victim/create-report')}
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Create your first report
+                Crea tu primer reporte
               </Button>
             )}
           </div>
@@ -217,22 +217,22 @@ export const MyReportsPage = () => {
 
       
       {reports.length > 0 && (
-        <Card title="Statistical Summary" className="mb-6">
+        <Card title="Resumen Estadístico" className="mb-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <p className="text-sm text-gray-600 mb-1">Total</p>
               <p className="text-2xl font-bold text-primary">{reports.length}</p>
             </div>
             <div className="text-center p-4 bg-yellow-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Pending</p>
+              <p className="text-sm text-gray-600 mb-1">Pendiente</p>
               <p className="text-2xl font-bold text-yellow-600">{reports.filter(r => r.status === 'PENDING').length}</p>
             </div>
             <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Under Evaluation</p>
+              <p className="text-sm text-gray-600 mb-1">En Evaluación</p>
               <p className="text-2xl font-bold text-blue-600">{reports.filter(r => r.status === 'UNDER_EVALUATION').length}</p>
             </div>
             <div className="text-center p-4 bg-emerald-50 rounded-lg">
-              <p className="text-sm text-gray-600 mb-1">Resolved</p>
+              <p className="text-sm text-gray-600 mb-1">Resuelto</p>
               <p className="text-2xl font-bold text-emerald-600">{reports.filter(r => r.status === 'RESOLVED').length}</p>
             </div>
           </div>

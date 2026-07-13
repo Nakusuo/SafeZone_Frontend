@@ -148,7 +148,7 @@ export const TriageView: React.FC = () => {
             {isLoadingCases ? (
               <div className="flex items-center justify-center gap-2 py-12 text-on-surface-variant">
                 <Loader className="h-5 w-5 animate-spin" />
-                <span>Loading cases...</span>
+                <span>Cargando casos...</span>
               </div>
             ) : cases.length === 0 ? (
               <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
@@ -185,12 +185,12 @@ export const TriageView: React.FC = () => {
               onClick={() => setIsModalOpen(true)}
               className="rounded-lg bg-primary px-4 py-3 font-semibold text-on-primary hover:bg-primary/90 transition-colors"
             >
-              Assign Case
+              Asignar Caso
             </button>
           )}
           {selectedCase && selectedCase.status !== "new" && (
             <button className="rounded-lg bg-surface-container px-4 py-3 font-semibold text-on-surface-variant cursor-not-allowed opacity-50">
-              Already Assigned
+              Caso Asignado
             </button>
           )}
         </div>

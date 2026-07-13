@@ -38,22 +38,22 @@ export const VictimDashboard = () => {
 
       {/* Hero */}
       <div className="bg-gradient-to-r from-teal to-teal/80 text-white rounded-2xl p-8 mb-8">
-        <h2 className="text-3xl font-bold mb-2">Welcome, {userData?.name || 'User'}</h2>
-        <p className="text-teal-light">Your safety is our top priority. Access your security tools and reports below.</p>
+        <h2 className="text-3xl font-bold mb-2">Bienvenido, {userData?.name || 'User'}</h2>
+        <p className="text-teal-light">Tu seguridad es nuestra máxima prioridad. Accede a tus herramientas de seguridad e informes a continuación.</p>
         <div className="flex gap-4 mt-6">
           <button
             onClick={() => navigate('/victim/my-reports')}
             className="bg-white hover:bg-gray-100 text-teal px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2"
           >
             <FileText className="w-4 h-4" />
-            View My Reports
+            Ver mis informes
           </button>
           <button
             onClick={() => navigate('/victim/create-report')}
             className="bg-white/20 hover:bg-white/30 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2 border border-white/40"
           >
             <AlertCircle className="w-4 h-4" />
-            New Report
+            Nuevo informe
           </button>
         </div>
       </div>
@@ -63,7 +63,7 @@ export const VictimDashboard = () => {
         <div className="bg-success-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-green-500 text-white rounded flex items-center justify-center text-sm font-bold">✓</div>
-            <span className="text-green-700 font-medium text-xs">IN PROGRESS</span>
+            <span className="text-green-700 font-medium text-xs">EN PROGRESO</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{activeCount}</div>
           <p className="text-gray-700 text-sm">Total Reports</p>
@@ -71,18 +71,18 @@ export const VictimDashboard = () => {
         <div className="bg-warning-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-yellow-500 text-white rounded flex items-center justify-center text-sm font-bold">⏱</div>
-            <span className="text-yellow-700 font-medium text-xs">PENDING</span>
+            <span className="text-yellow-700 font-medium text-xs">PENDIENTE</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{pendingCount}</div>
-          <p className="text-gray-700 text-sm">Under Evaluation</p>
+          <p className="text-gray-700 text-sm">En Evaluación</p>
         </div>
         <div className="bg-danger-light rounded-xl p-6">
           <div className="flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-pink-500 text-white rounded flex items-center justify-center text-sm font-bold">✓</div>
-            <span className="text-pink-700 font-medium text-xs">CLOSED</span>
+            <span className="text-pink-700 font-medium text-xs">CERRADO</span>
           </div>
           <div className="text-4xl font-bold text-gray-900 mb-1">{resolvedCount}</div>
-          <p className="text-gray-700 text-sm">Resolved</p>
+          <p className="text-gray-700 text-sm">Resuelto</p>
         </div>
       </div>
 
@@ -93,29 +93,29 @@ export const VictimDashboard = () => {
           className="bg-teal hover:bg-teal/90 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
         >
           <FileText className="w-4 h-4" />
-          Create New Report
+          Crear nuevo informe
         </button>
         <button
           onClick={() => navigate('/victim/my-reports')}
           className="bg-secondary hover:bg-secondary/90 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2"
         >
           <Eye className="w-4 h-4" />
-          View All My Reports
+          Ver todos mis Reportes
         </button>
       </div>
 
       {/* Recent reports table */}
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Recent Reports</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">Reportes Recientes</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-200">
                 <th className="text-left py-3 px-4 font-medium text-gray-700">ID</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Date</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Type</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Priority</th>
-                <th className="text-left py-3 px-4 font-medium text-gray-700">Status</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Fecha</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Tipo</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Prioridad</th>
+                <th className="text-left py-3 px-4 font-medium text-gray-700">Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -151,7 +151,7 @@ export const VictimDashboard = () => {
           </table>
           {reports.length === 0 && (
             <div className="text-center py-8 text-gray-600">
-              <p className="text-sm">No reports registered yet</p>
+              <p className="text-sm">Reportes no registrados aún</p>
             </div>
           )}
         </div>
@@ -159,19 +159,19 @@ export const VictimDashboard = () => {
 
       {/* Resources */}
       <div className="mt-12">
-        <h3 className="text-lg font-bold text-gray-900 mb-6">Resources and Support</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-6">Recursos y Soporte</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-white rounded-lg p-4 border-l-4 border-teal hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">24/7 Hotline Support</h4>
-            <p className="text-sm text-gray-600">Professionals available at any time</p>
+            <h4 className="font-semibold text-gray-900 mb-2">24/7 soporte </h4>
+            <p className="text-sm text-gray-600">Profesionales disponibles en cualquier momento</p>
           </div>
           <div className="bg-white rounded-lg p-4 border-l-4 border-secondary hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Information Guides</h4>
-            <p className="text-sm text-gray-600">Educational material on rights and protection</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Guías de Información</h4>
+            <p className="text-sm text-gray-600">Material educativo sobre derechos y protección</p>
           </div>
           <div className="bg-white rounded-lg p-4 border-l-4 border-accent hover:shadow-md transition">
-            <h4 className="font-semibold text-gray-900 mb-2">Legal Follow-up</h4>
-            <p className="text-sm text-gray-600">Specialized legal advisory services</p>
+            <h4 className="font-semibold text-gray-900 mb-2">Seguimiento Legal</h4>
+            <p className="text-sm text-gray-600">Servicios de asesoría legal especializada</p>
           </div>
         </div>
       </div>
