@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://github.com/Nakusuo"><img src="https://raw.githubusercontent.com/Nakusuo/Nakusuo/main/assets/covers/SafeZone_Frontend.svg" width="100%" alt="SafeZone_Frontend — Nakusu"/></a>
+</p>
+
 # SafeZone Frontend
 
 Plataforma integral de apoyo para víctimas de violencia con dashboards especializados.
