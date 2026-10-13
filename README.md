@@ -2,98 +2,85 @@
   <a href="https://github.com/Nakusuo"><img src="https://raw.githubusercontent.com/Nakusuo/Nakusuo/main/assets/covers/SafeZone_Frontend.svg" width="100%" alt="SafeZone_Frontend — Nakusu"/></a>
 </p>
 
-# SafeZone Frontend
+# SafeZone
 
-Plataforma integral de apoyo para víctimas de violencia con dashboards especializados.
+SafeZone es una plataforma para acompañar a personas que viven violencia. La idea es que en un mismo lugar puedan **pedir ayuda al instante**, **hacer una denuncia** y **hablar con profesionales** (psicólogos y defensores legales) que siguen su caso.
 
-## 🚀 Stack Tecnológico
+La hice como proyecto de la universidad (Ingeniería de Software) y es la parte del frontend. El backend va aparte, en Spring Boot.
 
-- **React 18** + TypeScript
-- **Tailwind CSS 3** - Diseño con colores SafeZone
-- **Vite 5** - Build ultrarrápido
-- **React Router** - SPA routing
-- **Lucide React** - Iconografía
-- **Axios** - Cliente HTTP
+<p align="center">
+  <img src="docs/capturas/02-dashboard-victima.png" width="100%" alt="Panel de la víctima en SafeZone"/>
+</p>
 
-## 📦 Instalación y Configuración
+## Lo más importante: el botón de pánico
+
+La persona tiene siempre a mano un botón **SOS** flotante. Al tocarlo, la app toma su ubicación por GPS y, si no la cancela, envía la alerta sola después de 10 segundos. Si el GPS está bloqueado, puede escribir la dirección a mano. También hay un botón de **salida segura** para cerrar todo rápido si alguien está mirando.
+
+<p align="center">
+  <img src="docs/capturas/03-boton-panico.png" width="80%" alt="Alerta de emergencia con ubicación GPS y cuenta regresiva"/>
+</p>
+
+Del otro lado, los profesionales ven las alertas activas en un panel y las marcan como atendidas o resueltas.
+
+## Un panel para cada persona
+
+Cada rol entra a una vista distinta, pensada para lo que necesita hacer:
+
+- **Víctima**: sus denuncias, su agenda, el botón de pánico y recursos de ayuda.
+- **Psicólogo/a**: sus casos activos, sesiones y evaluaciones.
+- **Defensor/a legal**: casos y audiencias.
+- **Administración**: triaje y asignación de casos a profesionales.
+
+| Inicio de sesión | Panel de psicóloga |
+|---|---|
+| ![Inicio de sesión](docs/capturas/01-login.png) | ![Panel de psicóloga](docs/capturas/04-dashboard-psicologo.png) |
+
+## Con qué está hecho
+
+React 18 + TypeScript, Vite, Tailwind CSS, React Router, Axios e íconos de Lucide. Tiene Capacitor configurado para empaquetarlo como app de Android.
+
+El código está organizado por funcionalidades (`src/features/victim`, `psychologist`, `defender`, `admin`, `auth`), así cada rol tiene sus páginas, componentes y servicios juntos.
+
+## Probarlo sin backend
+
+No necesitas levantar el backend para verlo: con el **modo mock** la app usa datos de ejemplo guardados en el navegador.
 
 ```bash
 npm install
-npm run dev
+# en el archivo .env cambia VITE_USE_MOCK a true
+npm run dev            # http://localhost:5173
 ```
 
-Servidor de desarrollo local en: **http://localhost:5173**
-
-### Configuración del Entorno (`.env`)
-
-```env
-# URL del backend (Spring Boot)
-VITE_API_URL=http://localhost:8080/api
-
-# MOCK MODE: true para usar datos locales sin backend, false para conectar al backend real
-VITE_USE_MOCK=true
-```
-
-## 👤 Credenciales de Prueba
+Cuentas de prueba (solo existen en el modo mock):
 
 | Rol | Email | Contraseña |
 |-----|-------|-----------|
 | Administrador | admin@example.com | admin123 |
 | Víctima | maria@example.com | password123 |
-| Psicólogo | patricia@example.com | password123 |
-| Defensor Legal | carlos@example.com | password123 |
+| Psicóloga | patricia@example.com | password123 |
+| Defensor legal | carlos@example.com | password123 |
 
-## 🏗️ Nueva Arquitectura (Feature-Based)
+Para conectarlo al backend real, deja `VITE_USE_MOCK=false` y apunta `VITE_API_URL` a tu API (por defecto `http://localhost:8080/api`).
 
-```text
-src/
-├── core/            # Configuración principal (AuthContext, apiClient, router)
-├── features/        # Módulos separados por dominio de negocio
-│   ├── admin/       # Dashboard y triaje de administrador
-│   ├── auth/        # Login y registro
-│   ├── defender/    # Dashboard legal y audiencias
-│   ├── psychologist/# Dashboard clínico y casos
-│   ├── victim/      # Dashboard, denuncias y botón de pánico
-│   └── shared-features/ # Chat, Notificaciones, Alertas de emergencia (uso cruzado)
-├── shared/          # Código compartido (componentes UI, tipos, utilidades)
-└── data/            # mockData.json (datos iniciales para el modo local)
-```
-
-## 📌 Características Clave
-
-✅ **Autenticación por rol**: Administrador, Víctima, Psicólogo, Defensor Legal.  
-✅ **Dashboards personalizados**: Adaptados a las necesidades de cada perfil.  
-✅ **Gestión de Denuncias**: Creación de reportes de violencia física, psicológica, sexual, etc.  
-✅ **RF-03 Botón de Pánico (NUEVO)**: Botón de emergencia SOS flotante para víctimas.
-  - Captura automática de **geolocalización GPS** en tiempo real.
-  - Alternativa de dirección manual en caso de bloqueo GPS.
-  - Countdown de 10 segundos para auto-envío.
-✅ **Panel de Alertas en Tiempo Real**: Panel para que profesionales (Psicólogos, Defensores, Admins) vean alertas activas e interactúen marcándolas como atendidas o resueltas.  
-✅ **Modo Mock / Backend Real**: Sistema robusto con `VITE_USE_MOCK` para alternar entre `sessionStorage` (sin backend) y llamadas RESTful a Spring Boot.
-
-## 🔗 Integración con Backend (Spring Boot + Cosmos DB)
-
-El frontend está listo para comunicarse con la API. Los endpoints implementados para la función RF-03 (Botón de Pánico) son:
+<details>
+<summary>Endpoints del botón de pánico (RF-03)</summary>
 
 | Método | Endpoint | Acción |
 |---|---|---|
-| `POST` | `/api/emergency/alerts` | Crea una alerta de pánico (GPS/Manual) |
-| `GET` | `/api/emergency/alerts?status=ACTIVE` | Lista las alertas activas para el panel |
-| `PATCH`| `/api/emergency/alerts/{id}/attend` | Un profesional atiende la alerta |
-| `PATCH`| `/api/emergency/alerts/{id}/resolve` | Cierre del caso de la alerta |
+| `POST` | `/api/emergency/alerts` | Crea una alerta (GPS o dirección manual) |
+| `GET` | `/api/emergency/alerts?status=ACTIVE` | Lista las alertas activas |
+| `PATCH` | `/api/emergency/alerts/{id}/attend` | Un profesional atiende la alerta |
+| `PATCH` | `/api/emergency/alerts/{id}/resolve` | Cierra la alerta |
 
-## 📝 Comandos
+</details>
+
+<details>
+<summary>Otros comandos</summary>
 
 ```bash
-npm run dev        # Desarrollo (HMR)
-npm run build      # Construir producción
-npm run preview    # Vista previa del build
-npm run lint       # Análisis ESLint
-tsc --noEmit       # Verificación estricta de TypeScript
+npm run build      # build de producción
+npm run preview    # ver el build
+npm run lint       # ESLint
 ```
 
-## 🎨 Colores SafeZone
-
-- **Primary**: `#084C61` (Azul Oscuro)
-- **Secondary**: `#6A994E` (Verde Salvia)
-- **Accent**: `#BC4749` (Rojo Suave)
+</details>
